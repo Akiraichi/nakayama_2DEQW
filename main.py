@@ -63,11 +63,11 @@ def main_loop_phase(conditions, exp_name):
 
 if __name__ == '__main__':
     # デバッグ1
-    conditions, exp_name = exp_0000__debug_folder_changed_check_set()
-    # execute_simulation_memory_save(conditions, exp_name)
+    conditions, exp_name = exp_5010_x_set()
+    execute_simulation_memory_save(conditions, exp_name)
     # execute_plot_memory_save_2(exp_name=exp_name)
     # main_loop_phase(conditions, exp_name)
-    execute_plot_phase(exp_name, 99)
+    # execute_plot_phase(exp_name, 9)
     # デバッグ2
     # conditions, exp_name = exp_0000__debug_folder_changed_check_set()
     # main_loop(conditions, exp_name)
