@@ -41,3 +41,11 @@ def plot_phase(file_path, len_x, len_y, T, plot_path, index, phi):
     # plot
     do_plot_3d_gif(mesh_x, mesh_y, mesh_z, plot_path, f"{str(index).zfill(3)}.png", title)
     print(f"phi={phi}：可視化と保存：完了")
+
+
+if __name__ == '__main__':
+    from exp_setting.exp import *
+
+    conditions, exp_name = exp_0000__debug_folder_changed_check_set()
+    plot_t_step = 99
+    execute_plot_phase(exp_name, plot_t_step)

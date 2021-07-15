@@ -54,3 +54,12 @@ def multi_start_simulation_program_memory_save(i, condition, exp_name):
     save_data(data=data, path=config_simulation_save_mamory_data_save_path(exp_name, i),
               file_name=config_simulation_save_memory_data_name(index=i))
     print(i, "回目：シミュレーションデータの保存：完了")
+
+
+if __name__ == "__main__":
+    from exp_setting.exp import *
+
+    # 実験条件の取得
+    conditions, exp_name = exp_2010_x_set()
+    # 実験開始
+    execute_simulation_memory_save(conditions, exp_name)

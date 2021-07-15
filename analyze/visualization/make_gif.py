@@ -1,6 +1,5 @@
 import glob
 
-import config.config
 from config.config import config_marge_gif_save_path_file_name, config_plot_save_path, config_plot_phase_save_path, \
     config_marge_gif_phase_save_path_file_name
 import os
@@ -57,3 +56,13 @@ def make_gif_phase(exp_name, plot_t_step):
                    save_all=True,
                    duration=10,
                    loop=0)
+
+
+if __name__ == '__main__':
+    from exp_setting.exp import *
+
+    _, exp_name = exp_0000__debug_folder_changed_check_set()
+    make_gif(exp_name=exp_name)
+
+    plot_t_step = 99
+    make_gif_phase(exp_name=exp_name, plot_t_step=plot_t_step)
