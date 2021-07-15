@@ -511,11 +511,31 @@ def exp_3031_xy_set():
     return conditions, exp_name
 
 
+def exp_5010_x_set():
+    """x軸に電場をかけた。pi/整数の位相でシミュレーションする。"""
+    exp_name = "exp_3031"
+    conditions = []
+    for i in range(1, 21):
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = None
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x
+        phi = phi.subs(x, i)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        conditions.append(c)
+    return conditions, exp_name
+
+
 if __name__ == '__main__':
-    x = sympy.Symbol('x')
+    # x = sympy.Symbol('x')
     # phi = x * 2 * sympy.pi / 120
     # latex_txt = sympy.latex(phi)
     # print(latex_txt)
-    # c, exp_name = exp_0000__debug_folder_changed_check_set()
+    c, exp_name = exp_5010_x_set()
     # print(c[0].phi)
     # print(c[0].phi_latex)
