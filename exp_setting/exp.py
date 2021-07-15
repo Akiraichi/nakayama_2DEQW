@@ -3,228 +3,228 @@ from simulation.codition import set_basic_condition_1
 import numpy as np
 import sympy
 
-
-def exp0_set():
-    exp_name = "デバッグ用の実験"
-    conditions = []
-    for i in range(1):
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = np.array([1 / 2, 1 / 2, -1 / 2, -1 / 2])
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp1_set():
-    exp_name = "初期確立振幅ベクトル４成分のうち一つだけ１で他は０"
-    conditions = []
-    for i in range(4):
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = np.array([0, 0, 0, 0])
-        c.PSY_init[i] = 1
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp2_set():
-    exp_name = "全ての初期確率振幅ベクトルの絶対値が1／2。-を適用する全パターンを実験"
-    param_list = [
-        # 0つ
-        [1 / 2, 1 / 2, 1 / 2, 1 / 2],
-
-        # 1つ
-        [-1 / 2, 1 / 2, 1 / 2, 1 / 2],
-        [1 / 2, -1 / 2, 1 / 2, 1 / 2],
-        [1 / 2, 1 / 2, -1 / 2, 1 / 2],
-        [1 / 2, 1 / 2, 1 / 2, -1 / 2],
-
-        # 2つ
-        [-1 / 2, -1 / 2, 1 / 2, 1 / 2],
-        [-1 / 2, 1 / 2, -1 / 2, 1 / 2],
-        [-1 / 2, 1 / 2, 1 / 2, -1 / 2],
-
-        [1 / 2, -1 / 2, -1 / 2, 1 / 2],
-        [1 / 2, -1 / 2, 1 / 2, -1 / 2],
-
-        [1 / 2, 1 / 2, -1 / 2, -1 / 2],
-        # 3つ
-        [-1 / 2, -1 / 2, -1 / 2, 1 / 2],
-        [-1 / 2, -1 / 2, 1 / 2, -1 / 2],
-        [-1 / 2, 1 / 2, -1 / 2, -1 / 2],
-        [1 / 2, -1 / 2, -1 / 2, -1 / 2],
-        # 4つ
-        [-1 / 2, -1 / 2, -1 / 2, -1 / 2]]
-    conditions = []
-    for i, param in enumerate(param_list):
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = np.array(param)
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp3_set():
-    exp_name = "sin_cos_exp"
-
-    theta_list = []
-    param_list = []
-    for i in range(12):
-        theta = np.pi * i / 12
-        theta_list.append(theta)
-
-    for theta in theta_list:
-        param = [np.sin(theta) / np.sqrt(2), np.sin(theta) / np.sqrt(2), np.cos(theta) / np.sqrt(2),
-                 np.cos(theta) / np.sqrt(2)]
-        param_list.append(param)
-
-    conditions = []
-    for i, param in enumerate(param_list):
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = np.array(param)
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp4_set():
-    exp_name = "6-14-傾けて実験するやつ"
-    conditions = []
-    c = Condition()
-    set_basic_condition_1(c)
-    c.PSY_init = 1 / 2 * np.array([1, -1, -1, 1])
-    conditions.append(c)
-    return conditions, exp_name
-
-
-def exp5_set(exp_name):
-    algorithm_list = [2]
-    conditions = []
-    for param in algorithm_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = param
-        c.phi = 120
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp6_set():
-    exp_name = "6-15論文再現テスト-本テスト"
-    algorithm_list = [2, 3, 4, 5]
-    conditions = []
-    for param in algorithm_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = param
-        c.phi = 2 * np.pi / 120
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_debug_x():
-    exp_name = "「x軸に電場を加える」デバッグ"
-    algorithm_list = [3]
-    conditions = []
-    for param in algorithm_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = param
-        c.phi = 2 * np.pi / 120
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp7_set(exp_name):
-    """x軸に電場をかけた"""
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 3
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_1_1_y_set(exp_name):
-    """y軸に電場をかけた場合"""
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 4
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_1_2_xy_set(exp_name):
-    """x軸とy軸に電場をかけた場合"""
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 5
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_2_1_x_set(exp_name):
-    """x軸に電場をかけた場合。位置の逆数"""
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 8
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_2_2_y_set(exp_name):
-    """y軸に電場をかけた場合。位置の逆数"""
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 9
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_2_3_xy_set(exp_name):
-    phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
-    conditions = []
-    for phi in phi_list:
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
-        c.algorithm = 10
-        c.phi = phi
-        conditions.append(c)
-    return conditions, exp_name
+#
+# def exp0_set():
+#     exp_name = "デバッグ用の実験"
+#     conditions = []
+#     for i in range(1):
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = np.array([1 / 2, 1 / 2, -1 / 2, -1 / 2])
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp1_set():
+#     exp_name = "初期確立振幅ベクトル４成分のうち一つだけ１で他は０"
+#     conditions = []
+#     for i in range(4):
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = np.array([0, 0, 0, 0])
+#         c.PSY_init[i] = 1
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp2_set():
+#     exp_name = "全ての初期確率振幅ベクトルの絶対値が1／2。-を適用する全パターンを実験"
+#     param_list = [
+#         # 0つ
+#         [1 / 2, 1 / 2, 1 / 2, 1 / 2],
+#
+#         # 1つ
+#         [-1 / 2, 1 / 2, 1 / 2, 1 / 2],
+#         [1 / 2, -1 / 2, 1 / 2, 1 / 2],
+#         [1 / 2, 1 / 2, -1 / 2, 1 / 2],
+#         [1 / 2, 1 / 2, 1 / 2, -1 / 2],
+#
+#         # 2つ
+#         [-1 / 2, -1 / 2, 1 / 2, 1 / 2],
+#         [-1 / 2, 1 / 2, -1 / 2, 1 / 2],
+#         [-1 / 2, 1 / 2, 1 / 2, -1 / 2],
+#
+#         [1 / 2, -1 / 2, -1 / 2, 1 / 2],
+#         [1 / 2, -1 / 2, 1 / 2, -1 / 2],
+#
+#         [1 / 2, 1 / 2, -1 / 2, -1 / 2],
+#         # 3つ
+#         [-1 / 2, -1 / 2, -1 / 2, 1 / 2],
+#         [-1 / 2, -1 / 2, 1 / 2, -1 / 2],
+#         [-1 / 2, 1 / 2, -1 / 2, -1 / 2],
+#         [1 / 2, -1 / 2, -1 / 2, -1 / 2],
+#         # 4つ
+#         [-1 / 2, -1 / 2, -1 / 2, -1 / 2]]
+#     conditions = []
+#     for i, param in enumerate(param_list):
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = np.array(param)
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp3_set():
+#     exp_name = "sin_cos_exp"
+#
+#     theta_list = []
+#     param_list = []
+#     for i in range(12):
+#         theta = np.pi * i / 12
+#         theta_list.append(theta)
+#
+#     for theta in theta_list:
+#         param = [np.sin(theta) / np.sqrt(2), np.sin(theta) / np.sqrt(2), np.cos(theta) / np.sqrt(2),
+#                  np.cos(theta) / np.sqrt(2)]
+#         param_list.append(param)
+#
+#     conditions = []
+#     for i, param in enumerate(param_list):
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = np.array(param)
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp4_set():
+#     exp_name = "6-14-傾けて実験するやつ"
+#     conditions = []
+#     c = Condition()
+#     set_basic_condition_1(c)
+#     c.PSY_init = 1 / 2 * np.array([1, -1, -1, 1])
+#     conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp5_set(exp_name):
+#     algorithm_list = [2]
+#     conditions = []
+#     for param in algorithm_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         c.algorithm = param
+#         c.phi = 120
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp6_set():
+#     exp_name = "6-15論文再現テスト-本テスト"
+#     algorithm_list = [2, 3, 4, 5]
+#     conditions = []
+#     for param in algorithm_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         c.algorithm = param
+#         c.phi = 2 * np.pi / 120
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_debug_x():
+#     exp_name = "「x軸に電場を加える」デバッグ"
+#     algorithm_list = [3]
+#     conditions = []
+#     for param in algorithm_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         c.algorithm = param
+#         c.phi = 2 * np.pi / 120
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp7_set(exp_name):
+#     """x軸に電場をかけた"""
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 3
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_1_1_y_set(exp_name):
+#     """y軸に電場をかけた場合"""
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 4
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_1_2_xy_set(exp_name):
+#     """x軸とy軸に電場をかけた場合"""
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 5
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_2_1_x_set(exp_name):
+#     """x軸に電場をかけた場合。位置の逆数"""
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 8
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_2_2_y_set(exp_name):
+#     """y軸に電場をかけた場合。位置の逆数"""
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 9
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
+#
+#
+# def exp_2_3_xy_set(exp_name):
+#     phi_list = [i * 30 * np.pi / 120 for i in range(1, 21)]
+#     conditions = []
+#     for phi in phi_list:
+#         c = Condition()
+#         set_basic_condition_1(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         # x軸のみに電場を加えるため、アルゴリズム番号は3番
+#         c.algorithm = 10
+#         c.phi = phi
+#         conditions.append(c)
+#     return conditions, exp_name
 
 
 def exp_1010_x_set():
