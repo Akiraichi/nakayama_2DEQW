@@ -9,8 +9,8 @@ import glob
 def execute_simulation_memory_save(conditions, exp_name):
     # 並列処理用の前処理
     arguments = []
-    for i, condition in enumerate(conditions):
-        arguments.append([i, condition, exp_name])
+    for condition in conditions:
+        arguments.append([condition.index, condition, exp_name])
 
     # 最大並列数を設定
     p = Pool(config.config.Config_simulation.simulation_parallel_num)

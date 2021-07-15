@@ -425,6 +425,7 @@ def exp_2010_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i-1
         conditions.append(c)
     return conditions, exp_name
 
@@ -527,6 +528,7 @@ def exp_5010_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i-1
         conditions.append(c)
     return conditions, exp_name
 
