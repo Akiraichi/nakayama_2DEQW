@@ -64,8 +64,14 @@ def main_loop_phase(conditions, exp_name):
 if __name__ == '__main__':
     # デバッグ1
     conditions, exp_name = exp_0000__debug_folder_changed_check_set()
-    main_loop_phase(conditions, exp_name)
-
+    # execute_simulation_memory_save(conditions, exp_name)
+    # execute_plot_memory_save_2(exp_name=exp_name)
+    # main_loop_phase(conditions, exp_name)
+    execute_plot_phase(exp_name, 99)
     # デバッグ2
     # conditions, exp_name = exp_0000__debug_folder_changed_check_set()
     # main_loop(conditions, exp_name)
+
+    # デバッグ3
+    # plot_t_step = 99
+    # make_gif_phase(exp_name=exp_name, plot_t_step=plot_t_step)

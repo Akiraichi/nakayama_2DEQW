@@ -3,6 +3,7 @@ from simulation.codition import set_basic_condition_1
 import numpy as np
 import sympy
 
+
 #
 # def exp0_set():
 #     exp_name = "デバッグ用の実験"
@@ -388,14 +389,14 @@ def exp_0000__debug_folder_changed_check_set():
     """
     exp_name = "exp_0000"
     conditions = []
-    for i in range(1, 3):
+    for i in range(1, 5):
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
         x = sympy.Symbol('x')
-        phi = x * 2 * sympy.pi / 120
+        phi = x * sympy.pi / 4
         phi = phi.subs(x, i)
         print(phi)
         c.phi = float(phi.evalf())
