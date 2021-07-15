@@ -425,7 +425,7 @@ def exp_2010_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
-        c.index = i-1
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
@@ -447,6 +447,7 @@ def exp_3010_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
@@ -468,6 +469,7 @@ def exp_3011_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
@@ -488,6 +490,7 @@ def exp_3030_xy_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
@@ -508,19 +511,20 @@ def exp_3031_xy_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
 
 def exp_5010_x_set():
     """x軸に電場をかけた。pi/整数の位相でシミュレーションする。"""
-    exp_name = "exp_3031"
+    exp_name = "exp_5010"
     conditions = []
     for i in range(1, 21):
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = None
+        c.algorithm = 3
         x = sympy.Symbol('x')
         phi = sympy.pi / x
         phi = phi.subs(x, i)
@@ -528,7 +532,28 @@ def exp_5010_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
-        c.index = i-1
+        c.index = i - 1
+        conditions.append(c)
+    return conditions, exp_name
+
+
+def exp_copy_copy_set():
+    """新規実験を作る際の雛形。コピペした際に変更していないミスが多発したので作成。エラーが出やすいようにしてある"""  # 変更点
+    exp_name = "exp_copy"  # 変更点
+    conditions = []
+    for i in range(1, 1):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = None  # 変更点
+        x = sympy.Symbol('x')
+        phi = None  # 変更点
+        phi = phi.subs(x, i)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
