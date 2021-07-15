@@ -516,11 +516,17 @@ def exp_3031_xy_set():
     return conditions, exp_name
 
 
-def exp_5010_x_set():
-    """x軸に電場をかけた。pi/整数の位相でシミュレーションする。"""
+# 以下の実験から適用。indexだけ異なる実験が増えてきたため、関数の形を変更
+def exp_5010_x_set(start_index, end_index):
+    """
+    x軸に電場をかけた。pi/整数の位相でシミュレーションする。
+    Example: i=1〜20
+    start_index=1
+    end_index=21
+    """
     exp_name = "exp_5010"
     conditions = []
-    for i in range(1, 21):
+    for i in range(start_index, end_index):
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
