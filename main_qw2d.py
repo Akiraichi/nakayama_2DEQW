@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # デバッグ1
     conditions, exp_name = exp_5010_x_set(start_index=21, end_index=41)
     execute_simulation_memory_save(conditions, exp_name)
-    
+
     # execute_plot_memory_save_2(exp_name=exp_name)
     # main_loop_phase(conditions, exp_name)
     # execute_plot_phase(exp_name, 9)

@@ -2,12 +2,33 @@ import os
 
 
 class Config_simulation:
-    # 実験条件の設定
-    max_time_step = 10  # 最大時間ステップ数
-    # シミュレーションの並列数
-    simulation_parallel_num = 1
-    # plotの並列数
-    plot_parallel_num = 2
+    import sys
+    print(type(sys.modules))
+    moduleList = sys.modules
+    ENV_COLAB = False
+
+    if 'google.colab' in moduleList:
+        print("google_colab")
+        ENV_COLAB = True
+    else:
+        print("Not google_colab")
+    if ENV_COLAB:
+        print("Execute in google_colab")
+        # 実験条件の設定
+        max_time_step = 600  # 最大時間ステップ数
+        # シミュレーションの並列数
+        simulation_parallel_num = 4
+        # plotの並列数
+        plot_parallel_num = 4
+    else:
+        if ENV_COLAB:
+            print("Execute in local")
+            # 実験条件の設定
+            max_time_step = 10  # 最大時間ステップ数
+            # シミュレーションの並列数
+            simulation_parallel_num = 2
+            # plotの並列数
+            plot_parallel_num = 2
 
 
 class Config_save_log:
