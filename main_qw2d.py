@@ -41,7 +41,7 @@ def main_loop_phase(conditions, exp_name):
             print("simuのスタート")
             execute_simulation_memory_save(conditions, exp_name)
 
-            for plot_t_step in [10, 20, 30, 40, 50, 99]:
+            for plot_t_step in [100, 200, 300, 400, 500, 599]:
                 print("plotのスタート")
                 execute_plot_phase(exp_name, plot_t_step)
                 print("gifのスタート")
@@ -63,8 +63,8 @@ def main_loop_phase(conditions, exp_name):
 
 if __name__ == '__main__':
     # デバッグ1
-    conditions, exp_name = exp_5010_x_set(start_index=21, end_index=41)
-    execute_simulation_memory_save(conditions, exp_name)
+    conditions, exp_name = exp_5010_x_set(start_index=61, end_index=81)
+    main_loop_phase(conditions, exp_name)
 
     # execute_plot_memory_save_2(exp_name=exp_name)
     # main_loop_phase(conditions, exp_name)
