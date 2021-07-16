@@ -5,5 +5,6 @@
 - 先生に聞きたいことは[Issue](https://github.com/Akiraichi/knct_study/issues)に投稿し、ラベルをhelp wantedにしてください。そして、次回ミーティング時に聞きましょう。
 
 ## 研究室メンバーへ
+- [研究日誌](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/研究日誌とシミュレーション結果.ipynb)に一応、その日何をやったのか、などは記録しています。
 - [Issue](https://github.com/Akiraichi/knct_study/issues)には現在私が立ち向かっている問題が投稿されています。help wantedのラベルがついている投稿は先生に質問する予定です。
 - 論文執筆について、mainブランチは前稿があり、n稿ブランチに第n稿があります。添削してもらうたびにn稿をmainにマージするイメージです。
