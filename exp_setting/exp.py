@@ -656,6 +656,28 @@ def exp_010_01_00_x_set():
     return conditions, exp_name
 
 
+def exp_011_01_00_x_set():
+    """600の約数"""  # 変更点
+    exp_name = "exp_011_01_00"  # 変更点
+    conditions = []
+    prime_number_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 100, 120, 150, 200, 300, 600]
+    for i, num in enumerate(prime_number_list):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3  # 変更点
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x  # 変更点
+        phi = phi.subs(x, num)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
 def exp_copy_copy_set():
     """新規実験を作る際の雛形。コピペした際に変更していないミスが多発したので作成。エラーが出やすいようにしてある"""  # 変更点
     exp_name = "exp_copy"  # 変更点
