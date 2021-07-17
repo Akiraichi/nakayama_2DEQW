@@ -561,7 +561,97 @@ def exp_6010_prime_number_x_set():
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
-        c.index = i # 変更点
+        c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
+def exp_7010_ryoka_x_set():
+    """ryoka数でシミュレーションしてみる"""  # 変更点
+    exp_name = "exp_7010"  # 変更点
+    conditions = []
+    prime_number_list = [2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
+    for i, num in enumerate(prime_number_list):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3  # 変更点
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x  # 変更点
+        phi = phi.subs(x, num)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
+def exp_8010_Landau_x_set():
+    """Landau数でシミュレーションしてみる"""  # 変更点
+    exp_name = "exp_8010"  # 変更点
+    conditions = []
+    prime_number_list = [1, 2, 3, 4, 6, 12, 15, 20, 30, 60, 84, 105, 140, 210, 420]
+    for i, num in enumerate(prime_number_list):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3  # 変更点
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x  # 変更点
+        phi = phi.subs(x, num)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
+# 新しい実験番号の付け方を以下から適用
+def exp_009_01_00_x_set():
+    """	Number of partitions of n into pairwise relatively prime parts."""  # 変更点
+    exp_name = "exp_009_01_00"  # 変更点
+    conditions = []
+    prime_number_list = [1, 2, 3, 4, 6, 7, 10, 12, 15, 18, 23, 27, 33, 38, 43, 51, 60, 70, 81, 92, 102, 116, 134, 153,
+                         171, 191, 211]
+    for i, num in enumerate(prime_number_list):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3  # 変更点
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x  # 変更点
+        phi = phi.subs(x, num)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
+def exp_010_01_00_x_set():
+    """		Number of integer partitions of n with all pairs of consecutive parts relatively prime. """  # 変更点
+    exp_name = "exp_010_01_00"  # 変更点
+    conditions = []
+    prime_number_list = [1, 2, 3, 4, 6, 7, 10, 12, 16, 19, 24, 28, 36, 43, 51, 62, 74, 87, 104, 122, 143, 169, 195, 227]
+    for i, num in enumerate(prime_number_list):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3  # 変更点
+        x = sympy.Symbol('x')
+        phi = sympy.pi / x  # 変更点
+        phi = phi.subs(x, num)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i  # 変更点
         conditions.append(c)
     return conditions, exp_name
 
