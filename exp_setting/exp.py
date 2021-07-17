@@ -549,19 +549,19 @@ def exp_6010_prime_number_x_set():
     conditions = []
     prime_number_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89,
                          97, ]
-    for i in prime_number_list:  # 変更点
+    for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
         phi = sympy.pi / x  # 変更点
-        phi = phi.subs(x, i)
+        phi = phi.subs(x, num)
         print(phi)
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
-        c.index = i-1
+        c.index = i # 変更点
         conditions.append(c)
     return conditions, exp_name
 
