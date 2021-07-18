@@ -357,7 +357,6 @@ def exp_4010_t_xy_set():
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 4010
         c.phi = phi
         conditions.append(c)
@@ -674,6 +673,28 @@ def exp_011_01_00_x_set():
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
         c.index = i  # 変更点
+        conditions.append(c)
+    return conditions, exp_name
+
+
+# ここの実験から600ステップまでplotするように変更
+def exp_012_01_00_x_set():
+    """時間変化する電場"""  # 変更点
+    exp_name = "exp_012_01_00"  # 変更点
+    conditions = []
+    for i in range(1, 21):  # 変更点
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 4010  # 変更点
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 4  # 変更点
+        phi = phi.subs(x, i)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i - 1
         conditions.append(c)
     return conditions, exp_name
 
