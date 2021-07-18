@@ -11,7 +11,6 @@ def execute_plot_phase(exp_name, t_step):
     このプログラムではt_stepステップ目のデータだけをロードしプロットします。
     """
     # 実験データの00、01みたいなのが全部でいくつあるのかをチェックし、フォルダー名を含んだパス名をfoldersに入れる。
-    # この時点では順番は適当だがプロットする順番は適当で良いから別に良い（ファイル名は順番に関係ない）
     folder_path_list = glob.glob(f"{config_simulation_save_mamory_data_save_path(exp_name)}/*")
     folder_path_list.sort()
     # 実験環境の数（00や01とかのフォルダーの数）だけforを回す。それぞれのforループの中で処理を行う
