@@ -63,7 +63,10 @@ from analyze.visualization.make_gif import make_gif, make_gif_phase
 
 if __name__ == '__main__':
     # デバッグ1
-    conditions, exp_name = exp_012_01_00_x_set()
+    conditions, exp_name = exp_5010_x_set(1,21)
+    execute_simulation_memory_save(conditions, exp_name)
+    execute_plot_phase(exp_name,100)
+    make_gif_phase(exp_name,100)
     # main_loop(conditions, exp_name)
 
     # execute_plot_memory_save_2(exp_name=exp_name)

@@ -4,7 +4,7 @@ from config.config import *
 import joblib
 import glob
 from simulation.algorithm_memory_save import calculate_probability_distribution_at_time_t_memory_save
-
+import matplotlib.pyplot as plt
 
 def execute_plot_phase(exp_name, t_step):
     """
@@ -40,6 +40,7 @@ def plot_phase(file_path, len_x, len_y, T, plot_path, index, phi):
     # plot
     do_plot_3d_gif(mesh_x, mesh_y, mesh_z, plot_path, f"{str(index).zfill(3)}.png", title)
     print(f"phi={phi}：可視化と保存：完了")
+
 
 
 if __name__ == '__main__':

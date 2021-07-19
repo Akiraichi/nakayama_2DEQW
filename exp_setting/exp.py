@@ -409,7 +409,7 @@ def exp_2010_x_set():
     """
     x軸に電場をかけた_pi/4刻み
     """
-    exp_name = "exp_2010_debug"
+    exp_name = "exp_2010"
     conditions = []
     for i in range(1, 21):
         c = Condition()
@@ -678,7 +678,7 @@ def exp_011_01_00_x_set():
 
 # ここの実験から600ステップまでシミュレーションするように変更。今までのシミュレーションを再実行すると全て再実行になることに注意
 def exp_012_01_00_x_set():
-    """時間変化する電場"""  # 変更点
+    """時間変化する電場位置の逆数"""  # 変更点
     exp_name = "exp_012_01_00"  # 変更点
     conditions = []
     for i in range(1, 21):  # 変更点
