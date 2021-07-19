@@ -157,7 +157,7 @@ def calc_qw2d_memory_save(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, 
                                  e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
                                  e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
             elif Algorithm == 4010:
-                # 電場が時間変化する場合
+                # 電場が時間変化する場合。位置の逆数
                 if t % 2 == 0:
                     # x軸で電場をかけた。
                     PSY_next[x, y] = e_i_phi(x, T, phi, -1) * ((P @ PSY_of_P) +
@@ -170,9 +170,20 @@ def calc_qw2d_memory_save(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, 
                                                                (Q @ PSY_of_Q) +
                                                                (R @ PSY_of_R) +
                                                                (S @ PSY_of_S))
+            elif Algorithm == 5010:
+                # 電場が時間変化する場合
+                if t % 2 == 0:
+                    # x軸で電場をかけた。
+                    PSY_next[x, y] = e_i_phi(x, T, phi, 1) * ((P @ PSY_of_P) +
+                                                               (Q @ PSY_of_Q) +
+                                                               (R @ PSY_of_R) +
+                                                               (S @ PSY_of_S))
                 else:
-                    print("tがおかしい. t=", t)
-                    raise OSError
+                    # y軸に電場をかけた。
+                    PSY_next[x, y] = e_i_phi(y, T, phi, 1) * ((P @ PSY_of_P) +
+                                                               (Q @ PSY_of_Q) +
+                                                               (R @ PSY_of_R) +
+                                                               (S @ PSY_of_S))
 
     return PSY_next
 

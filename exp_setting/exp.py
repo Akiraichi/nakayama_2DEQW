@@ -409,9 +409,9 @@ def exp_2010_x_set():
     """
     x軸に電場をかけた_pi/4刻み
     """
-    exp_name = "exp_2010_debug"  # 後で戻す
+    exp_name = "exp_2010_debug"
     conditions = []
-    for i in range(1, 61):
+    for i in range(1, 21):
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
@@ -699,7 +699,7 @@ def exp_012_01_00_x_set():
 
 
 def exp_013_01_00_x_set(start_index, end_index):
-    """弱電場で時間変化する電場"""  # 変更点
+    """弱電場で時間変化する電場。位置の逆数"""  # 変更点
     exp_name = "exp_013_01_00"  # 変更点
     conditions = []
     for i in range(start_index, end_index):
@@ -731,6 +731,27 @@ def exp_014_01_00_x_set(start_index, end_index):
         x = sympy.Symbol('x')
         phi = sympy.pi / x
         phi = phi.subs(x, i * 10)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i - 1
+        conditions.append(c)
+    return conditions, exp_name
+
+
+def exp_015_01_00_x_set(start_index, end_index):
+    """弱電場で時間変化する電場"""  # 変更点
+    exp_name = "exp_015_01_00"  # 変更点
+    conditions = []
+    for i in range(start_index, end_index):
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 5010
+        x = sympy.Symbol('x')
+        phi = sympy.pi * x / 4
+        phi = phi.subs(x, i)
         print(phi)
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
