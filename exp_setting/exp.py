@@ -761,6 +761,28 @@ def exp_015_01_00_x_set(start_index, end_index):
     return conditions, exp_name
 
 
+def exp_016_01_00_x_set(start, end):
+    """x軸に電場をかけた_pi/240刻み。1から60"""
+    exp_name = "exp_016_01_00"
+    conditions = []
+    for i in range(start, end):
+        c = Condition()
+        set_basic_condition_1(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 3
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, i)
+        print(phi)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.index = i - 1
+        conditions.append(c)
+    return conditions, exp_name
+
+
 def exp_copy_copy_set():
     """新規実験を作る際の雛形。コピペした際に変更していないミスが多発したので作成。エラーが出やすいようにしてある"""  # 変更点
     exp_name = "exp_copy"  # 変更点
