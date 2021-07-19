@@ -1,5 +1,20 @@
 # 高知工業高等専門学校 特別研究
 
+## シミュレーション結果に対するレポート
+[シミュレーション結果](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/シミュレーション結果まとめ/シミュレーション結果.pdf)
+
+上手く表示されない場合はダウンロードすると上手く見えます。
+
+## シミュレーション結果フォルダへのリンク
+[シミュレーション結果フォルダ](https://drive.google.com/drive/folders/1uRr74jvY0Q83lu1f6nHSbGY331xTujIL?usp=sharing)
+
+google driveで共有しています。たまにリンクを更新します。
+
+## 研究日誌
+[研究日誌](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/研究日誌.md)
+
+雑多な内容を書いています。研究日誌というより、ただのメモ帳です。
+
 ## 自分へ
 - 論文を執筆する中での疑問点、実験がうまくいかない、実験方法の改善アイディア、などなど、思いついたら論点を明らかにするため、また内容を忘れないために[Issue](https://github.com/Akiraichi/knct_study/issues)に投稿してください
 - 先生に聞きたいことは[Issue](https://github.com/Akiraichi/knct_study/issues)に投稿し、ラベルをhelp wantedにしてください。そして、次回ミーティング時に聞きましょう。
