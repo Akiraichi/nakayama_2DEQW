@@ -29,7 +29,7 @@ def check_plot_progress(exp_name, i, T):
     finished = False
     folder_path = config_plot_save_path(exp_name, i)
     file_list = glob.glob(f"{folder_path}/*")
-    if T+1 == len(file_list):
+    if T + 1 == len(file_list):
         finished = True
     return finished
 
@@ -125,10 +125,3 @@ def do_plot_3d_gif(mesh_x, mesh_y, mesh_z, path, file_name, title):
     ax.cla()
     plt.close()
 
-
-if __name__ == '__main__':
-    from exp_setting.exp import *
-
-    # y軸に電場を加える
-    conditions, exp_name = exp_0000__debug_folder_changed_check_set()
-    execute_plot_memory_save_2(exp_name)
