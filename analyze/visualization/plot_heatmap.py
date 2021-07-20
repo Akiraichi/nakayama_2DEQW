@@ -38,25 +38,18 @@ def execute_plot_heatmap(exp_name, t_step):
 
 def plot_heat_map(prob_list, path, file_name, title):
     """heatmapをプロットする"""
+    # プロット用のデータフレームの作成
     x_len = prob_list.shape[0]
     T = Config_simulation.max_time_step
     l = []
     for k in range(x_len):
         l.append(str(k - T))
-    df = pd.DataFrame(prob_list,
-                      index=l,
-                      columns=l)
+    df = pd.DataFrame(prob_list, index=l, columns=l)
 
+    # figureを作成しプロットする
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     sns.heatmap(df, square=True, cmap="hot")
     ax.set_title(title, size=24)
-    plt.savefig(f"{path}/{file_name}", dpi=400, bbox_inches='tight')
+    plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
     plt.close('all')
-
-
-if __name__ == '__main__':
-
-    for i in range(100):
-        l.append(str(i))
-    print(l)
