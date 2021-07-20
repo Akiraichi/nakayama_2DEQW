@@ -39,7 +39,7 @@ def plot_heat_map(prob_list, path, file_name, title):
     """heatmapをプロットする"""
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    sns.heatmap(prob_list, square=True)
+    sns.heatmap(prob_list, square=True,cmap="hot")
     ax.set_title(title, size=24)
     plt.savefig(f"{path}/{file_name}", dpi=400, bbox_inches='tight')
     plt.close('all')
