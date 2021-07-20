@@ -1,7 +1,7 @@
 import glob
 
 from config.config import config_marge_gif_save_path_file_name, config_plot_save_path, config_plot_phase_save_path, \
-    config_marge_gif_phase_save_path_file_name
+    config_marge_gif_phase_save_path_file_name, config_heat_map_save_path, config_gif_heatmap_save_path
 import os
 from PIL import Image
 
@@ -42,7 +42,7 @@ def make_gif(exp_name, duration=50):
         print(f"{index}回目：完了")
 
 
-def make_gif_phase(exp_name, plot_t_step, duration=50):
+def make_gif_phase(exp_name, plot_t_step, duration=100):
     """
     :param exp_name:
     :param plot_t_step:
@@ -57,6 +57,28 @@ def make_gif_phase(exp_name, plot_t_step, duration=50):
         frames.append(new_frame)
     file_name = f"t={plot_t_step}"
     frames[0].save(f'{config_marge_gif_phase_save_path_file_name(exp_name=exp_name)}/{file_name}.gif',
+                   format='GIF',
+                   append_images=frames[1:],
+                   save_all=True,
+                   duration=duration,
+                   loop=0)
+
+
+def make_gif_heatmap(exp_name, plot_t_step, duration=100):
+    """
+    :param exp_name:
+    :param plot_t_step:
+    :param duration: gif動画のスピード
+    :return:
+    """
+    plot_path_list = glob.glob(f"{config_heat_map_save_path(exp_name=exp_name, plot_t_step=plot_t_step)}/*")
+    plot_path_list.sort()
+    frames = []
+    for plot_path in plot_path_list:
+        new_frame = Image.open(plot_path)
+        frames.append(new_frame)
+    file_name = f"t={plot_t_step}"
+    frames[0].save(f'{config_gif_heatmap_save_path(exp_name=exp_name)}/{file_name}.gif',
                    format='GIF',
                    append_images=frames[1:],
                    save_all=True,
