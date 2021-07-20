@@ -5,6 +5,7 @@ import glob
 from simulation.algorithm_memory_save import calculate_probability_distribution_at_time_t_memory_save
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
 
 def execute_plot_heatmap(exp_name, t_step):
@@ -37,9 +38,25 @@ def execute_plot_heatmap(exp_name, t_step):
 
 def plot_heat_map(prob_list, path, file_name, title):
     """heatmapをプロットする"""
+    x_len = prob_list.shape[0]
+    T = Config_simulation.max_time_step
+    l = []
+    for k in range(x_len):
+        l.append(str(k - T))
+    df = pd.DataFrame(prob_list,
+                      index=l,
+                      columns=l)
+
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    sns.heatmap(prob_list, square=True,cmap="hot")
+    sns.heatmap(df, square=True, cmap="hot")
     ax.set_title(title, size=24)
     plt.savefig(f"{path}/{file_name}", dpi=400, bbox_inches='tight')
     plt.close('all')
+
+
+if __name__ == '__main__':
+
+    for i in range(100):
+        l.append(str(i))
+    print(l)
