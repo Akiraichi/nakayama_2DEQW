@@ -16,7 +16,7 @@ def check_gif_progress(exp_name, index):
     return finished
 
 
-def make_gif(exp_name):
+def make_gif(exp_name, duration=50):
     dir_name_list = glob.glob(f"{config_plot_save_path(exp_name=exp_name)}/*")
     for index, _ in enumerate(dir_name_list):
         # gifをどこまで作成したかチェックし続きから実行する
@@ -37,12 +37,18 @@ def make_gif(exp_name):
                        format='GIF',
                        append_images=frames[1:],
                        save_all=True,
-                       duration=50,
+                       duration=duration,
                        loop=0)
         print(f"{index}回目：完了")
 
 
-def make_gif_phase(exp_name, plot_t_step):
+def make_gif_phase(exp_name, plot_t_step, duration=50):
+    """
+    :param exp_name:
+    :param plot_t_step:
+    :param duration: gif動画のスピード
+    :return:
+    """
     plot_path_list = glob.glob(f"{config_plot_phase_save_path(exp_name=exp_name, plot_t_step=plot_t_step)}/*")
     plot_path_list.sort()
     frames = []
@@ -54,6 +60,5 @@ def make_gif_phase(exp_name, plot_t_step):
                    format='GIF',
                    append_images=frames[1:],
                    save_all=True,
-                   duration=10,
+                   duration=duration,
                    loop=0)
-
