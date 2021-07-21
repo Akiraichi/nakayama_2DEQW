@@ -29,7 +29,7 @@ def check_plot_progress(exp_name, i, T):
     finished = False
     folder_path = config_plot_save_path(exp_name, i)
     file_list = glob.glob(f"{folder_path}/*")
-    if T + 1 == len(file_list):
+    if T == len(file_list):
         finished = True
     return finished
 

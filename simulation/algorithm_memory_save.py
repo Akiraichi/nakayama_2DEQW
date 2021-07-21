@@ -32,7 +32,7 @@ def qw2d_simulation_memory_save(condition, exp_name, i):
     # ここでセーブする。保存するのは初期状態のPSY
     save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=i)
     # 繰り返し回数はT回。現在時刻を0次の時刻を1に代入する
-    for t in range(1, T + 1):
+    for t in range(1, T):
         PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
         PSY_now = calc_qw2d_memory_save(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t)
         print(t, "ステップ目", "phi=", phi)
