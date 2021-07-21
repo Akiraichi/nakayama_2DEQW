@@ -32,7 +32,7 @@ def check_simulation_progress(i, condition, exp_name):
     folder_path = config_simulation_save_mamory_data_save_path(exp_name, i)
     file_list = glob.glob(f"{folder_path}/*")
     # シミュレーションによって生じたファイル数が必要な数に達しているかをチェックする。envファイルがあるので＋1する。0〜600で601
-    if condition.T + 1 == len(file_list):
+    if condition.T + 1 + 1 == len(file_list):
         finished = True
     return finished
 
