@@ -228,7 +228,7 @@ def calc_dict_memory_save(len_x, len_y, probability, PSY):
             #     probability[x, y] += PSY[x, y, i] ** 2
 
     # 確率の合計は1かどうかをチェックする
-    # probability_sum = probability.sum()
-    # if probability_sum != 1:
-    #     print("確率に問題がある可能性があります：確率の合計＝", probability_sum)
+    probability_sum = probability.sum()
+    if probability_sum != 1:
+        print("確率に問題がある可能性があります：確率の合計＝", probability_sum)
     return probability
