@@ -790,7 +790,7 @@ def exp_016_01_00_x_set(exp_index_list):
     exp_index_list=[0,1,2,3,4,5]
     exp_index=0,1,2,3,4,5を実行する
     exp_indexは0〜239まである（range(240))
-    
+
     設計理念
     ・関数はあくまで複数の実験を一つにまとめて実行する
     ・この複数の実験に番号をつけたがそれがexp_index（0からスタート）

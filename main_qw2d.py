@@ -12,7 +12,7 @@ from analyze.visualization.make_gif import make_gif_surface, make_gif_surface_by
 if __name__ == '__main__':
     select_exp_index_list = list(range(10, 21))
     print(select_exp_index_list)
-    selected_conditions, exp_name = exp_016_01_00_x_set_debug(select_exp_index_list)
+    selected_conditions, exp_name = exp_016_01_00_x_set(select_exp_index_list)
     execute_simulation(exact_condition_list=selected_conditions)
 
     # plotしたいexp_nameのexp_indexを指定する
