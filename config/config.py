@@ -33,7 +33,7 @@ class Config_save_log:
 
 
 # 実験データの保存場所。タイムステップごとに分割
-def config_simulation_save_mamory_data_save_path(exp_name, index=None):
+def config_simulation_data_save_path(exp_name, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
     if index is None:
         path = f"result/{exp_name}/simulation_data_{exp_name}/"
@@ -46,7 +46,7 @@ def config_simulation_save_mamory_data_save_path(exp_name, index=None):
 
 
 # 保存する実験環境データの名前
-def config_simulation_save_memory_data_name(index):
+def config_simulation_data_name(index):
     # index=実験した時の順番でつけた番号。0埋めする
     index = str(index).zfill(2)
     return f"{index}_env.env"
