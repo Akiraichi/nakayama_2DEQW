@@ -14,7 +14,7 @@ class Condition:
         self.phi = None
         self.phi_latex = None
         self.exp_name = None
-        self.index = None
+        self.exp_index = None
     # def set(self, exp):
     #     self.PSY_init = exp.PSY_init
     #     self.T = exp.T
