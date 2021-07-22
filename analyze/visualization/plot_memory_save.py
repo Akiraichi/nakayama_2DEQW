@@ -13,7 +13,7 @@ from simulation.algorithm_memory_save import calculate_probability_distribution_
 def load_env_date(exp_name, i):
     # データの取り出し
     env_data = joblib.load(
-        f"{config_simulation_save_mamory_data_save_path(exp_name, i)}/{config_simulation_save_memory_data_name(i)}")
+        f"{config_simulation_data_save_path(exp_name, i)}/{config_simulation_data_name(i)}")
 
     # 読み込んだオブジェクトを展開する
     T = env_data.T
@@ -23,53 +23,56 @@ def load_env_date(exp_name, i):
     return T, condition, len_x, len_y
 
 
-def check_plot_progress(exp_name, i, T):
+def check_plot_progress(exp_name, plot_exp_index, T):
     # plotがどこまで進んだかをチェックし途中から再開するために、
     # plotのindexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
     finished = False
-    folder_path = config_plot_save_path(exp_name, i)
+    folder_path = config_plot_save_path(exp_name, plot_exp_index)
     file_list = glob.glob(f"{folder_path}/*")
-    if T + 1 == len(file_list):
+
+    need_file_num = T + 1
+    file_num = len(file_list)
+    print(f"exp_index={plot_exp_index}のデータ数：{file_num}")
+    print(f"必要なデータ数：{need_file_num}")
+
+    if need_file_num == file_num:
+        print(f"plot_exp_index={plot_exp_index}：既に完了")
         finished = True
     return finished
 
 
 # plotする
-def execute_plot_memory_save_2(exp_name):
+def execute_plot_surface(exp_name, plot_exp_index_list):
     """
-    このプログラムでは必要なデータだけをロードしプロットします。ロードサイズがこれまでと比べ1/600〜1/400程度なので、
-    並列処理で実行しても良いかと思います。
     """
-    # 実験の00、01みたいなのが全部でいくつあるのかをチェックする
-    folder_path_list = glob.glob(f"{config_simulation_save_mamory_data_save_path(exp_name)}/*")
 
-    # 実験環境の数（00や01とかのフォルダーの数）だけforを回す。それぞれのforループの中で並列処理を行う
-    for i, _ in enumerate(folder_path_list):
-        # 実験環境データの読みこみ
-        T, condition, len_x, len_y = load_env_date(exp_name=exp_name, i=i)
+    # plot_exp_index_listの要素数だけforを回す。それぞれのforループの中で並列処理を行う
+    # plot_exp_index：plotしたいexp_indexのリスト
+    # i：plotしたいexp_indexのリストに0から番号をつけたもの
+    for plot_exp_index in plot_exp_index_list:
+        # 実験環境データを000.jbから代表して読みこむ
+        save_data_object = joblib.load(f"{config_simulation_data_save_path(exp_name, plot_exp_index)}/000.jb")
+        # 展開する
+        condition = save_data_object["実験条件データ（condition）"]
+        T = condition.T
 
-        # plotをするべきか、既に終了しているのかをチェックする
-        if check_plot_progress(exp_name, i, T):
-            print(f"{i}回目：既に完了しています")
+        # plot_exp_indexのプロットが既に終了しているのかをチェックする。完了していたらスキップする
+        if check_plot_progress(exp_name, plot_exp_index, T):
             continue
 
         # 並列処理を行う。何を並列処理させるかというとプロット処理。どれからプロットしようと問題ないので並列処理できる
-        print(f"{i}回目：可視化結果の保存：開始")
-        # 並列処理用の前処理
-        # 各並列プログラムに00や01といったフォルダに入っているplotファイルの名前を教える
-        file_names = glob.glob(f"{config_simulation_save_mamory_data_save_path(exp_name, i)}/*.jb")
-        file_names.sort()  # 実験順にsortする。
+        print(f"START：プロット：plot_exp_index={plot_exp_index}")
 
-        # fast_plot = True
-        # num = 4
-        # if fast_plot:
-        #     new_file_names = [file for i, file in enumerate(file_names) if i % num == 0]
-        #     file_names = new_file_names
+        # 並列処理用の前処理
+        # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
+        simulation_data_file_names = glob.glob(f"{config_simulation_data_save_path(exp_name, plot_exp_index)}/*.jb")
+        simulation_data_file_names.sort()  # 実験順にsortする。
 
         arguments = []
-        for t_step, file_name in enumerate(file_names):
+        # simulation_data_file_name＝実験データのtステップとはしない。ファイル名はファイル名以上の意味と持たない。
+        for t_step, simulation_data_file_name in enumerate(simulation_data_file_names):
             arguments.append(
-                [file_name, len_x, len_y, T, config_plot_save_path(exp_name=exp_name, index=i), t_step, ])
+                [simulation_data_file_name, config_plot_save_path(exp_name=exp_name, index=plot_exp_index)])
 
         # 並列数
         p = Pool(config.config.Config_simulation.plot_parallel_num)
@@ -82,17 +85,24 @@ def execute_plot_memory_save_2(exp_name):
 
 # wrapper
 def wrapper_plot_and_save_memory_save(args):
-    return plot_and_save_memory_save(*args)
+    return plot_and_save(*args)
 
 
-def plot_and_save_memory_save(file_name, len_x, len_y, T, plot_path, t):
-    try:
-        # 実験データを取得
-        PSY = joblib.load(file_name)
-    except EOFError as e:
-        print("PSY = joblib.load(file_name)で例外発生：")
-        print(e)
-        return
+def plot_and_save(simulation_data_file_name, plot_path):
+    """
+    :param simulation_data_file_name: plotするデータファイルの名前（exp_nameのexp_indexに入っている）
+    :param plot_path: plotした画像の保存場所
+    :return:
+    """
+    # データをロード
+    save_data_object = joblib.load(simulation_data_file_name)
+    # 展開
+    condition = save_data_object["実験条件データ（condition）"]
+    T = condition.T
+    len_x = 2 * T + 1
+    len_y = 2 * T + 1
+    t = save_data_object["このシミュレーションデータが何ステップ目か（t）"]
+    PSY = save_data_object["シミュレーションデータ"]
 
     # 格子点を作成
     mesh_x, mesh_y = np.meshgrid(np.linspace(-T, T, 2 * T + 1), np.linspace(-T, T, 2 * T + 1), indexing="ij")
@@ -100,7 +110,7 @@ def plot_and_save_memory_save(file_name, len_x, len_y, T, plot_path, t):
     mesh_z = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
     # 0埋めする
     t_index = str(t).zfill(3)
-    # タイトルを決める
+    # タイトルを設定
     title = f"$t={t}$"
     # plotする
     do_plot_3d_gif(mesh_x, mesh_y, mesh_z, plot_path, f"{t_index}.png", title)
@@ -124,4 +134,3 @@ def do_plot_3d_gif(mesh_x, mesh_y, mesh_z, path, file_name, title):
     fig.clf()
     ax.cla()
     plt.close()
-

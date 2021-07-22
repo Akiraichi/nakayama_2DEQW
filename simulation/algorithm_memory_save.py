@@ -3,14 +3,14 @@ from numba import njit, jit
 from simulation.save import save_t_step_psy
 
 
-def qw2d_simulation_memory_save(condition, exp_name, i):
+def simulation_QW2D(condition):
     """
-
     :param condition:
-    :param i: 実験を複数繰り返す際のindex
     :return:
     """
     # conditionを展開し初期化する。
+    exp_index = condition.exp_index
+    exp_name = condition.exp_name
     T = condition.T
     P = condition.P
     Q = condition.Q
@@ -30,15 +30,16 @@ def qw2d_simulation_memory_save(condition, exp_name, i):
 
     # 時間発展パート
     # ここでセーブする。保存するのは初期状態のPSY
-    save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=i)
-    # 繰り返し回数はT回。現在時刻を0次の時刻を1に代入する
+    save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
+
+    # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
     for t in range(1, T + 1):
         PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
-        PSY_now = calc_qw2d_memory_save(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t)
-        print(t, "ステップ目", "phi=", phi)
+        print(f"{t}：ステップ")
+        PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t)
         # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
         # TODO:セーブに時間がかかるようだったら、10ステップごとに保存する、などする
-        save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=i)
+        save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=exp_index, condition=condition)
 
 
 # 1/0での挙動が想定外である。
@@ -52,6 +53,7 @@ def e_i_phi(position, T, phi, pow_n):
     # print(pow_n)
     # print(position)
     return res
+
 
 #
 # @jit
@@ -81,7 +83,7 @@ def e_i_phi(position, T, phi, pow_n):
 
 
 @njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8)', cache=True)
-def calc_qw2d_memory_save(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t):
+def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t):
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
