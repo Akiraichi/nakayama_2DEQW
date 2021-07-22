@@ -6,10 +6,10 @@ from multiprocessing import Pool
 import glob
 
 
-def execute_simulation_memory_save(conditions):
+def execute_simulation(exact_condition_list):
     # 並列処理用の前処理
     arguments = []
-    for condition in conditions:
+    for condition in exact_condition_list:
         arguments.append([condition])
 
     # 最大並列数を設定
@@ -22,7 +22,7 @@ def execute_simulation_memory_save(conditions):
 
 # wrapper
 def wrapper_simulation(args):
-    return multi_start_simulation_program_memory_save(*args)
+    return parallel_start_simulation_program(*args)
 
 
 def check_simulation_progress(exp_index, T, exp_name):
@@ -42,7 +42,7 @@ def check_simulation_progress(exp_index, T, exp_name):
     return finished
 
 
-def multi_start_simulation_program_memory_save(condition):
+def parallel_start_simulation_program(condition):
     # 展開
     exp_index = condition.exp_index
     exp_name = condition.exp_name

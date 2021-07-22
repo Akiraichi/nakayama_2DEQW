@@ -216,18 +216,16 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
 
 def calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y):
     probability = np.zeros([len_x, len_y])
-    probability = calc_dict_memory_save(len_x, len_y, probability, PSY)
+    probability = calculate_dict(len_x, len_y, probability, PSY)
     return probability
 
 
 @njit('f8[:,:](i8,i8,f8[:,:],c16[:,:,:])', cache=True)
-def calc_dict_memory_save(len_x, len_y, probability, PSY):
+def calculate_dict(len_x, len_y, probability, PSY):
     for x in range(0, len_x):
         for y in range(0, len_y):
             # L2ノルム（いわゆる距離と同じ）をとる。そして2乗
             probability[x, y] = np.linalg.norm(PSY[x, y], ord=2) ** 2
-            # for i in range(4):
-            #     probability[x, y] += PSY[x, y, i] ** 2
 
     # 確率の合計は1かどうかをチェックする
     probability_sum = probability.sum()

@@ -1,5 +1,5 @@
 from simulation.codition import Condition
-from simulation.codition import set_basic_condition_1
+from simulation.codition import set_basic_condition
 import numpy as np
 import sympy
 
@@ -234,7 +234,7 @@ def exp_1010_x_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1010
@@ -249,7 +249,7 @@ def exp_1020_y_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1020
@@ -264,7 +264,7 @@ def exp_1030_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1030
@@ -355,7 +355,7 @@ def exp_4010_t_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 4010
         c.phi = phi
@@ -369,7 +369,7 @@ def exp_4011_t_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 4010
@@ -390,7 +390,7 @@ def exp_0000__debug_folder_changed_check_set():
     conditions = []
     for i in range(1, 5):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -413,7 +413,7 @@ def exp_2010_x_set():
     conditions = []
     for i in range(1, 21):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -435,7 +435,7 @@ def exp_3010_x_set():
     conditions = []
     for i in range(1, 61):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -457,7 +457,7 @@ def exp_3011_x_set():
     conditions = []
     for i in range(61, 121):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -479,7 +479,7 @@ def exp_3030_xy_set():
     conditions = []
     for i in range(1, 61):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5
         x = sympy.Symbol('x')
@@ -500,7 +500,7 @@ def exp_3031_xy_set():
     conditions = []
     for i in range(61, 121):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5
         x = sympy.Symbol('x')
@@ -526,7 +526,7 @@ def exp_5010_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
         x = sympy.Symbol('x')
@@ -549,7 +549,7 @@ def exp_6010_prime_number_x_set():
                          97, ]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -571,7 +571,7 @@ def exp_7010_ryoka_x_set():
     prime_number_list = [2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -593,7 +593,7 @@ def exp_8010_Landau_x_set():
     prime_number_list = [1, 2, 3, 4, 6, 12, 15, 20, 30, 60, 84, 105, 140, 210, 420]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -617,7 +617,7 @@ def exp_009_01_00_x_set():
                          171, 191, 211]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -639,7 +639,7 @@ def exp_010_01_00_x_set():
     prime_number_list = [1, 2, 3, 4, 6, 7, 10, 12, 16, 19, 24, 28, 36, 43, 51, 62, 74, 87, 104, 122, 143, 169, 195, 227]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -661,7 +661,7 @@ def exp_011_01_00_x_set():
     prime_number_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 100, 120, 150, 200, 300, 600]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -725,7 +725,7 @@ def exp_014_01_00_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
         x = sympy.Symbol('x')
@@ -746,7 +746,7 @@ def exp_015_01_00_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5010
         x = sympy.Symbol('x')
@@ -767,7 +767,7 @@ def exp_016_01_00_x_set(start, end):
     conditions = []
     for i in range(start, end):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -799,14 +799,13 @@ def exp_016_01_00_x_set_debug(exp_index_list):
     # 0から239まで240回分の実験をconditionsにまとめる
     for i in range(240):
         c = Condition()
-        set_basic_condition_1(c)
+        set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
         x = sympy.Symbol('x')
         phi = x * sympy.pi / 240
         phi = phi.subs(x, i + 1)
-        print(phi)
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
@@ -817,6 +816,7 @@ def exp_016_01_00_x_set_debug(exp_index_list):
     # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
     selected_conditions = []
     for k in exp_index_list:
+        print(conditions[k].phi_latex)
         selected_conditions.append(conditions[k])
 
     return selected_conditions, exp_name

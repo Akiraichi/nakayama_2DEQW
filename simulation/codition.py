@@ -24,7 +24,7 @@ class Condition:
     #     self.S = exp.S
 
 
-def set_basic_condition_1(condition):
+def set_basic_condition(condition):
     # シミュレーション条件
     condition.PSY_init = None
     condition.T = Config_simulation.max_time_step  # 最大時間発展T

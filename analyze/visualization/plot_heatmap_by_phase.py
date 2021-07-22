@@ -8,11 +8,11 @@ import seaborn as sns
 import pandas as pd
 
 
-def execute_plot_heatmap_by_phase(exp_name, t_step):
+def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
     """
         exp_nameの中にある全実験（全exp_index）のt_step目のみをプロットする
         :param exp_name:
-        :param t_step:
+        :param plot_t_step:
         :return:
         """
     # exp_nameにある全実験フォルダーへのpath。sortもする。
@@ -22,7 +22,7 @@ def execute_plot_heatmap_by_phase(exp_name, t_step):
     # 各exp_indexのt_step目をプロット
     for simulation_data_folder_path in simulation_data_folder_path_list:
         # データをロード
-        save_data_object = joblib.load(f"{simulation_data_folder_path}/{str(t_step).zfill(3)}.jb")
+        save_data_object = joblib.load(f"{simulation_data_folder_path}/{str(plot_t_step).zfill(3)}.jb")
 
         # 展開
         condition = save_data_object["実験条件データ（condition）"]
@@ -33,7 +33,7 @@ def execute_plot_heatmap_by_phase(exp_name, t_step):
         PSY = save_data_object["シミュレーションデータ"]
         exp_index = condition.exp_index
         phi_latex = condition.phi_latex
-        if t != t_step:
+        if int(t) != plot_t_step:
             print("ERROR：シミュレーションデータのファイル名と時間ステップが一致しません。至急確認してください")
             raise EOFError
 
@@ -41,7 +41,7 @@ def execute_plot_heatmap_by_phase(exp_name, t_step):
 
         # プロット
         prob_list = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
-        plot_heat_map(prob_list=prob_list, path=config_heatmap_save_path(exp_name=exp_name, plot_t_step=t_step),
+        plot_heat_map(prob_list=prob_list, path=config_heatmap_save_path(exp_name=exp_name, plot_t_step=plot_t_step),
                       file_name=f"{str(exp_index).zfill(3)}.png", title=f"${phi_latex}$")
 
         print("完了")

@@ -30,7 +30,7 @@ def make_gif_surface(exp_name, duration=50):
             print(f"{index}回目：既に完了しています")
             continue
 
-        print(f"{index}回目：実行")
+        print(f"START：{index}回目")
         # 全ファイル名を取得
         file_name_list = glob.glob(f"{config_plot_save_path(exp_name=exp_name, index=index)}/*")
         file_name_list.sort()
@@ -45,7 +45,7 @@ def make_gif_surface(exp_name, duration=50):
                        save_all=True,
                        duration=duration,
                        loop=0)
-        print(f"{index}回目：完了")
+        print(f"FINISH：{index}回目")
 
 
 def make_gif_surface_by_phase(exp_name, plot_t_step, duration=100):
