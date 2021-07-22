@@ -1,9 +1,9 @@
 import os
+import termcolor
 
 
 class Config_simulation:
     import sys
-    print(type(sys.modules))
     moduleList = sys.modules
     ENV_COLAB = False
 
@@ -30,6 +30,28 @@ class Config_simulation:
 
 class Config_save_log:
     path = "log/log_data"
+
+
+def print_warning(text):
+    warning = '*' * 30 + '\n'
+    warning += '*{:^28}*\n'.format('Warning')
+    warning += '*' * 30 + '\n'
+    colored_warning = termcolor.colored(warning, 'red')
+    print(colored_warning)
+    print(termcolor.colored(text, 'red'))
+
+
+def print_finish(text):
+    notice = '-' * 30 + '\n'
+    notice += '|{:^28}|\n'.format(f'Finish：{text}')
+    notice += '-' * 30 + '\n'
+    colored_warning = termcolor.colored(notice, 'green')
+    print(colored_warning)
+
+
+def print_green_text(text):
+    colored_text = termcolor.colored(text, 'green')
+    print(colored_text)
 
 
 # 実験データの保存場所。タイムステップごとに分割

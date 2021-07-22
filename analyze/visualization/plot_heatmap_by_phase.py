@@ -27,6 +27,8 @@ def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
         # 展開
         condition = save_data_object["実験条件データ（condition）"]
         T = condition.T
+        if T != Config_simulation.max_time_step:
+            print_warning("シミュレーションデータの最大時間ステップと現在の設定の最大時間ステップが一致しません。大丈夫ですか？")
         len_x = 2 * T + 1
         len_y = 2 * T + 1
         t = save_data_object["このシミュレーションデータが何ステップ目か（t）"]
@@ -34,7 +36,7 @@ def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
         exp_index = condition.exp_index
         phi_latex = condition.phi_latex
         if int(t) != plot_t_step:
-            print("ERROR：シミュレーションデータのファイル名と時間ステップが一致しません。至急確認してください")
+            print_warning("シミュレーションデータのファイル名と時間ステップが一致しません。至急確認してください")
             raise EOFError
 
         print(f"START：プロット：plot_exp_index={exp_index}")
@@ -43,9 +45,7 @@ def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
         prob_list = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
         plot_heat_map(prob_list=prob_list, path=config_heatmap_save_path(exp_name=exp_name, plot_t_step=plot_t_step),
                       file_name=f"{str(exp_index).zfill(3)}.png", title=f"${phi_latex}$")
-
-        print("完了")
-
+    print_finish("execute_plot_heatmap_by_phase")
 
 def plot_heat_map(prob_list, path, file_name, title):
     """heatmapをプロットする"""

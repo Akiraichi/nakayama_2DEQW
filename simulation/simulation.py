@@ -16,6 +16,7 @@ def execute_simulation(exact_condition_list):
     p = Pool(config.config.Config_simulation.simulation_parallel_num)
     p.map(wrapper_simulation, arguments)
     # processをclose
+    print_finish("execute_simulation")
     p.close()
     p.terminate()
 
@@ -37,7 +38,7 @@ def check_simulation_progress(exp_index, T, exp_name):
     print(f"exp_index={exp_index}のデータ数：{file_num}")
     print(f"必要なデータ数：{need_file_num}")
     if need_file_num == file_num:
-        print(f"exp_index={exp_index}：既に完了")
+        print_green_text(f"exp_index={exp_index}：既に完了")
         finished = True
     return finished
 
@@ -61,4 +62,3 @@ def parallel_start_simulation_program(condition):
                                      len_y=2 * T + 1)
     save_data(data=data, path=config_simulation_data_save_path(exp_name, exp_index),
               file_name=config_simulation_data_name(index=exp_index))
-    print(f"FINISH：exp_index={exp_index}：simulation")

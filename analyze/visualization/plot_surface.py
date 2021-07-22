@@ -36,16 +36,13 @@ def check_plot_progress(exp_name, plot_exp_index, T):
     print(f"必要なデータ数：{need_file_num}")
 
     if need_file_num == file_num:
-        print(f"plot_exp_index={plot_exp_index}：既に完了")
+        print_green_text(f"plot_exp_index={plot_exp_index}：既に完了")
         finished = True
     return finished
 
 
 # plotする
 def execute_plot_surface(exp_name, plot_exp_index_list):
-    """
-    """
-
     # plot_exp_index_listの要素数だけforを回す。それぞれのforループの中で並列処理を行う
     # plot_exp_index：plotしたいexp_indexのリスト
     # i：plotしたいexp_indexのリストに0から番号をつけたもの
@@ -78,6 +75,7 @@ def execute_plot_surface(exp_name, plot_exp_index_list):
         p = Pool(config.config.Config_simulation.plot_parallel_num)
         # 並列処理開始
         p.map(wrapper_plot_and_save_memory_save, arguments)
+        print_finish("execute_plot_surface")
         # processをclose
         p.close()
         p.terminate()
