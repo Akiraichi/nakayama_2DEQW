@@ -783,11 +783,21 @@ def exp_016_01_00_x_set(start, end):
     return conditions, exp_name
 
 
-def exp_016_01_00_x_set_debug(start, end):
-    """x軸に電場をかけた_pi/240刻み。1から60"""
+def exp_016_01_00_x_set_debug(exp_index_list):
+    """
+    設計理念
+    ・関数はあくまで複数の実験を一つにまとめて実行する
+    ・この複数の実験に番号をつけたがそれがexp_index（0からスタート）
+    ・exp_index_listにリストで実行したいexp_index番号を指定されたものを実行する
+    ・実験に関する情報は全てconditionに格納する
+    ・今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    :param exp_index_list: リストで実行したいexp_index番号を指定
+    :return: 今回のセッションで実行する実験のconditionのリスト
+    """
     exp_name = "exp_016_01_00_debug"
     conditions = []
-    for i in range(start, end):
+    # 0から239まで240回分の実験をconditionsにまとめる
+    for i in range(240):
         c = Condition()
         set_basic_condition_1(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
@@ -795,37 +805,21 @@ def exp_016_01_00_x_set_debug(start, end):
 
         x = sympy.Symbol('x')
         phi = x * sympy.pi / 240
-        phi = phi.subs(x, i)
+        phi = phi.subs(x, i + 1)
         print(phi)
         c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
-        c.index = i - 1
+        c.exp_index = i
         conditions.append(c)
-    return conditions, exp_name
 
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        selected_conditions.append(conditions[k])
 
-
-
-def exp_copy_copy_set():
-    """新規実験を作る際の雛形。コピペした際に変更していないミスが多発したので作成。エラーが出やすいようにしてある"""  # 変更点
-    exp_name = "exp_copy"  # 変更点
-    conditions = []
-    for i in range(1, 1):  # 変更点
-        c = Condition()
-        set_basic_condition_1(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = None  # 変更点
-        x = sympy.Symbol('x')
-        phi = None  # 変更点
-        phi = phi.subs(x, i)
-        print(phi)
-        c.phi = float(phi.evalf())
-        c.phi_latex = sympy.latex(phi)
-        c.exp_name = exp_name
-        c.index = i - 1
-        conditions.append(c)
-    return conditions, exp_name
+    return selected_conditions, exp_name
 
 
 if __name__ == '__main__':
