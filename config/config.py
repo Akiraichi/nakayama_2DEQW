@@ -74,7 +74,7 @@ def config_plot_phase_save_path(exp_name, plot_t_step):
 
 
 # 位相ごとの3次元プロットデータの保存場所
-def config_heat_map_save_path(exp_name, plot_t_step):
+def config_heatmap_save_path(exp_name, plot_t_step):
     # 実験データの保存先のフォルダーがなければ作成する
     path = f"result/{exp_name}/heatmap_phase_{exp_name}/t={plot_t_step}"
     os.makedirs(path, exist_ok=True)

@@ -1,7 +1,7 @@
 import glob
 
 from config.config import config_marge_gif_save_path_file_name, config_plot_save_path, config_plot_phase_save_path, \
-    config_marge_gif_phase_save_path_file_name, config_heat_map_save_path, config_gif_heatmap_save_path
+    config_marge_gif_phase_save_path_file_name, config_heatmap_save_path, config_gif_heatmap_save_path
 import os
 from PIL import Image
 
@@ -77,7 +77,7 @@ def make_gif_heatmap_by_phase(exp_name, plot_t_step, duration=100):
     :param duration: gif動画のスピード
     :return:
     """
-    plot_path_list = glob.glob(f"{config_heat_map_save_path(exp_name=exp_name, plot_t_step=plot_t_step)}/*")
+    plot_path_list = glob.glob(f"{config_heatmap_save_path(exp_name=exp_name, plot_t_step=plot_t_step)}/*")
     plot_path_list.sort()
     frames = []
     for plot_path in plot_path_list:
