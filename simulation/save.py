@@ -1,5 +1,5 @@
 import joblib
-from config.config import config_simulation_save_mamory_data_save_path
+from config.config import config_simulation_data_save_path
 
 
 class exp_data_pack:
@@ -33,15 +33,20 @@ def save_data(data, path, file_name):
     joblib.dump(data, f"{path}/{file_name}", compress=3)
 
 
-def save_t_step_psy(psy, t, exp_name, i):
+def save_t_step_psy(psy, t, exp_name, i, condition):
     """
-
+    :param condition:
     :param psy: tステップのpsy
     :param t: tステップのt
     :param path: 保存場所のpath
     :param exp_name:
     :return:
     """
-    path = config_simulation_save_mamory_data_save_path(exp_name, i)
+    path = config_simulation_data_save_path(exp_name, i)
     t = str(t).zfill(3)
-    joblib.dump(psy, f"{path}/{t}.jb", compress=3)
+    save_data_object = {
+        "シミュレーションデータ": psy,
+        "実験条件データ（condition）": condition,
+        "このシミュレーションデータが何ステップ目か（t）": t
+    }
+    joblib.dump(save_data_object, f"{path}/{t}.jb", compress=3)
