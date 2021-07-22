@@ -35,7 +35,7 @@ def simulation_QW2D(condition):
     # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
     for t in range(1, T + 1):
         PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
-        print(f"{t}：ステップ")
+        # print(f"{t}：ステップ")
         PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t)
         # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
         # TODO:セーブに時間がかかるようだったら、10ステップごとに保存する、などする

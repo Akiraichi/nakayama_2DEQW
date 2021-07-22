@@ -62,3 +62,4 @@ def parallel_start_simulation_program(condition):
                                      len_y=2 * T + 1)
     save_data(data=data, path=config_simulation_data_save_path(exp_name, exp_index),
               file_name=config_simulation_data_name(index=exp_index))
+    print_finish(f"exp_index={exp_index}")
