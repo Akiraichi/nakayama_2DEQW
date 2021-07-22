@@ -16,7 +16,13 @@ def check_gif_progress(exp_name, index):
     return finished
 
 
-def make_gif(exp_name, duration=50):
+def make_gif_surface(exp_name, duration=50):
+    """
+    exp_nameの全プロットからgifを作成する
+    :param exp_name:
+    :param duration:
+    :return:
+    """
     dir_name_list = glob.glob(f"{config_plot_save_path(exp_name=exp_name)}/*")
     for index, _ in enumerate(dir_name_list):
         # gifをどこまで作成したかチェックし続きから実行する
@@ -42,7 +48,7 @@ def make_gif(exp_name, duration=50):
         print(f"{index}回目：完了")
 
 
-def make_gif_phase(exp_name, plot_t_step, duration=100):
+def make_gif_surface_by_phase(exp_name, plot_t_step, duration=100):
     """
     :param exp_name:
     :param plot_t_step:
@@ -64,7 +70,7 @@ def make_gif_phase(exp_name, plot_t_step, duration=100):
                    loop=0)
 
 
-def make_gif_heatmap(exp_name, plot_t_step, duration=100):
+def make_gif_heatmap_by_phase(exp_name, plot_t_step, duration=100):
     """
     :param exp_name:
     :param plot_t_step:
