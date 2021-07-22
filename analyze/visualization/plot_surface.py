@@ -6,7 +6,7 @@ from config.config import *
 import joblib
 from multiprocessing import Pool
 import glob
-from simulation.algorithm_memory_save import calculate_probability_distribution_at_time_t_memory_save
+from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
 
 
 # 実験環境データの読みこみと展開

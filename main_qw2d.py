@@ -1,11 +1,11 @@
 # exp_setting
 from exp_setting.exp import *
 # simulation
-from simulation.simulation_mamoery_save import execute_simulation_memory_save
+from simulation.simulation import execute_simulation_memory_save
 # plot
-from analyze.visualization.plot_memory_save import execute_plot_surface
-from analyze.visualization.plot_phase_save import execute_plot_surface_by_phase
-from analyze.visualization.plot_heatmap import execute_plot_heatmap_by_phase
+from analyze.visualization.plot_surface import execute_plot_surface
+from analyze.visualization.plot_surface_by_phase import execute_plot_surface_by_phase
+from analyze.visualization.plot_heatmap_by_phase import execute_plot_heatmap_by_phase
 # gif
 from analyze.visualization.make_gif import make_gif_surface, make_gif_surface_by_phase, make_gif_heatmap_by_phase
 

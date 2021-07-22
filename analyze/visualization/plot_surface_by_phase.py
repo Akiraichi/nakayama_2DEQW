@@ -1,9 +1,9 @@
 import numpy as np
-from analyze.visualization.plot_memory_save import do_plot_3d_gif, load_env_date
+from analyze.visualization.plot_surface import do_plot_3d_gif, load_env_date
 from config.config import *
 import joblib
 import glob
-from simulation.algorithm_memory_save import calculate_probability_distribution_at_time_t_memory_save
+from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
 
 
 def execute_plot_surface_by_phase(exp_name, t_step):

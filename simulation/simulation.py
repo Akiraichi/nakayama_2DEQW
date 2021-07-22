@@ -1,6 +1,6 @@
 import config.config
 from config.config import *
-from simulation.algorithm_memory_save import simulation_QW2D
+from simulation.algorithm import simulation_QW2D
 from simulation.save import save_data, exp_data_pack_memory_save
 from multiprocessing import Pool
 import glob
