@@ -761,30 +761,36 @@ def exp_015_01_00_x_set(start_index, end_index):
     return conditions, exp_name
 
 
-def exp_016_01_00_x_set(start, end):
-    """x軸に電場をかけた_pi/240刻み。1から60"""
-    exp_name = "exp_016_01_00"
-    conditions = []
-    for i in range(start, end):
-        c = Condition()
-        set_basic_condition(c)
-        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
-        c.algorithm = 3
+#
+# def exp_016_01_00_x_set(start, end):
+#     """x軸に電場をかけた_pi/240刻み。1から60"""
+#     exp_name = "exp_016_01_00"
+#     conditions = []
+#     for i in range(start, end):
+#         c = Condition()
+#         set_basic_condition(c)
+#         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+#         c.algorithm = 3
+#
+#         x = sympy.Symbol('x')
+#         phi = x * sympy.pi / 240
+#         phi = phi.subs(x, i)
+#         print(phi)
+#         c.phi = float(phi.evalf())
+#         c.phi_latex = sympy.latex(phi)
+#         c.exp_name = exp_name
+#         c.index = i - 1
+#         conditions.append(c)
+#     return conditions, exp_name
 
-        x = sympy.Symbol('x')
-        phi = x * sympy.pi / 240
-        phi = phi.subs(x, i)
-        print(phi)
-        c.phi = float(phi.evalf())
-        c.phi_latex = sympy.latex(phi)
-        c.exp_name = exp_name
-        c.index = i - 1
-        conditions.append(c)
-    return conditions, exp_name
-
-
-def exp_016_01_00_x_set_debug(exp_index_list):
+# 新システムとしてのexp016
+def exp_016_01_00_x_set(exp_index_list):
     """
+    Example
+    exp_index_list=[0,1,2,3,4,5]
+    exp_index=0,1,2,3,4,5を実行する
+    exp_indexは0〜239まである（range(240))
+    
     設計理念
     ・関数はあくまで複数の実験を一つにまとめて実行する
     ・この複数の実験に番号をつけたがそれがexp_index（0からスタート）
@@ -794,7 +800,7 @@ def exp_016_01_00_x_set_debug(exp_index_list):
     :param exp_index_list: リストで実行したいexp_index番号を指定
     :return: 今回のセッションで実行する実験のconditionのリスト
     """
-    exp_name = "exp_016_01_00_debug"
+    exp_name = "exp_016_01_00"
     conditions = []
     # 0から239まで240回分の実験をconditionsにまとめる
     for i in range(240):
