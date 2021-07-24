@@ -112,7 +112,7 @@ def plot_and_save(simulation_data_file_name, plot_path):
     title = f"$t={t}$"
     # plotする
     do_plot_3d_gif(mesh_x, mesh_y, mesh_z, plot_path, f"{t_index}.png", title)
-    print(f"t={t_index}：可視化と保存：完了")
+    # print(f"t={t_index}：可視化と保存：完了")
 
 
 def do_plot_3d_gif(mesh_x, mesh_y, mesh_z, path, file_name, title):
