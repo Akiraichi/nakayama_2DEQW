@@ -10,7 +10,8 @@ from analyze.visualization.plot_heatmap_by_phase import execute_plot_heatmap_by_
 from analyze.visualization.make_gif import make_gif_surface, make_gif_surface_by_phase, make_gif_heatmap_by_phase
 
 if __name__ == '__main__':
-    select_exp_index_list = list(range(10, 21))
+    # select_exp_index_list = list(range(10, 21))
+    select_exp_index_list = [0]
     print(select_exp_index_list)
     selected_conditions, exp_name = exp_016_01_00_x_set(select_exp_index_list)
     execute_simulation(exact_condition_list=selected_conditions)
