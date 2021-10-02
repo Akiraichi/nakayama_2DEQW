@@ -873,6 +873,27 @@ def exp_017(exp_index_list, erase_t):
     return selected_conditions, exp_name
 
 
+def exp_018():
+    """
+    通常の量子ウォーク
+    """
+    exp_name = "exp_018"
+    conditions = []
+
+    c = Condition()
+    set_basic_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 2
+    phi = 0  # phiは使わないので0を入れておく。
+    c.phi = phi
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
 if __name__ == '__main__':
     # x = sympy.Symbol('x')
     # phi = x * 2 * sympy.pi / 120

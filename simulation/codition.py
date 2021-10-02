@@ -15,7 +15,8 @@ class Condition:
         self.phi_latex = None
         self.exp_name = None
         self.exp_index = None
-        self.erase_t = None
+        # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
+        self.erase_t = 0
 
 
 def set_basic_condition(condition):
