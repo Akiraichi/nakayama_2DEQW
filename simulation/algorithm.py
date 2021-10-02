@@ -1,7 +1,7 @@
 import numpy as np
 from numba import njit, jit
 from simulation.save import save_t_step_psy
-from config.config import print_warning
+from config.config import print_warning, print_green_text
 
 
 def simulation_QW2D(condition):
@@ -20,6 +20,7 @@ def simulation_QW2D(condition):
     PSY_init = condition.PSY_init
     Algorithm = condition.algorithm
     phi = condition.phi
+    erase_t = condition.erase_t
 
     # 初期確率振幅ベクトルの設定
     # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
@@ -37,7 +38,8 @@ def simulation_QW2D(condition):
     for t in range(1, T + 1):
         PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
         # print(f"{t}：ステップ")
-        PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t)
+        PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P=P, Q=Q, R=R, S=S, t=t,
+                                 erase_t=erase_t)
         # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
         # TODO:セーブに時間がかかるようだったら、10ステップごとに保存する、などする
         save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=exp_index, condition=condition)
@@ -56,35 +58,8 @@ def e_i_phi(position, T, phi, pow_n):
     return res
 
 
-#
-# @jit
-# def set_param(PSY_now, init_vector, x, y, T):
-#     # 初期値を0として考えていることに注意
-#     if x == 2 * T:
-#         PSY_of_P = init_vector
-#     else:
-#         PSY_of_P = PSY_now[x + 1, y]
-#
-#     if x == 0:
-#         PSY_of_Q = init_vector
-#     else:
-#         PSY_of_Q = PSY_now[x - 1, y]
-#
-#     if y == 2 * T:
-#         PSY_of_R = init_vector
-#     else:
-#         PSY_of_R = PSY_now[x, y + 1]
-#
-#     if y == 0:
-#         PSY_of_S = init_vector
-#     else:
-#         PSY_of_S = PSY_now[x, y - 1]
-#
-#     return PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S
-
-
-@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8)', cache=True)
-def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t):
+@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8)', cache=True)
+def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t):
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
@@ -211,6 +186,20 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                               (Q @ PSY_of_Q) +
                                                               (R @ PSY_of_R) +
                                                               (S @ PSY_of_S))
+
+            elif Algorithm == 100:
+                # x軸で電場をかけた
+                if t >= erase_t:
+                    print(t)
+                    PSY_next[x, y] = P @ PSY_of_P + \
+                                     Q @ PSY_of_Q + \
+                                     R @ PSY_of_R + \
+                                     S @ PSY_of_S
+                else:
+                    PSY_next[x, y] = np.exp(1j * (x - T) * phi) * ((P @ PSY_of_P) +
+                                                                   (Q @ PSY_of_Q) +
+                                                                   (R @ PSY_of_R) +
+                                                                   (S @ PSY_of_S))
 
     return PSY_next
 

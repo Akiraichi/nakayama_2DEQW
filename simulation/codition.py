@@ -15,13 +15,7 @@ class Condition:
         self.phi_latex = None
         self.exp_name = None
         self.exp_index = None
-    # def set(self, exp):
-    #     self.PSY_init = exp.PSY_init
-    #     self.T = exp.T
-    #     self.P = exp.P
-    #     self.Q = exp.Q
-    #     self.R = exp.R
-    #     self.S = exp.S
+        self.erase_t = None
 
 
 def set_basic_condition(condition):
