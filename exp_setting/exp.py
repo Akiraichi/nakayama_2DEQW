@@ -828,6 +828,51 @@ def exp_016_01_00_x_set(exp_index_list):
     return selected_conditions, exp_name
 
 
+def exp_017(exp_index_list, erase_t):
+    """
+    Example
+    exp_index_list=[0,1,2,3,4,5]
+    exp_index=0,1,2,3,4,5を実行する
+    exp_indexは0〜239まである（range(240))
+
+    設計理念
+    ・関数はあくまで複数の実験を一つにまとめて実行する
+    ・この複数の実験に番号をつけたがそれがexp_index（0からスタート）
+    ・exp_index_listにリストで実行したいexp_index番号を指定されたものを実行する
+    ・実験に関する情報は全てconditionに格納する
+    ・今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    :param exp_index_list: リストで実行したいexp_index番号を指定
+    :return: 今回のセッションで実行する実験のconditionのリスト
+    """
+    exp_name = "exp_017"
+    conditions = []
+    # 0から239まで240回分の実験をconditionsにまとめる
+    for i in range(240):
+        c = Condition()
+        set_basic_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 100
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, i + 1)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = erase_t
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    return selected_conditions, exp_name
+
+
 if __name__ == '__main__':
     # x = sympy.Symbol('x')
     # phi = x * 2 * sympy.pi / 120
