@@ -190,7 +190,6 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
             elif Algorithm == 100:
                 # x軸で電場をかけた
                 if t >= erase_t:
-                    print(t)
                     PSY_next[x, y] = P @ PSY_of_P + \
                                      Q @ PSY_of_Q + \
                                      R @ PSY_of_R + \
