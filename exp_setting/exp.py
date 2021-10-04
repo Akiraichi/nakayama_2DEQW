@@ -844,7 +844,7 @@ def exp_017(exp_index_list, erase_t):
     :param exp_index_list: リストで実行したいexp_index番号を指定
     :return: 今回のセッションで実行する実験のconditionのリスト
     """
-    exp_name = "exp_017"
+    exp_name = f"exp_017_erase_t={erase_t}"
     conditions = []
     # 0から239まで240回分の実験をconditionsにまとめる
     for i in range(240):
