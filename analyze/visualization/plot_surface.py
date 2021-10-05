@@ -109,7 +109,8 @@ def plot_and_save(simulation_data_file_name, plot_path):
     # 0埋めする
     t_index = str(t).zfill(3)
     # タイトルを設定
-    title = f"$t={t}$"
+    erase_t = condition.erase_t
+    title = f"$t={t},erase_t={erase_t}$"
     # plotする
     do_plot_3d_gif(mesh_x, mesh_y, mesh_z, plot_path, f"{t_index}.png", title)
     # print(f"t={t_index}：可視化と保存：完了")

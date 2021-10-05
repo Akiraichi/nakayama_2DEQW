@@ -33,6 +33,7 @@ def execute_plot_surface_by_phase(exp_name, plot_t_step):
         PSY = save_data_object["シミュレーションデータ"]
         exp_index = condition.exp_index
         phi_latex = condition.phi_latex
+        erase_t = condition.erase_t
         if int(t) != plot_t_step:
             print_warning("シミュレーションデータのファイル名と時間ステップが一致しません。至急確認してください")
             raise EOFError
@@ -44,5 +45,5 @@ def execute_plot_surface_by_phase(exp_name, plot_t_step):
         mesh_z = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
         do_plot_3d_gif(mesh_x, mesh_y, mesh_z,
                        path=config_plot_phase_save_path(exp_name=exp_name, plot_t_step=plot_t_step),
-                       file_name=f"{str(exp_index).zfill(3)}.png", title=f"${phi_latex}$")
+                       file_name=f"{str(exp_index).zfill(3)}.png", title=f"${phi_latex}$,erase_t={erase_t}")
     print_finish("execute_plot_surface_by_phase")
