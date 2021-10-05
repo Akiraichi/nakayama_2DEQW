@@ -894,6 +894,36 @@ def exp_018():
     return conditions, exp_name
 
 
+def exp_019(erase_t_list):
+    """
+    erase_tごとに並列処理させる。exp_017の親戚。
+    Example
+        erase_t_list=[10,20,30,40]
+        exp_019(erase_t_list)
+        //erase_t=10,20,30,40とした場合の、exp_017を実行する。
+    """
+    exp_name = f"exp_019"
+    conditions = []
+    for i, erase_t in enumerate(erase_t_list):
+        c = Condition()
+        set_basic_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 100
+        phi = np.pi / 60
+        c.phi = phi
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = erase_t
+        conditions.append(c)
+
+    # 実行する際にerase_tの中身を確認
+    for c in conditions:
+        print(f"t = {c.erase_t}")
+
+    return conditions, exp_name
+
+
 if __name__ == '__main__':
     # x = sympy.Symbol('x')
     # phi = x * 2 * sympy.pi / 120

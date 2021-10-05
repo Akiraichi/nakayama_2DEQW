@@ -21,7 +21,7 @@ class Config_simulation:
     else:
         print("Execute in local")
         # 実験条件の設定
-        max_time_step = 200  # 最大時間ステップ数
+        max_time_step = 100  # 最大時間ステップ数
         # シミュレーションの並列数
         simulation_parallel_num = 4
         # plotの並列数
@@ -99,6 +99,14 @@ def config_plot_phase_save_path(exp_name, plot_t_step):
 def config_heatmap_save_path(exp_name, plot_t_step):
     # 実験データの保存先のフォルダーがなければ作成する
     path = f"result/{exp_name}/heatmap_phase_{exp_name}/t={plot_t_step}"
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+#
+def config_var_save_path(exp_name):
+    # 実験データの保存先のフォルダーがなければ作成する
+    path = f"result/{exp_name}/var_{exp_name}"
     os.makedirs(path, exist_ok=True)
     return path
 
