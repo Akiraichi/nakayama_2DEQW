@@ -909,8 +909,10 @@ def exp_019(erase_t_list):
         set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 100
-        phi = np.pi / 60
-        c.phi = phi
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
         c.exp_index = i
