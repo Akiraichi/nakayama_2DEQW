@@ -894,7 +894,7 @@ def exp_018():
     return conditions, exp_name
 
 
-def exp_019(erase_t_list):
+def exp_019(exp_index_list):
     """
     erase_tごとに並列処理させる。exp_017の親戚。
     Example
@@ -904,7 +904,7 @@ def exp_019(erase_t_list):
     """
     exp_name = f"exp_019"
     conditions = []
-    for i, erase_t in enumerate(erase_t_list):
+    for i in range(600):
         c = Condition()
         set_basic_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
@@ -916,14 +916,21 @@ def exp_019(erase_t_list):
         c.phi_latex = sympy.latex(phi)
         c.exp_name = exp_name
         c.exp_index = i
-        c.erase_t = erase_t
+        c.erase_t = i
         conditions.append(c)
 
-    # 実行する際にerase_tの中身を確認
-    for c in conditions:
-        print(f"t = {c.erase_t}")
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
 
-    return conditions, exp_name
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
 
 
 if __name__ == '__main__':

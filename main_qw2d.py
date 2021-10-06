@@ -52,22 +52,12 @@ def e1():
     このerase_t_listでのexp_019のまとめ実行
     つまりpi/60の電場をかけた電場量子ウォークの電場を途中で消し去った場合
     """
-    erase_t_list = [10, 20, 30, 40]
-    selected_conditions, exp_name = exp_019(erase_t_list=erase_t_list)
+    select_exp_index_list = [10, 20, 30, 40]
+    selected_conditions, exp_name = exp_019(exp_index_list=select_exp_index_list)
     execute_simulation(exact_condition_list=selected_conditions)
 
-    """
-    Example
-        erase_t_list = [10, 20, 30, 40]
-        この場合、exp_indexは順に対応して、0,1,2,3となる。
-        そのため、select_plot_exp_index = list(range(len(erase_t_list)))として、
-        select_plot_exp_index =[0,1,2,3]としてある。
-    """
-    select_plot_exp_index = list(range(len(erase_t_list)))
-    print(select_plot_exp_index)
-
-    execute_plot_surface(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
-    make_gif_surface(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
+    execute_plot_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
+    make_gif_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
 
     execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
     make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
@@ -105,10 +95,10 @@ def e3():
     exp_index_1 = 0
     selected_conditions_1, exp_name_1 = exp_018()
 
-    erase_t_list = [10, 30, 50, 70]
-    selected_conditions_2, exp_name_2 = exp_019(erase_t_list=erase_t_list)
+    exp_index_list = [10, 30, 50, 70]
+    selected_conditions_2, exp_name_2 = exp_019(exp_index_list=exp_index_list)
 
-    for i, _ in enumerate(erase_t_list):
+    for i, _ in enumerate(exp_index_list):
         execute_plot_kl_div(exp_name_1=exp_name_1, exp_index_1=exp_index_1, exp_name_2=exp_name_2, exp_index_2=i)
 
 
@@ -131,4 +121,3 @@ def e4():
 
 if __name__ == '__main__':
     e1()
-    e2()
