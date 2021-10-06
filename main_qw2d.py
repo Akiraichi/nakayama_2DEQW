@@ -47,12 +47,11 @@ def plot_all(select_exp_index_list, exp_name):
     make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
 
 
-def e1():
+def e1(select_exp_index_list):
     """
     このerase_t_listでのexp_019のまとめ実行
     つまりpi/60の電場をかけた電場量子ウォークの電場を途中で消し去った場合
     """
-    select_exp_index_list = [10, 20, 30, 40]
     selected_conditions, exp_name = exp_019(exp_index_list=select_exp_index_list)
     execute_simulation(exact_condition_list=selected_conditions)
 
@@ -86,7 +85,7 @@ def e2():
     make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
 
 
-def e3():
+def e3(select_exp_index_list):
     """
     KLダイバージェンスを求める。
     電場のない量子ウォークと電場を途中で消した場合とのKLダイバージェンス
@@ -95,10 +94,9 @@ def e3():
     exp_index_1 = 0
     selected_conditions_1, exp_name_1 = exp_018()
 
-    exp_index_list = [10, 30, 50, 70]
-    selected_conditions_2, exp_name_2 = exp_019(exp_index_list=exp_index_list)
+    selected_conditions_2, exp_name_2 = exp_019(exp_index_list=select_exp_index_list)
 
-    for i, _ in enumerate(exp_index_list):
+    for i, _ in enumerate(select_exp_index_list):
         execute_plot_kl_div(exp_name_1=exp_name_1, exp_index_1=exp_index_1, exp_name_2=exp_name_2, exp_index_2=i)
 
 
