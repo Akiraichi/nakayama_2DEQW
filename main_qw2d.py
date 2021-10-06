@@ -81,7 +81,7 @@ def e2():
     # execute_plot_surface_by_phase(exp_name=exp_name, plot_t_step=200)
     # make_gif_surface_by_phase(exp_name=exp_name, plot_t_step=100)
 
-    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=200)
+    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
     make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
 
 
@@ -118,4 +118,4 @@ def e4():
 
 
 if __name__ == '__main__':
-    e1()
+    e2()
