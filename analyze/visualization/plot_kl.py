@@ -4,41 +4,31 @@ from config.config import *
 import joblib
 import glob
 from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
+from numba import njit, jit
+from multiprocessing import Pool
+import config.config
 
 
-# 実験環境データの読みこみと展開
-def load_env_date(exp_name, i):
-    # データの取り出し
-    env_data = joblib.load(
-        f"{config_simulation_data_save_path(exp_name, i)}/{config_simulation_data_name(i)}")
+def parallel_execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2_list):
+    # 並列処理用の前処理
+    arguments = []
+    for exp_index_2 in exp_index_2_list:
+        arguments.append(
+            [exp_name_1, exp_index_1, exp_name_2, exp_index_2])
 
-    # 読み込んだオブジェクトを展開する
-    T = env_data.T
-    condition = env_data.condition
-    len_x = env_data.len_x
-    len_y = env_data.len_y
-    return T, condition, len_x, len_y
+    # 並列数
+    p = Pool(config.config.Config_simulation.plot_parallel_num)
+    # 並列処理開始
+    p.map(wrapper_plot_and_save_memory_save, arguments)
+    print_finish("execute_parallel_kl_div")
+    # processをclose
+    p.close()
+    p.terminate()
 
 
-def get_KL_div(p1, p2):
-    """
-        概要
-            量子ウォークの確率分布のKLダイバージェンスを求める
-        処理の流れ
-            （1）二つのprobabilityを引数から受け取る。その二つの確率分布のKLダイバージェンスを返却する
-        引数
-            p1,p2：大きさの等しい2次元リストp1[x,y]のように指定できること。
-
-        """
-    kl_div = 0
-    # 属性shapeで形状（行数、列数）が取得可能。
-    for x in range(p1.shape[1]):
-        for y in range(p1.shape[0]):
-            if p2[x, y] == 0:
-                continue
-            kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
-
-    return kl_div
+# wrapper
+def wrapper_plot_and_save_memory_save(args):
+    return execute_plot_kl_div(*args)
 
 
 def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
@@ -74,6 +64,42 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
 
     t_list = list(range(len(KL_div_list)))
     do_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, KL_div_list, t_list)
+
+
+# 実験環境データの読みこみと展開
+def load_env_date(exp_name, i):
+    # データの取り出し
+    env_data = joblib.load(
+        f"{config_simulation_data_save_path(exp_name, i)}/{config_simulation_data_name(i)}")
+
+    # 読み込んだオブジェクトを展開する
+    T = env_data.T
+    condition = env_data.condition
+    len_x = env_data.len_x
+    len_y = env_data.len_y
+    return T, condition, len_x, len_y
+
+
+@njit('f8(f8[:,:],f8[:,:])', cache=True)
+def get_KL_div(p1, p2):
+    """
+        概要
+            量子ウォークの確率分布のKLダイバージェンスを求める
+        処理の流れ
+            （1）二つのprobabilityを引数から受け取る。その二つの確率分布のKLダイバージェンスを返却する
+        引数
+            p1,p2：大きさの等しい2次元リストp1[x,y]のように指定できること。
+
+        """
+    kl_div = 0
+    # 属性shapeで形状（行数、列数）が取得可能。
+    for x in range(p1.shape[1]):
+        for y in range(p1.shape[0]):
+            if p2[x, y] == 0:
+                continue
+            kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
+
+    return kl_div
 
 
 def do_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, KL_div_list, t_list):

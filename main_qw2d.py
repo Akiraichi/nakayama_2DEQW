@@ -1,5 +1,5 @@
 # exp_setting
-from analyze.visualization.plot_kl import execute_plot_kl_div
+from analyze.visualization.plot_kl import execute_plot_kl_div, parallel_execute_plot_kl_div
 from analyze.visualization.plot_var import execute_plot_var
 from exp_setting.exp import *
 # simulation
@@ -109,11 +109,9 @@ def e3(select_exp_index_list):
     """
     exp_index_1 = 0
     selected_conditions_1, exp_name_1 = exp_018()
-
     selected_conditions_2, exp_name_2 = exp_019(exp_index_list=select_exp_index_list)
 
-    for i in select_exp_index_list:
-        execute_plot_kl_div(exp_name_1=exp_name_1, exp_index_1=exp_index_1, exp_name_2=exp_name_2, exp_index_2=i)
+    parallel_execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2_list=select_exp_index_list)
 
 
 def e4():
@@ -136,6 +134,7 @@ def e4():
 if __name__ == '__main__':
     e0()
     e2()
-    select_exp_index_list = list(range(20, 420, 20))
+    select_exp_index_list = [10, 20, 30, 40]
+    e1(select_exp_index_list)
     e3(select_exp_index_list=select_exp_index_list)
-    e4()
+    # e4()
