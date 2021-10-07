@@ -112,7 +112,7 @@ def e3(select_exp_index_list):
 
     selected_conditions_2, exp_name_2 = exp_019(exp_index_list=select_exp_index_list)
 
-    for i, _ in enumerate(select_exp_index_list):
+    for i in select_exp_index_list:
         execute_plot_kl_div(exp_name_1=exp_name_1, exp_index_1=exp_index_1, exp_name_2=exp_name_2, exp_index_2=i)
 
 
@@ -135,3 +135,7 @@ def e4():
 
 if __name__ == '__main__':
     e0()
+    e2()
+    select_exp_index_list = list(range(20, 420, 20))
+    e3(select_exp_index_list=select_exp_index_list)
+    e4()

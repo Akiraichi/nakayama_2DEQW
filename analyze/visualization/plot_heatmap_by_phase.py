@@ -10,11 +10,8 @@ import pandas as pd
 
 def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
     """
-        exp_nameの中にある全実験（全exp_index）のt_step目のみをプロットする
-        :param exp_name:
-        :param plot_t_step:
-        :return:
-        """
+    exp_nameフォルダの中にある全実験（全exp_index）のt_step目のみをプロットする。
+    """
     # exp_nameにある全実験フォルダーへのpath。sortもする。
     simulation_data_folder_path_list = glob.glob(f"{config_simulation_data_save_path(exp_name)}/*")
     simulation_data_folder_path_list.sort()
