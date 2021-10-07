@@ -47,6 +47,22 @@ def plot_all(select_exp_index_list, exp_name):
     make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
 
 
+def e0():
+    """
+    exp_018のまとめ実行
+    つまり通常の量子ウォーク
+    """
+    selected_conditions, exp_name = exp_018()
+    execute_simulation(exact_condition_list=selected_conditions)
+
+    execute_plot_surface(exp_name=exp_name, plot_exp_index_list=[0])
+    make_gif_surface(exp_name=exp_name, plot_exp_index_list=[0])
+
+    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # execute_plot_var(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
+
+
 def e1(select_exp_index_list):
     """
     このerase_t_listでのexp_019のまとめ実行
@@ -118,4 +134,4 @@ def e4():
 
 
 if __name__ == '__main__':
-    e2()
+    e0()
