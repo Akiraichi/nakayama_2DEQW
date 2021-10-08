@@ -58,8 +58,8 @@ def e0():
     execute_plot_surface(exp_name=exp_name, plot_exp_index_list=[0])
     make_gif_surface(exp_name=exp_name, plot_exp_index_list=[0])
 
-    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
-    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
     # execute_plot_var(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
 
 
@@ -74,8 +74,10 @@ def e1(select_exp_index_list):
     execute_plot_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
     make_gif_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
 
-    execute_plot_heatmap_by_phase(exp_name=exp_name, exp_index_list=[10, 20, 30], plot_t_step=50)
-    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=50)
+    # plot_t_step = 100
+    # execute_plot_heatmap_by_phase(exp_name=exp_name, exp_index_list=[10, 20, 30], plot_t_step=plot_t_step)
+    # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=plot_t_step)
+
     # execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
     # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
     # execute_plot_var(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
@@ -133,10 +135,23 @@ def e4():
                         exp_index_2=exp_index_2)
 
 
+def all_heat_map_plot(exp_name, exp_index_list, plot_t_step_list):
+    """
+    exp_index_listの中のexp_index全てについて、plot_t_step_listで指定したplot_t_step全てについてheatmapを作成する
+    """
+    for plot_t_step in plot_t_step_list:
+        execute_plot_heatmap_by_phase(exp_name=exp_name, exp_index_list=exp_index_list, plot_t_step=plot_t_step)
+        make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=plot_t_step)
+
+
 if __name__ == '__main__':
     # e0()
     # e2()
+
     select_exp_index_list = [10, 20, 30, 40]
-    e1(select_exp_index_list)
-    e3(select_exp_index_list=select_exp_index_list)
+    _, exp_name = exp_019(exp_index_list=select_exp_index_list)
+    all_heat_map_plot(exp_name, select_exp_index_list, [10, 20, 30, 40, 50])
+
+    # e1(select_exp_index_list)
+    # e3(select_exp_index_list=select_exp_index_list)
     # e4()
