@@ -74,10 +74,10 @@ def e1(select_exp_index_list):
     execute_plot_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
     make_gif_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
 
-    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
-    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
-    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
-    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
+    # execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
+    # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=600)
     # execute_plot_var(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
 
 
@@ -99,8 +99,8 @@ def e2():
     # execute_plot_surface_by_phase(exp_name=exp_name, plot_t_step=200)
     # make_gif_surface_by_phase(exp_name=exp_name, plot_t_step=100)
 
-    execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
-    make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # execute_plot_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
+    # make_gif_heatmap_by_phase(exp_name=exp_name, plot_t_step=100)
 
 
 def e3(select_exp_index_list):
