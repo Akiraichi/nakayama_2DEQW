@@ -10,21 +10,11 @@ import config.config
 
 
 def parallel_execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2_list):
-    # 各並列処理で共通かつ事前に処理可能なものを、あらかじめ処理し、引数として渡すことにする。
-    simulation_data_file_names_1 = glob.glob(f"{config_simulation_data_save_path(exp_name_1, exp_index_1)}/*.jb")
-    simulation_data_file_names_1.sort()  # 実験順にsortする。
-    # simulation_data_fileはt=0から1ずつ増えていきながら、t=ファイルの数まであるので、t_stepをenumerateの形で得ている。
-    p_1_list = []
-    for t_step, _ in enumerate(simulation_data_file_names_1):
-        # t=t_stepのシミュレーションデータをロード
-        p_1 = get_probability(simulation_data_file_names_1, t_step)
-        p_1_list.append(p_1)
-
     # 並列処理用の前処理
     arguments = []
     for exp_index_2 in exp_index_2_list:
         arguments.append(
-            [exp_name_1, exp_index_1, exp_name_2, exp_index_2, p_1_list])
+            [exp_name_1, exp_index_1, exp_name_2, exp_index_2])
 
     # 並列数
     p = Pool(config.config.Config_simulation.plot_parallel_num)
@@ -41,7 +31,7 @@ def wrapper_plot_and_save_memory_save(args):
     return execute_plot_kl_div(*args)
 
 
-def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, p_1_list):
+def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
     """
     概要
         量子ウォークの確率分布のKLダイバージェンスを求める
@@ -50,22 +40,26 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, p_1_li
         （2）二つのprobabilityを引数から受け取る。その二つの確率分布のKLダイバージェンスを返却する
         （3）KLダイバージェンスの推移をプロットする
     """
+    # 実験環境データを000.jbから代表して読みこむ
+    # save_data_object_1 = joblib.load(f"{config_simulation_data_save_path(exp_name_1, exp_index_1)}/000.jb")
+    # 展開する
+    # condition_1 = save_data_object_1["実験条件データ（condition）"]
     print(
         f"START：KLダイバージェンスを求める処理：exp_name_1={exp_name_1},exp_index_1={exp_index_1},exp_name_2={exp_name_2},exp_index_2={exp_index_2}, ")
 
-    # simulation_data_file_names_1 = glob.glob(f"{config_simulation_data_save_path(exp_name_1, exp_index_1)}/*.jb")
-    # simulation_data_file_names_1.sort()  # 実験順にsortする。
+    simulation_data_file_names_1 = glob.glob(f"{config_simulation_data_save_path(exp_name_1, exp_index_1)}/*.jb")
+    simulation_data_file_names_1.sort()  # 実験順にsortする。
 
     simulation_data_file_names_2 = glob.glob(f"{config_simulation_data_save_path(exp_name_2, exp_index_2)}/*.jb")
     simulation_data_file_names_2.sort()  # 実験順にsortする。
 
     KL_div_list = []
     # simulation_data_fileはt=0から1ずつ増えていきながら、t=ファイルの数まであるので、t_stepをenumerateの形で得ている。
-    for t_step, _ in enumerate(simulation_data_file_names_2):
+    for t_step, _ in enumerate(simulation_data_file_names_1):
         # t=t_stepのシミュレーションデータをロード
-        # p_1 = get_probability(simulation_data_file_names_1, t_step)
+        p_1 = get_probability(simulation_data_file_names_1, t_step)
         p_2 = get_probability(simulation_data_file_names_2, t_step)
-        KL_div = get_KL_div(p1=p_1_list[t_step], p2=p_2)
+        KL_div = get_KL_div(p1=p_1, p2=p_2)
         KL_div_list.append(KL_div)
 
     t_list = list(range(len(KL_div_list)))
