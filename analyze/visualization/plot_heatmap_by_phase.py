@@ -15,6 +15,7 @@ def execute_plot_heatmap_by_phase(exp_name, exp_index_list, plot_t_step):
     # 各exp_indexのt_step目をプロット
     for exp_index in exp_index_list:
         # データをロード
+        exp_index = str(exp_index).zfill(2)
         save_data_object = joblib.load(
             f"{config_simulation_data_save_path(exp_name)}{exp_index}/{str(plot_t_step).zfill(3)}.jb")
 

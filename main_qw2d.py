@@ -148,9 +148,10 @@ if __name__ == '__main__':
     # e0()
     # e2()
 
-    select_exp_index_list = [10, 20, 30, 40]
+    select_exp_index_list = [1, 2, 3, 4]
+    plot_t_step_list = [1, 2, 3, 4, 5]
     _, exp_name = exp_019(exp_index_list=select_exp_index_list)
-    all_heat_map_plot(exp_name, select_exp_index_list, [10, 20, 30, 40, 50])
+    all_heat_map_plot(exp_name=exp_name, exp_index_list=select_exp_index_list, plot_t_step_list=plot_t_step_list)
 
     # e1(select_exp_index_list)
     # e3(select_exp_index_list=select_exp_index_list)
