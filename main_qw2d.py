@@ -140,6 +140,11 @@ def e1_1000step(select_exp_index_list):
     execute_simulation(exact_condition_list=selected_conditions)
 
 
+def e1_2000step(select_exp_index_list):
+    selected_conditions, exp_name = exp_021(exp_index_list=select_exp_index_list)
+    execute_simulation(exact_condition_list=selected_conditions)
+
+
 def all_heat_map_plot(exp_name, exp_index_list, plot_t_step_list):
     """
     exp_index_listの中のexp_index全てについて、plot_t_step_listで指定したplot_t_step全てについてheatmapを作成する
