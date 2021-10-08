@@ -8,18 +8,15 @@ import seaborn as sns
 import pandas as pd
 
 
-def execute_plot_heatmap_by_phase(exp_name, plot_t_step):
+def execute_plot_heatmap_by_phase(exp_name, exp_index_list, plot_t_step):
     """
-    exp_nameフォルダの中にある全実験（全exp_index）のt_step目のみをプロットする。
+    exp_nameフォルダの中にあるexp_index_listで指定したexp_indexのt_step目のみをプロットする。
     """
-    # exp_nameにある全実験フォルダーへのpath。sortもする。
-    simulation_data_folder_path_list = glob.glob(f"{config_simulation_data_save_path(exp_name)}/*")
-    simulation_data_folder_path_list.sort()
-
     # 各exp_indexのt_step目をプロット
-    for simulation_data_folder_path in simulation_data_folder_path_list:
+    for exp_index in exp_index_list:
         # データをロード
-        save_data_object = joblib.load(f"{simulation_data_folder_path}/{str(plot_t_step).zfill(3)}.jb")
+        save_data_object = joblib.load(
+            f"{config_simulation_data_save_path(exp_name)}{exp_index}/{str(plot_t_step).zfill(3)}.jb")
 
         # 展開
         condition = save_data_object["実験条件データ（condition）"]
