@@ -28,7 +28,6 @@ def wrapper_simulation(args):
 
 def check_simulation_progress(exp_index, T, exp_name):
     # シミュレーションがどこまで進んだかをチェックし途中から再開するために、
-    # シミュレーションのindexのフォルダが既に存在しているのであれば、そのindexのシミュレーションは既に終了しているとする。
     finished = False
     folder_path = config_simulation_data_save_path(exp_name, exp_index)
     file_list = glob.glob(f"{folder_path}/*")
