@@ -15,9 +15,9 @@ class Config_simulation:
         # 実験条件の設定
         max_time_step = 2000  # 最大時間ステップ数
         # シミュレーションの並列数
-        simulation_parallel_num = 4
+        simulation_parallel_num = 3
         # plotの並列数
-        plot_parallel_num = 4
+        plot_parallel_num = 3
     else:
         print("Execute in local")
         # 実験条件の設定

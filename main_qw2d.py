@@ -63,13 +63,13 @@ def e0():
     # execute_plot_var(exp_name=exp_name, plot_exp_index_list=select_plot_exp_index)
 
 
-def e1(select_exp_index_list):
+def e1(select_exp_index_list, continue_t):
     """
     このerase_t_listでのexp_019のまとめ実行
     つまりpi/60の電場をかけた電場量子ウォークの電場を途中で消し去った場合
     """
     selected_conditions, exp_name = exp_019(exp_index_list=select_exp_index_list)
-    execute_simulation(exact_condition_list=selected_conditions)
+    execute_simulation(exact_condition_list=selected_conditions, continue_t=continue_t)
 
     execute_plot_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
     make_gif_surface(exp_name=exp_name, plot_exp_index_list=select_exp_index_list)
@@ -140,9 +140,9 @@ def e1_1000step(select_exp_index_list):
     execute_simulation(exact_condition_list=selected_conditions)
 
 
-def e1_2000step(select_exp_index_list):
+def e1_2000step(select_exp_index_list, continue_t):
     selected_conditions, exp_name = exp_021(exp_index_list=select_exp_index_list)
-    execute_simulation(exact_condition_list=selected_conditions)
+    execute_simulation(exact_condition_list=selected_conditions, continue_t=continue_t)
 
 
 def all_heat_map_plot(exp_name, exp_index_list, plot_t_step_list):
@@ -158,8 +158,9 @@ if __name__ == '__main__':
     # e0()
     # e2()
 
-    select_exp_index_list = [1, 2, 3, 4]
-    e1(select_exp_index_list=select_exp_index_list)
+    select_exp_index_list = [2]
+    continue_t = 99
+    e1(select_exp_index_list=select_exp_index_list, continue_t=continue_t)
     # plot_t_step_list = [1, 2, 3, 4, 5]
     # _, exp_name = exp_019(exp_index_list=select_exp_index_list)
     # all_heat_map_plot(exp_name=exp_name, exp_index_list=select_exp_index_list, plot_t_step_list=plot_t_step_list)

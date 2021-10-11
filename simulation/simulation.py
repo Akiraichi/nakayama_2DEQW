@@ -6,11 +6,11 @@ from multiprocessing import Pool
 import glob
 
 
-def execute_simulation(exact_condition_list):
+def execute_simulation(exact_condition_list, continue_t=0):
     # 並列処理用の前処理
     arguments = []
     for condition in exact_condition_list:
-        arguments.append([condition])
+        arguments.append([condition, continue_t])
 
     # 最大並列数を設定
     p = Pool(config.config.Config_simulation.simulation_parallel_num)
@@ -42,7 +42,7 @@ def check_simulation_progress(exp_index, T, exp_name):
     return finished
 
 
-def parallel_start_simulation_program(condition):
+def parallel_start_simulation_program(condition, continue_t):
     # 展開
     exp_index = condition.exp_index
     exp_name = condition.exp_name
@@ -54,7 +54,7 @@ def parallel_start_simulation_program(condition):
 
     # シミュレーション実行
     print(f"START：exp_index={exp_index}：simulation")
-    simulation_QW2D(condition)
+    simulation_QW2D(condition, continue_t)
     # 実験条件を保存する
     data = exp_data_pack_memory_save(exp_name=exp_name, condition=condition, T=T,
                                      len_x=2 * T + 1,

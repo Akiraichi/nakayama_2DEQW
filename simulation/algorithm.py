@@ -6,7 +6,7 @@ import glob
 import joblib
 
 
-def simulation_QW2D(condition):
+def simulation_QW2D(condition, continue_t):
     """
     :param condition:
     :return:
@@ -34,37 +34,51 @@ def simulation_QW2D(condition):
 
     # 時間発展パート
     """
-    ここまで処理が来ているということは、シミュレーションデータが規定数に達していないということ。
-    つまり、新規実験、途中まで実験、どこかの実験データが消えたの3パターンのうちのどれか。
-    このうち、どこかの実験データが消えた場合は考慮しないことにする。
-    その処理を考える必要が出た場合は、コードをいくつか変更してくれ
+    途中からシミュレーションしたい時は、どこから始めるかを指定するようにした。
+    glob関数あるいはgoogle driveの使用により一度に取得可能なファイル数が999までだったからだ。
+    continue_tステップ目から再開する。
+    continue_t=99なら、98ステップをロードし、99ステップのシミュレーションから開始する
+    
     """
-    simulation_data_file_names = glob.glob(f"{config_simulation_data_save_path(exp_name, exp_index)}/*.jb")
-    simulation_data_file_names.sort()  # 実験順にsortする。
-    start_t = 1
-    if len(simulation_data_file_names) == 0:
+    if continue_t == 0:
         # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
         # ここでセーブする。保存するのは初期状態のPSY
         save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
+        start_t = 1
     else:
         # 途中からシミュレーションを再開
-
-        PSY_now = joblib.load(simulation_data_file_names[-2])["シミュレーションデータ"]  # 最も最後から一つ前からシミュレーションを再開する
-        print(simulation_data_file_names[-2])
-        """
-         simulation_data_file_names[-2] // 'result/exp_018/simulation_data_exp_018/00/098.jb'
-         a.split("/") //  ['result', 'exp_018', 'simulation_data_exp_018', '00', '098.jb']
-         a.split("/")[-1] // '098.jb'
-         b[:-3] // '098'
-        """
-        load_t = int(simulation_data_file_names[-2].split("/")[-1][:-3])
-        print(f"load_t={load_t}")
-        """
-        t=load_tのシミュレーションデータをPSY_nowとしてロードする。
-        ゆえに、次のtはload_t+1であれば良い
-        """
-        start_t = load_t + 1
-        print(f"start_t={start_t}")
+        path = f"{config_simulation_data_save_path(exp_name, exp_index)}/{str(continue_t - 1).zfill(3)}.jb"
+        print(path)
+        PSY_now = joblib.load(path)["シミュレーションデータ"]
+        start_t = continue_t
+    print(f"start_t={start_t}")
+    #
+    # simulation_data_file_names = glob.glob(f"{config_simulation_data_save_path(exp_name, exp_index)}/*.jb")
+    # simulation_data_file_names.sort()  # 実験順にsortする。
+    # start_t = 1
+    # if len(simulation_data_file_names) == 0:
+    #     # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
+    #     # ここでセーブする。保存するのは初期状態のPSY
+    #     save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
+    # else:
+    #     # 途中からシミュレーションを再開
+    #
+    #     PSY_now = joblib.load(simulation_data_file_names[-2])["シミュレーションデータ"]  # 最も最後から一つ前からシミュレーションを再開する
+    #     print(simulation_data_file_names[-2])
+    #     """
+    #      simulation_data_file_names[-2] // 'result/exp_018/simulation_data_exp_018/00/098.jb'
+    #      a.split("/") //  ['result', 'exp_018', 'simulation_data_exp_018', '00', '098.jb']
+    #      a.split("/")[-1] // '098.jb'
+    #      b[:-3] // '098'
+    #     """
+    #     load_t = int(simulation_data_file_names[-2].split("/")[-1][:-3])
+    #     print(f"load_t={load_t}")
+    #     """
+    #     t=load_tのシミュレーションデータをPSY_nowとしてロードする。
+    #     ゆえに、次のtはload_t+1であれば良い
+    #     """
+    #     start_t = load_t + 1
+    #     print(f"start_t={start_t}")
 
     # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
     for t in range(start_t, T + 1):
