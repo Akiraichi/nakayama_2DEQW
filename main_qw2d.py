@@ -145,6 +145,19 @@ def e1_2000step(select_exp_index_list, continue_t):
     execute_simulation(exact_condition_list=selected_conditions, continue_t=continue_t)
 
 
+def e3_2000step(select_exp_index_list):
+    """
+    KLダイバージェンスを求める。
+    電場のない量子ウォークと電場を途中で消した場合とのKLダイバージェンス
+    :return:
+    """
+    exp_index_1 = 0
+    selected_conditions_1, exp_name_1 = exp_022()
+    selected_conditions_2, exp_name_2 = exp_021(exp_index_list=select_exp_index_list)
+
+    parallel_execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2_list=select_exp_index_list)
+
+
 def all_heat_map_plot(exp_name, exp_index_list, plot_t_step_list):
     """
     exp_index_listの中のexp_index全てについて、plot_t_step_listで指定したplot_t_step全てについてheatmapを作成する
