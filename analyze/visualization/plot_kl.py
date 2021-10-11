@@ -52,7 +52,9 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
 
     simulation_data_file_names_2 = glob.glob(f"{config_simulation_data_save_path(exp_name_2, exp_index_2)}/*.jb")
     simulation_data_file_names_2.sort()  # 実験順にsortする。
-
+    print(f"exp_name_1のデータ数：{len(simulation_data_file_names_1)}")
+    print(f"exp_name_2のデータ数：{len(simulation_data_file_names_2)}")
+    
     KL_div_list = []
     # simulation_data_fileはt=0から1ずつ増えていきながら、t=ファイルの数まであるので、t_stepをenumerateの形で得ている。
     for t_step, _ in enumerate(simulation_data_file_names_1):
@@ -61,6 +63,7 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
         p_2 = get_probability(simulation_data_file_names_2, t_step)
         KL_div = get_KL_div(p1=p_1, p2=p_2)
         KL_div_list.append(KL_div)
+        print(f"t={t_step}")
 
     t_list = list(range(len(KL_div_list)))
     do_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, KL_div_list, t_list)
