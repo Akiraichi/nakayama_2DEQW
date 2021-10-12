@@ -1013,7 +1013,7 @@ def exp_021(exp_index_list):
 
 def exp_022():
     """
-    通常の量子ウォーク
+    通常の量子ウォーク。2000ステップの場合
     """
     exp_name = "exp_022"
     conditions = []
