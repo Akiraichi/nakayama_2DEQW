@@ -125,9 +125,9 @@ def config_KL_div_save_path():
 
 
 # 結合後のgifの保存場所
-def config_gif_save_path_file_name(exp_name):
+def gif_surface_save_path(exp_name):
     # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/plot_gif_{exp_name}/"
+    path = f"result/{exp_name}/gif_surface_{exp_name}/"
     os.makedirs(path, exist_ok=True)
     return path
 

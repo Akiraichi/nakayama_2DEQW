@@ -5,42 +5,51 @@ import os
 from PIL import Image
 
 
-def check_gif_progress(exp_name, exp_index):
-    # plotがどこまで進んだかをチェックし途中から再開するために、
-    # plotのexp_indexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
-    finished = False
-    # ファイルが存在するかをチェックする
-    if os.path.isfile(f'{config_gif_save_path_file_name(exp_name=exp_name)}/{str(exp_index).zfill(2)}.gif'):
-        finished = True
-        print_green_text(f"exp_index={exp_index}：既に完了")
-
-    return finished
+def make_gif_image(exp_name, plot_type="surface", plot_exp_index_list=None, duration=50):
+    if plot_exp_index_list is None:
+        plot_exp_index_list = [0]
+    for plot_exp_index in plot_exp_index_list:
+        plotter = Make_gif()
+        plotter.set_up_conditions(exp_name=exp_name, plot_type=plot_type, plot_exp_index=plot_exp_index,
+                                  duration=duration)
+        if plotter.check_gif_finished():
+            continue
+        plotter.gif_surface()
 
 
 class Make_gif:
     def __init__(self):
         self.exp_name = None
+        self.plot_type = None
         self.plot_exp_index = None
         self.duration = None
+        self.file_path = None
+        self.exp_index_zfill = None
 
-    def set_up_conditions(self, exp_name, plot_exp_index, duration):
+    def set_up_conditions(self, exp_name, plot_type, plot_exp_index, duration):
         self.exp_name = exp_name
+        self.plot_type = plot_type
         self.plot_exp_index = plot_exp_index
         self.duration = duration
+        self.exp_index_zfill = str(plot_exp_index).zfill(2)
+        # plot_typeをチェックし、保存先を求める
+        if self.plot_type == "surface":
+            self.file_path = f'{gif_surface_save_path(exp_name=self.exp_name)}/{self.exp_index_zfill}.gif'
+        elif self.plot_type == "heatmap":
+            self.file_path = ""
+        else:
+            print_warning("正しいplot_typeを選んでください")
+            return
 
-    def check_gif_progress(self):
-        # plotがどこまで進んだかをチェックし途中から再開するために、
-        # plotのexp_indexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
+    def check_gif_finished(self):
         finished = False
         # ファイルが存在するかをチェックする
-        if os.path.isfile(
-                f'{config_gif_save_path_file_name(exp_name=self.exp_name)}/{str(self.plot_exp_index).zfill(2)}.gif'):
+        if os.path.isfile(self.file_path):
             finished = True
             print_green_text(f"exp_index={self.plot_exp_index}：既に完了")
-
         return finished
 
-    def plot_surface(self):
+    def gif_surface(self):
         print(f"START：exp_index={self.plot_exp_index}")
         # 全ファイル名を取得
         file_name_list = glob.glob(f"{config_surface_save_path(exp_name=self.exp_name, index=self.plot_exp_index)}/*")
@@ -51,7 +60,7 @@ class Make_gif:
             new_frame = Image.open(file_name)
             frames.append(new_frame)
         frames[0].save(
-            f'{config_gif_save_path_file_name(exp_name=self.exp_name)}/{str(self.plot_exp_index).zfill(2)}.gif',
+            f'{gif_surface_save_path(exp_name=self.exp_name)}/{self.exp_index_zfill}.gif',
             format='GIF',
             append_images=frames[1:],
             save_all=True,
@@ -59,14 +68,8 @@ class Make_gif:
             loop=0)
         print_finish("make_gif_surface")
 
-
-def make_gif_surface(exp_name, plot_exp_index_list, duration=50):
-    for plot_exp_index in plot_exp_index_list:
-        plotter = Make_gif()
-        if plotter.check_gif_progress():
-            continue
-        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, duration=duration)
-        plotter.plot_surface()
+    def gif_heatmap(self):
+        pass
 
 
 def make_gif_surface_by_phase(exp_name, plot_t_step, duration=100):
@@ -113,3 +116,15 @@ def make_gif_heatmap_by_phase(exp_name, plot_t_step, duration=100):
                    duration=duration,
                    loop=0)
     print_finish("make_gif_heatmap_by_phase")
+
+
+def check_gif_progress(exp_name, exp_index):
+    # plotがどこまで進んだかをチェックし途中から再開するために、
+    # plotのexp_indexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
+    finished = False
+    # ファイルが存在するかをチェックする
+    if os.path.isfile(f'{gif_surface_save_path(exp_name=exp_name)}/{str(exp_index).zfill(2)}.gif'):
+        finished = True
+        print_green_text(f"exp_index={exp_index}：既に完了")
+
+    return finished
