@@ -249,7 +249,7 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
     return PSY_next
 
 
-def calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y):
+def calc_probability(PSY, len_x, len_y):
     probability = np.zeros([len_x, len_y])
     probability, err = calculate_dict(len_x, len_y, probability, PSY)
     if err:

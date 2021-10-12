@@ -5,7 +5,7 @@ from config.config import *
 import joblib
 from multiprocessing import Pool
 import glob
-from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
+from simulation.algorithm import calc_probability
 
 
 def start_plot_surface_image(exp_name, plot_exp_indexes=None):
@@ -121,7 +121,7 @@ class main_Plotter:
         mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
                                      np.linspace(-self.T, self.T, 2 * self.T + 1), indexing="ij")
         # 確率の計算
-        mesh_z = calculate_probability_distribution_at_time_t_memory_save(self.PSY, self.len_x, self.len_y)
+        mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
         # タイトルを設定
         title = f"$t={self.t},erase_t={self.erase_t}$"
         # plotする

@@ -3,7 +3,7 @@ from analyze.visualization.plot_surface import do_plot_3d_gif
 from config.config import *
 import joblib
 import glob
-from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
+from simulation.algorithm import calc_probability
 
 
 def execute_plot_surface_by_phase(exp_name, plot_t_step):
@@ -42,7 +42,7 @@ def execute_plot_surface_by_phase(exp_name, plot_t_step):
 
         # プロット
         mesh_x, mesh_y = np.meshgrid(np.linspace(-T, T, 2 * T + 1), np.linspace(-T, T, 2 * T + 1), indexing="ij")
-        mesh_z = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
+        mesh_z = calc_probability(PSY, len_x, len_y)
         do_plot_3d_gif(mesh_x, mesh_y, mesh_z,
                        path=config_plot_phase_save_path(exp_name=exp_name, plot_t_step=plot_t_step),
                        file_name=f"{str(exp_index).zfill(3)}.png", title=f"${phi_latex}$,erase_t={erase_t}")

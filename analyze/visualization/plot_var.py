@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from config.config import *
 import joblib
 import glob
-from simulation.algorithm import calculate_probability_distribution_at_time_t_memory_save
+from simulation.algorithm import calc_probability
 
 
 # 実験環境データの読みこみと展開
@@ -87,7 +87,7 @@ def execute_plot_var(exp_name, plot_exp_index_list):
             PSY = save_data_object["シミュレーションデータ"]
 
             # probability[x,y]として(x,y)座標の確率を求められる。
-            probability = calculate_probability_distribution_at_time_t_memory_save(PSY, len_x, len_y)
+            probability = calc_probability(PSY, len_x, len_y)
             var_y = np.var(probability, axis=0)  # 行ごとの分散を求める。y軸方向の分散が求まる
             var_x = np.var(probability, axis=1)  # 列ごとの分散を求める。x軸方向の分散が求まる
             var_all = np.var(probability)
