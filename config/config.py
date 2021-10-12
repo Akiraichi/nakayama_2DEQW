@@ -88,11 +88,11 @@ def plot_save_path(exp_name, plot_type, index=None):
 
 
 # 位相ごとの3次元プロットデータの保存場所
-def config_plot_phase_save_path(exp_name, plot_t_step):
-    # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/plot_img_phase_{exp_name}/t={plot_t_step}"
-    os.makedirs(path, exist_ok=True)
-    return path
+# def config_plot_phase_save_path(exp_name, plot_t_step):
+#     # 実験データの保存先のフォルダーがなければ作成する
+#     path = f"result/{exp_name}/plot_img_phase_{exp_name}/t={plot_t_step}"
+#     os.makedirs(path, exist_ok=True)
+#     return path
 
 
 # # 位相ごとの3次元プロットデータの保存場所
@@ -141,8 +141,8 @@ def config_marge_gif_phase_save_path_file_name(exp_name):
 
 
 # gif_heatmapの保存場所
-def config_gif_heatmap_save_path(exp_name):
-    # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/heatmap_gif_phase_{exp_name}/"
-    os.makedirs(path, exist_ok=True)
-    return path
+# def config_gif_heatmap_save_path(exp_name):
+#     # 実験データの保存先のフォルダーがなければ作成する
+#     path = f"result/{exp_name}/heatmap_gif_phase_{exp_name}/"
+#     os.makedirs(path, exist_ok=True)
+#     return path
