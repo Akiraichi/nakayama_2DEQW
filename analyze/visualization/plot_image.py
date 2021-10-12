@@ -45,7 +45,7 @@ class Plotter:
         # どのデータ抽出するかを選択する
         t_list = list(range(0, 100, 5))
         if Config_simulation.max_time_step == 2000:
-            t_list += list(range(100, 2050, 50))
+            t_list += list(range(100, 2020, 20))
         elif Config_simulation.max_time_step == 600:
             t_list += list(range(100, 620, 20))
         elif Config_simulation.max_time_step == 200:
