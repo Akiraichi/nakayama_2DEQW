@@ -8,7 +8,7 @@ import glob
 from simulation.algorithm import calc_probability
 
 
-def start_plot_surface_image(exp_name, plot_exp_indexes=None):
+def plot_surface_image(exp_name, plot_exp_indexes=None):
     if plot_exp_indexes is None:
         plot_exp_indexes = [0]
     for plot_exp_index in plot_exp_indexes:
@@ -18,10 +18,19 @@ def start_plot_surface_image(exp_name, plot_exp_indexes=None):
         plotter.start_parallel_processing()
 
 
-def exact_plot(simulation_data_file_name):
-    plotter = main_Plotter()
-    plotter.load_data(simulation_data_file_name)
-    plotter.plot()
+def plot_surface_image_only_t(exp_name, plot_t_step, plot_exp_indexes=None):
+    if plot_exp_indexes is None:
+        plot_exp_indexes = [0]
+    for plot_exp_index in plot_exp_indexes:
+        plotter = Plotter()
+        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index)
+        plotter.plot_surface_only_t(plot_t_step=plot_t_step)
+
+
+# def exact_plot(simulation_data_file_name):
+#     plotter = main_Plotter()
+#     plotter.load_data(simulation_data_file_name)
+#     plotter.plot()
 
 
 def check_plot_progress(exp_name, plot_exp_index, T):
@@ -78,15 +87,28 @@ class Plotter:
         # 最大並列数を設定
         p = Pool(Config_simulation.plot_parallel_num)
         # 並列処理開始
-        p.map(wrapper, arguments)
+        p.map(Plotter.wrapper, arguments)
         print_finish("execute_plot_surface")
         # processをclose
         p.close()
         p.terminate()
 
+    @staticmethod
+    def wrapper(args):
+        return Plotter.plot_surface(*args)
 
-def wrapper(args):
-    return exact_plot(*args)
+    @staticmethod
+    def plot_surface(simulation_data_file_name):
+        plotter = main_Plotter()
+        plotter.load_data(simulation_data_file_name)
+        plotter.plot()
+
+    def plot_surface_only_t(self, plot_t_step):
+        plotter = main_Plotter()
+        simulation_data_file_name = \
+            f"{config_simulation_data_save_path(self.exp_name)}{str(self.plot_exp_index).zfill(2)}/{str(plot_t_step).zfill(3)}.jb"
+        plotter.load_data(simulation_data_file_name)
+        plotter.plot()
 
 
 class main_Plotter:
