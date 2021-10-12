@@ -54,10 +54,21 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
     simulation_data_file_names_2.sort()  # 実験順にsortする。
     print(f"exp_name_1のデータ数：{len(simulation_data_file_names_1)}")
     print(f"exp_name_2のデータ数：{len(simulation_data_file_names_2)}")
-    
+
     KL_div_list = []
     # simulation_data_fileはt=0から1ずつ増えていきながら、t=ファイルの数まであるので、t_stepをenumerateの形で得ている。
-    for t_step, _ in enumerate(simulation_data_file_names_1):
+    t_list = list(range(10))
+    t_list += list(range(10, 100, 5))
+    if Config_simulation.max_time_step == 2000:
+        t_list += list(range(100, 2100, 100))
+    elif Config_simulation.max_time_step == 600:
+        t_list += list(range(100, 620, 20))
+    elif Config_simulation.max_time_step == 200:
+        t_list += list(range(100, 205, 5))
+    elif Config_simulation.max_time_step == 100:
+        pass
+
+    for t_step in t_list:
         # t=t_stepのシミュレーションデータをロード
         p_1 = get_probability(simulation_data_file_names_1, t_step)
         p_2 = get_probability(simulation_data_file_names_2, t_step)
@@ -65,7 +76,7 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
         KL_div_list.append(KL_div)
         print(f"t={t_step}")
 
-    t_list = list(range(len(KL_div_list)))
+    # t_list = list(range(101))
     do_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2, KL_div_list, t_list)
 
 

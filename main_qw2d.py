@@ -171,13 +171,13 @@ if __name__ == '__main__':
     # e0()
     # e2()
 
-    select_exp_index_list = [2]
-    continue_t = 99
-    e1(select_exp_index_list=select_exp_index_list, continue_t=continue_t)
+    select_exp_index_list = [20]
+    # continue_t = 99
+    # e1(select_exp_index_list=select_exp_index_list, continue_t=continue_t)
     # plot_t_step_list = [1, 2, 3, 4, 5]
     # _, exp_name = exp_019(exp_index_list=select_exp_index_list)
     # all_heat_map_plot(exp_name=exp_name, exp_index_list=select_exp_index_list, plot_t_step_list=plot_t_step_list)
 
     # e1(select_exp_index_list)
-    # e3(select_exp_index_list=select_exp_index_list)
+    e3(select_exp_index_list=select_exp_index_list)
     # e4()
