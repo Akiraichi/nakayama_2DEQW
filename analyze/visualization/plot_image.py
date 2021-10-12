@@ -61,59 +61,55 @@ class Plotter:
 
         arguments = []
         for t in self.t_list:
-            arguments.append([simulation_data_file_names[t]])
+            arguments.append([simulation_data_file_names[t], plot_type])
 
         # 最大並列数を設定
         p = Pool(Config_simulation.plot_parallel_num)
         # 並列処理開始
-        if plot_type == "surface":
-            p.map(Plotter.surface_wrapper, arguments)
-        elif plot_type == "heatmap":
-            p.map(Plotter.heatmap_wrapper, arguments)
-        else:
-            print_warning("正しいplot_typeを選んでください")
-            return
+        # if plot_type == "surface":
+        #     p.map(Plotter.surface_wrapper, arguments)
+        # elif plot_type == "heatmap":
+        #     p.map(Plotter.heatmap_wrapper, arguments)
+        # else:
+        #     print_warning("正しいplot_typeを選んでください")
+        #     return
+        p.map(Plotter.wrapper, arguments)
         print_finish(plot_type)
         # processをclose
         p.close()
         p.terminate()
 
     @staticmethod
-    def surface_wrapper(args):
-        return Plotter.plot_surface(*args)
+    def wrapper(args):
+        return Plotter.plot_image(*args)
+
+    # @staticmethod
+    # def heatmap_wrapper(args):
+    #     return Plotter.plot_heatmap(*args)
 
     @staticmethod
-    def heatmap_wrapper(args):
-        return Plotter.plot_heatmap(*args)
-
-    @staticmethod
-    def plot_surface(simulation_data_file_name):
+    def plot_image(simulation_data_file_name, plot_type):
         plotter = Main_Plotter()
-        plotter.load_data(simulation_data_file_name)
-        plotter.plot_surface()
+        plotter.load_data(simulation_data_file_name, plot_type)
+        plotter.plot()
 
-    @staticmethod
-    def plot_heatmap(simulation_data_file_name):
-        plotter = Main_Plotter()
-        plotter.load_data(simulation_data_file_name)
-        plotter.plot_heatmap()
+    # @staticmethod
+    # def plot_heatmap(simulation_data_file_name):
+    #     plotter = Main_Plotter()
+    #     plotter.load_data(simulation_data_file_name)
+    #     plotter.plot_heatmap()
 
     def plot_only_t(self, plot_t_step, plot_type):
         plotter = Main_Plotter()
         plotter.load_data(
-            f"{config_simulation_data_save_path(self.exp_name)}{str(self.plot_exp_index).zfill(2)}/{str(plot_t_step).zfill(4)}.jb")
-
-        if plot_type == "surface":
-            plotter.plot_surface()
-        elif plot_type == "heatmap":
-            plotter.plot_heatmap()
-        else:
-            print_warning("正しいplot_typeを選んでください")
-            return
+            f"{config_simulation_data_save_path(self.exp_name)}{str(self.plot_exp_index).zfill(2)}/{str(plot_t_step).zfill(4)}.jb",
+            plot_type)
+        plotter.plot()
 
 
 class Main_Plotter:
     def __init__(self):
+        self.plot_type = None
         self.simulation_data_file_name = None
         self.simulation_data = None
         self.T = None
@@ -131,8 +127,10 @@ class Main_Plotter:
         self.title = None
         self.mesh_z = None
         self.file_name = None
+        self.plot_save_path = None
 
-    def load_data(self, simulation_data_file_name):
+    def load_data(self, simulation_data_file_name, plot_type):
+        self.plot_type = plot_type
         # データをロード
         simulation_data = joblib.load(simulation_data_file_name)
         # ロードしたデータを展開
@@ -152,18 +150,26 @@ class Main_Plotter:
         self.title = f"$t={self.t},erase_t={self.erase_t}$"
         self.mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
         self.file_name = f"{self.t_index}.png"
+        self.plot_save_path = plot_save_path(self.exp_name, self.plot_type, self.exp_index)
 
-    def plot_surface(self):
+    def plot(self):
+        if self.plot_type == "surface":
+            self.__plot_surface()
+        elif self.plot_type == "heatmap":
+            self.__plot_heatmap()
+        else:
+            print_warning("正しいplot_typeを選んでください")
+            return
+
+    def __plot_surface(self):
         # 格子点を作成
         mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
                                      np.linspace(-self.T, self.T, 2 * self.T + 1), indexing="ij")
-        plot_path = config_surface_save_path(self.exp_name, self.exp_index)
-        do_plot_surface(mesh_x, mesh_y, self.mesh_z, plot_path, self.file_name, self.title)
+        do_plot_surface(mesh_x, mesh_y, self.mesh_z, self.plot_save_path, self.file_name, self.title)
         print(f"t={self.t_index}：可視化と保存：完了")
 
-    def plot_heatmap(self):
-        plot_path = config_heatmap_save_path(self.exp_name, self.exp_index)
-        do_plot_heatmap(self.mesh_z, plot_path, self.file_name, self.title)
+    def __plot_heatmap(self):
+        do_plot_heatmap(self.mesh_z, self.plot_save_path, self.file_name, self.title)
         print(f"t={self.t_index}：可視化と保存：完了")
 
 
@@ -210,7 +216,7 @@ def check_plot_progress(exp_name, plot_exp_index, T):
     # plotがどこまで進んだかをチェックし途中から再開するために、
     # plotのindexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
     finished = False
-    folder_path = config_surface_save_path(exp_name, plot_exp_index)
+    folder_path = plot_save_path(exp_name, plot_exp_index)
     file_list = glob.glob(f"{folder_path}/*")
 
     need_file_num = T + 1

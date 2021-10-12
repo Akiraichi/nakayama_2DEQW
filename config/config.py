@@ -74,15 +74,15 @@ def config_simulation_data_name(index):
     return f"{index}_env.env"
 
 
-# 3次元プロットデータの保存場所
-def config_surface_save_path(exp_name, index=None):
+# プロットの保存場所
+def plot_save_path(exp_name, plot_type, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
     if index is None:
-        path = f"result/{exp_name}/surface_{exp_name}"
+        path = f"result/{exp_name}/{plot_type}_{exp_name}"
     else:
         # index=実験した時の順番でつけた番号。0埋めする
         index = str(index).zfill(2)
-        path = f"result/{exp_name}/surface_{exp_name}/{index}"
+        path = f"result/{exp_name}/{plot_type}_{exp_name}/{index}"
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -95,17 +95,17 @@ def config_plot_phase_save_path(exp_name, plot_t_step):
     return path
 
 
-# 位相ごとの3次元プロットデータの保存場所
-def config_heatmap_save_path(exp_name, index=None):
-    # 実験データの保存先のフォルダーがなければ作成する
-    if index is None:
-        path = f"result/{exp_name}/heatmap_{exp_name}"
-    else:
-        # index=実験した時の順番でつけた番号。0埋めする
-        index = str(index).zfill(2)
-        path = f"result/{exp_name}/heatmap_{exp_name}/{index}"
-    os.makedirs(path, exist_ok=True)
-    return path
+# # 位相ごとの3次元プロットデータの保存場所
+# def config_heatmap_save_path(exp_name, index=None):
+#     # 実験データの保存先のフォルダーがなければ作成する
+#     if index is None:
+#         path = f"result/{exp_name}/heatmap_{exp_name}"
+#     else:
+#         # index=実験した時の順番でつけた番号。0埋めする
+#         index = str(index).zfill(2)
+#         path = f"result/{exp_name}/heatmap_{exp_name}/{index}"
+#     os.makedirs(path, exist_ok=True)
+#     return path
 
 
 # 分散データの保存場所
@@ -125,9 +125,9 @@ def config_KL_div_save_path():
 
 
 # 結合後のgifの保存場所
-def gif_surface_save_path(exp_name):
+def gif_save_path(exp_name, plot_type):
     # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/gif_surface_{exp_name}/"
+    path = f"result/{exp_name}/gif_{plot_type}_{exp_name}/"
     os.makedirs(path, exist_ok=True)
     return path
 
