@@ -13,7 +13,7 @@ class Config_simulation:
     if ENV_COLAB:
         print("Execute in google_colab")
         # 実験条件の設定
-        max_time_step = 600  # 最大時間ステップ数
+        max_time_step = 2000  # 最大時間ステップ数
         # シミュレーションの並列数
         simulation_parallel_num = 3
         # plotの並列数
