@@ -52,6 +52,7 @@ class Normal_qw:
     """
     通常の量子ウォーク
     """
+
     def __init__(self):
         if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100:
             self.selected_conditions, self.exp_name = exp_018()
@@ -75,6 +76,40 @@ class Normal_qw:
 
     def run_gif_heatmap(self):
         make_gif_image(exp_name=self.exp_name, plot_type="heatmap")
+
+    def run_kl_div(self):
+        pass
+
+
+class Erase_EQW:
+    """
+    電場量子ウォーク
+    pi/60
+    """
+    def __init__(self, select_exp_indexes):
+        self.selected_exp_indexes = select_exp_indexes
+        if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100:
+            self.selected_conditions, self.exp_name = exp_019(exp_index_list=select_exp_indexes)
+        elif Config_simulation.max_time_step == 2000:
+            self.selected_conditions, self.exp_name = exp_021(exp_index_list=select_exp_indexes)
+        else:
+            print_warning("Config_simulation.max_time_stepを確認してください")
+            return
+
+    def run_simulation(self):
+        start_simulation_2dqw(exp_conditions=self.selected_conditions)
+
+    def run_plot_surface(self):
+        plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes)
+
+    def run_plot_heatmap(self):
+        plot_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes)
+
+    def run_gif_surface(self):
+        make_gif_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes)
+
+    def run_gif_heatmap(self):
+        make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes)
 
     def run_kl_div(self):
         pass
@@ -196,7 +231,7 @@ class Normal_qw:
 
 
 if __name__ == '__main__':
-    qw = Normal_qw()
+    qw = Erase_EQW(select_exp_indexes=[10, 20])
     qw.run_simulation()
     qw.run_plot_surface()
     qw.run_gif_surface()

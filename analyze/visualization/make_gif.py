@@ -5,10 +5,10 @@ import os
 from PIL import Image
 
 
-def make_gif_image(exp_name, plot_type="surface", plot_exp_index_list=None, duration=50):
-    if plot_exp_index_list is None:
-        plot_exp_index_list = [0]
-    for plot_exp_index in plot_exp_index_list:
+def make_gif_image(exp_name, plot_type="surface", plot_exp_indexes=None, duration=50):
+    if plot_exp_indexes is None:
+        plot_exp_indexes = [0]
+    for plot_exp_index in plot_exp_indexes:
         plotter = Make_gif()
         plotter.set_up_conditions(exp_name=exp_name, plot_type=plot_type, plot_exp_index=plot_exp_index,
                                   duration=duration)
