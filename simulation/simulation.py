@@ -9,7 +9,6 @@ class Simulation_qw:
     def __init__(self):
         self.exp_conditions = None
         self.start_step_t = None
-        self.p = None
 
     def set_up_conditions(self, exp_conditions, start_step_t):
         self.exp_conditions = exp_conditions
@@ -22,14 +21,14 @@ class Simulation_qw:
             arguments.append([condition, self.start_step_t])
 
         # 最大並列数を設定
-        self.p = Pool(Config_simulation.simulation_parallel_num)
+        p = Pool(Config_simulation.simulation_parallel_num)
         # 並列処理を開始する
-        self.p.map(wrapper_simulation, arguments)
+        p.map(wrapper_simulation, arguments)
 
         # 処理完了後にprocessをclose
         print_finish("execute_simulation")
-        self.p.close()
-        self.p.terminate()
+        p.close()
+        p.terminate()
 
 
 def wrapper_simulation(args):
