@@ -56,11 +56,9 @@ def execute_plot_kl_div(exp_name_1, exp_index_1, exp_name_2, exp_index_2):
     print(f"exp_name_2のデータ数：{len(simulation_data_file_names_2)}")
 
     KL_div_list = []
-    # simulation_data_fileはt=0から1ずつ増えていきながら、t=ファイルの数まであるので、t_stepをenumerateの形で得ている。
-    t_list = list(range(10))
-    t_list += list(range(10, 100, 5))
+    t_list = list(range(0, 100, 5))
     if Config_simulation.max_time_step == 2000:
-        t_list += list(range(100, 2100, 100))
+        t_list += list(range(100, 2050, 50))
     elif Config_simulation.max_time_step == 600:
         t_list += list(range(100, 620, 20))
     elif Config_simulation.max_time_step == 200:
