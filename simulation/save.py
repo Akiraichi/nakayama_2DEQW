@@ -43,7 +43,7 @@ def save_t_step_psy(psy, t, exp_name, i, condition):
     :return:
     """
     path = config_simulation_data_save_path(exp_name, i)
-    t = str(t).zfill(3)
+    t = str(t).zfill(4)
     save_data_object = {
         "シミュレーションデータ": psy,
         "実験条件データ（condition）": condition,

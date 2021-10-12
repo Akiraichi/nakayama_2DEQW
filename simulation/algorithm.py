@@ -2,7 +2,6 @@ import numpy as np
 from numba import njit, jit
 from simulation.save import save_t_step_psy
 from config.config import config_simulation_data_save_path, print_warning, print_green_text
-import glob
 import joblib
 
 
@@ -47,7 +46,7 @@ def simulation_QW2D(condition, continue_t):
         start_t = 1
     else:
         # 途中からシミュレーションを再開
-        path = f"{config_simulation_data_save_path(exp_name, exp_index)}/{str(continue_t - 1).zfill(3)}.jb"
+        path = f"{config_simulation_data_save_path(exp_name, exp_index)}/{str(continue_t - 1).zfill(4)}.jb"
         print(path)
         PSY_now = joblib.load(path)["シミュレーションデータ"]
         start_t = continue_t
