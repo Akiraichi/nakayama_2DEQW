@@ -54,8 +54,8 @@ def execute_plot_surface(exp_name, plot_exp_index_list):
         T = condition.T
 
         # plot_exp_indexのプロットが既に終了しているのかをチェックする。完了していたらスキップする
-        if check_plot_progress(exp_name, plot_exp_index, T):
-            continue
+        # if check_plot_progress(exp_name, plot_exp_index, T):
+        #     continue
 
         # 並列処理を行う。何を並列処理させるかというとプロット処理。どれからプロットしようと問題ないので並列処理できる
         print(f"START：プロット：plot_exp_index={plot_exp_index}")
@@ -65,11 +65,22 @@ def execute_plot_surface(exp_name, plot_exp_index_list):
         simulation_data_file_names = glob.glob(f"{config_simulation_data_save_path(exp_name, plot_exp_index)}/*.jb")
         simulation_data_file_names.sort()  # 実験順にsortする。
 
+        # どのデータ抽出するかを選択する
+        t_list = list(range(0, 100, 5))
+        if Config_simulation.max_time_step == 2000:
+            t_list += list(range(100, 2050, 50))
+        elif Config_simulation.max_time_step == 600:
+            t_list += list(range(100, 620, 20))
+        elif Config_simulation.max_time_step == 200:
+            t_list += list(range(100, 205, 5))
+        elif Config_simulation.max_time_step == 100:
+            pass
+
         arguments = []
         # simulation_data_file_name＝実験データのtステップとはしない。ファイル名はファイル名以上の意味と持たない。
-        for t_step, simulation_data_file_name in enumerate(simulation_data_file_names):
+        for t_step in t_list:
             arguments.append(
-                [simulation_data_file_name, config_plot_save_path(exp_name=exp_name, index=plot_exp_index)])
+                [simulation_data_file_names[t_step], config_plot_save_path(exp_name=exp_name, index=plot_exp_index)])
 
         # 並列数
         p = Pool(config.config.Config_simulation.plot_parallel_num)
