@@ -43,7 +43,7 @@ class Make_gif:
     def plot_surface(self):
         print(f"START：exp_index={self.plot_exp_index}")
         # 全ファイル名を取得
-        file_name_list = glob.glob(f"{config_plot_save_path(exp_name=self.exp_name, index=self.plot_exp_index)}/*")
+        file_name_list = glob.glob(f"{config_surface_save_path(exp_name=self.exp_name, index=self.plot_exp_index)}/*")
         file_name_list.sort()
 
         frames = []

@@ -75,14 +75,14 @@ def config_simulation_data_name(index):
 
 
 # 3次元プロットデータの保存場所
-def config_plot_save_path(exp_name, index=None):
+def config_surface_save_path(exp_name, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
     if index is None:
-        path = f"result/{exp_name}/plot_img_{exp_name}"
+        path = f"result/{exp_name}/surface_{exp_name}"
     else:
         # index=実験した時の順番でつけた番号。0埋めする
         index = str(index).zfill(2)
-        path = f"result/{exp_name}/plot_img_{exp_name}/{index}"
+        path = f"result/{exp_name}/surface_{exp_name}/{index}"
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -96,9 +96,14 @@ def config_plot_phase_save_path(exp_name, plot_t_step):
 
 
 # 位相ごとの3次元プロットデータの保存場所
-def config_heatmap_save_path(exp_name, plot_t_step):
+def config_heatmap_save_path(exp_name, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/heatmap_phase_{exp_name}/t={plot_t_step}"
+    if index is None:
+        path = f"result/{exp_name}/heatmap_{exp_name}"
+    else:
+        # index=実験した時の順番でつけた番号。0埋めする
+        index = str(index).zfill(2)
+        path = f"result/{exp_name}/heatmap_{exp_name}/{index}"
     os.makedirs(path, exist_ok=True)
     return path
 

@@ -1,5 +1,5 @@
 import numpy as np
-from analyze.visualization.plot_surface import Plotter, do_plot_3d_gif, main_Plotter
+from analyze.visualization.plot_surface import Plotter, do_plot_surface, Main_Plotter
 from config.config import *
 import joblib
 import glob
