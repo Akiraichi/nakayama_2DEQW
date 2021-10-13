@@ -1030,13 +1030,3 @@ def exp_022():
     conditions.append(c)
 
     return conditions, exp_name
-
-
-if __name__ == '__main__':
-    # x = sympy.Symbol('x')
-    # phi = x * 2 * sympy.pi / 120
-    # latex_txt = sympy.latex(phi)
-    # print(latex_txt)
-    c, exp_name = exp_5010_x_set()
-    # print(c[0].phi)
-    # print(c[0].phi_latex)

@@ -66,13 +66,6 @@ class Plotter:
         # 最大並列数を設定
         p = Pool(Config_simulation.plot_parallel_num)
         # 並列処理開始
-        # if plot_type == "surface":
-        #     p.map(Plotter.surface_wrapper, arguments)
-        # elif plot_type == "heatmap":
-        #     p.map(Plotter.heatmap_wrapper, arguments)
-        # else:
-        #     print_warning("正しいplot_typeを選んでください")
-        #     return
         p.map(Plotter.wrapper, arguments)
         print_finish(plot_type)
         # processをclose
@@ -83,21 +76,11 @@ class Plotter:
     def wrapper(args):
         return Plotter.plot_image(*args)
 
-    # @staticmethod
-    # def heatmap_wrapper(args):
-    #     return Plotter.plot_heatmap(*args)
-
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type):
         plotter = Main_Plotter()
         plotter.load_data(simulation_data_file_name, plot_type)
         plotter.plot()
-
-    # @staticmethod
-    # def plot_heatmap(simulation_data_file_name):
-    #     plotter = Main_Plotter()
-    #     plotter.load_data(simulation_data_file_name)
-    #     plotter.plot_heatmap()
 
     def plot_only_t(self, plot_t_step, plot_type):
         plotter = Main_Plotter()

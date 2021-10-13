@@ -27,6 +27,7 @@ class Config_simulation:
         # plotの並列数
         plot_parallel_num = 4
 
+
 #
 # class Config_save_log:
 #     path = "log/log_data"
@@ -87,27 +88,6 @@ def plot_save_path(exp_name, plot_type, index=None):
     return path
 
 
-# 位相ごとの3次元プロットデータの保存場所
-# def config_plot_phase_save_path(exp_name, plot_t_step):
-#     # 実験データの保存先のフォルダーがなければ作成する
-#     path = f"result/{exp_name}/plot_img_phase_{exp_name}/t={plot_t_step}"
-#     os.makedirs(path, exist_ok=True)
-#     return path
-
-
-# # 位相ごとの3次元プロットデータの保存場所
-# def config_heatmap_save_path(exp_name, index=None):
-#     # 実験データの保存先のフォルダーがなければ作成する
-#     if index is None:
-#         path = f"result/{exp_name}/heatmap_{exp_name}"
-#     else:
-#         # index=実験した時の順番でつけた番号。0埋めする
-#         index = str(index).zfill(2)
-#         path = f"result/{exp_name}/heatmap_{exp_name}/{index}"
-#     os.makedirs(path, exist_ok=True)
-#     return path
-
-
 # 分散データの保存場所
 def config_var_save_path(exp_name):
     # 実験データの保存先のフォルダーがなければ作成する
@@ -130,19 +110,3 @@ def gif_save_path(exp_name, plot_type):
     path = f"result/{exp_name}/gif_{plot_type}_{exp_name}/"
     os.makedirs(path, exist_ok=True)
     return path
-
-#
-# # 結合後のgif_phaseの保存場所
-# def config_marge_gif_phase_save_path_file_name(exp_name):
-#     # 実験データの保存先のフォルダーがなければ作成する
-#     path = f"result/{exp_name}/plot_gif_phase_{exp_name}/"
-#     os.makedirs(path, exist_ok=True)
-#     return path
-
-
-# gif_heatmapの保存場所
-# def config_gif_heatmap_save_path(exp_name):
-#     # 実験データの保存先のフォルダーがなければ作成する
-#     path = f"result/{exp_name}/heatmap_gif_phase_{exp_name}/"
-#     os.makedirs(path, exist_ok=True)
-#     return path
