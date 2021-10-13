@@ -6,11 +6,10 @@ from exp_setting.exp import *
 from simulation.simulation import start_simulation_2dqw
 # plot
 from analyze.visualization.plot_image import *
-# gif
 from analyze.visualization.make_gif import make_gif_image
 
 
-class Normal_qw:
+class Normal_QW:
     """
     通常の量子ウォーク
     """
@@ -80,7 +79,7 @@ class Erase_EQW:
 
 
 if __name__ == '__main__':
-    qw = Normal_qw()
+    qw = Normal_QW()
     # qw.run_simulation()
     # qw.run_plot_surface()
     # qw.run_gif_surface()
