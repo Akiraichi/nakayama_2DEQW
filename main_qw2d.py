@@ -72,7 +72,7 @@ class Erase_EQW(QW):
 
 if __name__ == '__main__':
     qw = Normal_QW()
-    qw.run_simulation()
+    qw.run_simulation(start_step_t=96)
     qw.run_plot_surface()
     qw.run_gif_surface()
     qw.run_gif_surface(plot_t_step=100)
