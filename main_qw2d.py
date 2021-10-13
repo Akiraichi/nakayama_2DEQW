@@ -10,7 +10,7 @@ from analyze.visualization.plot_kl import execute_plot_kl_div, parallel_execute_
 from analyze.visualization.plot_var import execute_plot_var
 
 # gif
-from analyze.visualization.make_gif import make_gif_image, make_gif_surface_by_phase, make_gif_heatmap_by_phase
+from analyze.visualization.make_gif import make_gif_image
 
 
 #
@@ -86,6 +86,7 @@ class Erase_EQW:
     電場量子ウォーク
     pi/60
     """
+
     def __init__(self, select_exp_indexes):
         self.selected_exp_indexes = select_exp_indexes
         if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100:
@@ -105,11 +106,13 @@ class Erase_EQW:
     def run_plot_heatmap(self):
         plot_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes)
 
-    def run_gif_surface(self):
-        make_gif_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes)
+    def run_gif_surface(self, plot_t_step=None):
+        make_gif_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
+                       plot_t_step=plot_t_step)
 
-    def run_gif_heatmap(self):
-        make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes)
+    def run_gif_heatmap(self, plot_t_step=None):
+        make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
+                       plot_t_step=plot_t_step)
 
     def run_kl_div(self):
         pass
@@ -231,10 +234,10 @@ class Erase_EQW:
 
 
 if __name__ == '__main__':
-    qw = Erase_EQW(select_exp_indexes=[10, 20])
+    qw = Erase_EQW(select_exp_indexes=[10, 20, 30, 40])
     qw.run_simulation()
     qw.run_plot_surface()
-    qw.run_gif_surface()
+    qw.run_gif_surface(plot_t_step=100)
     qw.run_plot_heatmap()
-    qw.run_gif_heatmap()
-    qw.run_kl_div()
+    qw.run_gif_heatmap(plot_t_step=20)
+    # qw.run_kl_div()

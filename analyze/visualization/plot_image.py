@@ -43,13 +43,13 @@ class Plotter:
 
     def select_plot_t_step(self):
         # どのデータ抽出するかを選択する
-        t_list = list(range(0, 100, 5))
+        t_list = list(range(0, 105, 5))
         if Config_simulation.max_time_step == 2000:
-            t_list += list(range(100, 2020, 20))
+            t_list += list(range(120, 2020, 20))
         elif Config_simulation.max_time_step == 600:
-            t_list += list(range(100, 620, 20))
+            t_list += list(range(120, 620, 20))
         elif Config_simulation.max_time_step == 200:
-            t_list += list(range(100, 205, 5))
+            t_list += list(range(105, 205, 5))
         self.t_list = t_list
 
     def start_parallel_processing(self, plot_type):
