@@ -1,8 +1,10 @@
 from config.config import *
-from simulation.algorithm import simulation_QW2D
+from simulation.algorithm import calculate_QW2D
 from simulation.save import save_data, exp_data_pack_memory_save
 from multiprocessing import Pool
 import glob
+import numpy as np
+import joblib
 
 
 def start_simulation_2dqw(exp_conditions, start_step_t=0):
@@ -47,24 +49,76 @@ class Simulation_qw:
         if simulation.check_finished():
             return
         else:
+            simulation.initialize()
             simulation.run()
-            simulation.save()
+            simulation.save_env_file()
 
 
 class qw_2d_simulation:
     def __init__(self):
         self.start_step_t = None
+
         self.condition = None
         self.exp_index = None
         self.exp_name = None
         self.T = None
 
+        self.P = None
+        self.Q = None
+        self.R = None
+        self.S = None
+        self.PSY_init = None
+        self.Algorithm = None
+        self.phi = None
+        self.erase_t = None
+        self.init_vector = None
+
+        self.init_PSY_now = None
+        self.start_t = None
+
     def set_up_condition(self, condition, start_step_t):
         self.start_step_t = start_step_t
+
+        # 展開する
         self.condition = condition
         self.exp_index = condition.exp_index
         self.exp_name = condition.exp_name
         self.T = condition.T
+
+        # 以下、展開するもののうち、アルゴリズムで使用する変数群
+        self.P = condition.P
+        self.Q = condition.Q
+        self.R = condition.R
+        self.S = condition.S
+        self.PSY_init = condition.PSY_init
+        self.Algorithm = condition.algorithm
+        self.phi = condition.phi
+        self.erase_t = condition.erase_t
+        self.init_vector = np.zeros_like(self.PSY_init, dtype=np.complex128)  # その他の場所の確率振幅ベクトルの設定
+
+    def initialize(self):
+        """
+        途中からシミュレーションしたい時は、どこから始めるかを指定するようにした。
+        continue_tステップ目から再開する。
+        continue_t=99なら、98ステップをロードし、99ステップのシミュレーションから開始する
+        """
+
+        """初期データを保存する。あるいは途中データをロードする"""
+        if self.start_step_t == 0:
+            # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
+            # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
+            self.init_PSY_now = np.zeros([2 * self.T + 1, 2 * self.T + 1, 4], dtype=np.complex128)
+            # t=0でx=0,y=0の位置にいる。成分はPSY_init
+            self.init_PSY_now[0 + self.T, 0 + self.T] = self.PSY_init
+            # ここでセーブする。保存するのは初期状態のPSY
+            self.save(psy=self.init_PSY_now, t=0)
+            self.start_t = 1
+        else:
+            # 途中からシミュレーションを再開
+            path = f"{config_simulation_data_save_path(self.exp_name, self.exp_index)}/{str(self.start_step_t - 1).zfill(4)}.jb"
+            print(path)
+            self.init_PSY_now = joblib.load(path)["シミュレーションデータ"]
+            self.start_t = self.start_step_t
 
     def check_finished(self):
         folder_path = config_simulation_data_save_path(self.exp_name, self.exp_index)
@@ -84,9 +138,27 @@ class qw_2d_simulation:
     def run(self):
         # シミュレーション実行
         print(f"START：exp_index={self.exp_index}：simulation")
-        simulation_QW2D(self.condition, self.start_step_t)
+        # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
+        PSY_now = self.init_PSY_now
+        for t in range(self.start_t, self.T + 1):
+            PSY_next = np.zeros([2 * self.T + 1, 2 * self.T + 1, 4], dtype=np.complex128)
+            print(f"{t}：ステップ")
+            PSY_now = calculate_QW2D(self.T, self.init_vector, self.phi, PSY_now, PSY_next, self.Algorithm,
+                                     P=self.P, Q=self.Q, R=self.R, S=self.S, t=t, erase_t=self.erase_t)
+            # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
+            self.save(psy=PSY_now, t=t)
 
-    def save(self):
+    def save(self, psy, t):
+        t = str(t).zfill(4)
+        simulation_data_save_path = f"{config_simulation_data_save_path(self.exp_name, self.exp_index)}/{t}.jb"
+        data_dict = {
+            "シミュレーションデータ": psy,
+            "実験条件データ（condition）": self.condition,
+            "このシミュレーションデータが何ステップ目か（t）": t
+        }
+        joblib.dump(data_dict, simulation_data_save_path, compress=3)
+
+    def save_env_file(self):
         # 実験条件を保存する
         data = exp_data_pack_memory_save(exp_name=self.exp_name, condition=self.condition, T=self.T,
                                          len_x=2 * self.T + 1,

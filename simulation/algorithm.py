@@ -1,65 +1,65 @@
 import numpy as np
 from numba import njit, jit
-from simulation.save import save_t_step_psy
+# from simulation.save import save_t_step_psy
 from config.config import config_simulation_data_save_path, print_warning, print_green_text
-import joblib
+# import joblib
 
 
-def simulation_QW2D(condition, continue_t):
-    """
-    :param condition:
-    :return:
-    """
-    # conditionを展開し初期化する。
-    exp_index = condition.exp_index
-    exp_name = condition.exp_name
-    T = condition.T
-    P = condition.P
-    Q = condition.Q
-    R = condition.R
-    S = condition.S
-    PSY_init = condition.PSY_init
-    Algorithm = condition.algorithm
-    phi = condition.phi
-    erase_t = condition.erase_t
-
-    # 初期確率振幅ベクトルの設定
-    # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
-    PSY_now = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
-    # t=0でx=0,y=0の位置にいる。成分はPSY_init
-    PSY_now[0 + T, 0 + T] = PSY_init
-    # その他の場所の確率振幅ベクトルの設定
-    init_vector = np.zeros_like(PSY_init, dtype=np.complex128)
-
-    # 時間発展パート
-    """
-    途中からシミュレーションしたい時は、どこから始めるかを指定するようにした。
-    glob関数あるいはgoogle driveの使用により一度に取得可能なファイル数が999までだったからだ。
-    continue_tステップ目から再開する。
-    continue_t=99なら、98ステップをロードし、99ステップのシミュレーションから開始する
-    """
-
-    if continue_t == 0:
-        # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
-        # ここでセーブする。保存するのは初期状態のPSY
-        save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
-        start_t = 1
-    else:
-        # 途中からシミュレーションを再開
-        path = f"{config_simulation_data_save_path(exp_name, exp_index)}/{str(continue_t - 1).zfill(4)}.jb"
-        print(path)
-        PSY_now = joblib.load(path)["シミュレーションデータ"]
-        start_t = continue_t
-    print(f"start_t={start_t}")
-
-    # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
-    for t in range(start_t, T + 1):
-        PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
-        print(f"{t}：ステップ")
-        PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P=P, Q=Q, R=R, S=S, t=t,
-                                 erase_t=erase_t)
-        # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
-        save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=exp_index, condition=condition)
+# def simulation_QW2D(condition, continue_t):
+#     """
+#     :param condition:
+#     :return:
+#     """
+#     # conditionを展開し初期化する。
+#     exp_index = condition.exp_index
+#     exp_name = condition.exp_name
+#     T = condition.T
+#     P = condition.P
+#     Q = condition.Q
+#     R = condition.R
+#     S = condition.S
+#     PSY_init = condition.PSY_init
+#     Algorithm = condition.algorithm
+#     phi = condition.phi
+#     erase_t = condition.erase_t
+#
+#     # 初期確率振幅ベクトルの設定
+#     # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
+#     PSY_now = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
+#     # t=0でx=0,y=0の位置にいる。成分はPSY_init
+#     PSY_now[0 + T, 0 + T] = PSY_init
+#     # その他の場所の確率振幅ベクトルの設定
+#     init_vector = np.zeros_like(PSY_init, dtype=np.complex128)
+#
+#     # 時間発展パート
+#     """
+#     途中からシミュレーションしたい時は、どこから始めるかを指定するようにした。
+#     glob関数あるいはgoogle driveの使用により一度に取得可能なファイル数が999までだったからだ。
+#     continue_tステップ目から再開する。
+#     continue_t=99なら、98ステップをロードし、99ステップのシミュレーションから開始する
+#     """
+#
+#     if continue_t == 0:
+#         # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
+#         # ここでセーブする。保存するのは初期状態のPSY
+#         save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
+#         start_t = 1
+#     else:
+#         # 途中からシミュレーションを再開
+#         path = f"{config_simulation_data_save_path(exp_name, exp_index)}/{str(continue_t - 1).zfill(4)}.jb"
+#         print(path)
+#         PSY_now = joblib.load(path)["シミュレーションデータ"]
+#         start_t = continue_t
+#     print(f"start_t={start_t}")
+#
+#     # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
+#     for t in range(start_t, T + 1):
+#         PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
+#         print(f"{t}：ステップ")
+#         PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P=P, Q=Q, R=R, S=S, t=t,
+#                                  erase_t=erase_t)
+#         # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
+#         save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=exp_index, condition=condition)
 
 
 # 1/0での挙動が想定外である。
