@@ -1,4 +1,5 @@
 # config
+from analyze.visualization.plot_kl import plot_kl
 from config.config import Config_simulation, print_warning
 # exp_setting
 from exp_setting.exp import *
@@ -6,7 +7,6 @@ from exp_setting.exp import *
 from simulation.simulation import start_simulation_2dqw
 # plot
 from analyze.visualization.plot_image import *
-from analyze.visualization.plot_kl import execute_plot_kl_div, parallel_execute_plot_kl_div
 from analyze.visualization.plot_var import execute_plot_var
 
 # gif
@@ -54,6 +54,7 @@ class Normal_qw:
     """
 
     def __init__(self):
+        self.index = 0
         if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100:
             self.selected_conditions, self.exp_name = exp_018()
         elif Config_simulation.max_time_step == 2000:
@@ -77,8 +78,9 @@ class Normal_qw:
     def run_gif_heatmap(self):
         make_gif_image(exp_name=self.exp_name, plot_type="heatmap")
 
-    def run_kl_div(self):
-        pass
+    def run_kl_div(self, qw_obj):
+        plot_kl(exp1_name=self.exp_name, exp1_index=self.index, exp2_name=qw_obj.exp_name,
+                exp2_indexes=qw_obj.selected_exp_indexes)
 
 
 class Erase_EQW:
@@ -113,9 +115,6 @@ class Erase_EQW:
     def run_gif_heatmap(self, plot_t_step=None):
         make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
                        plot_t_step=plot_t_step)
-
-    def run_kl_div(self):
-        pass
 
 
 # plot_image(exp_name=exp_name, plot_type="surface")
@@ -234,10 +233,13 @@ class Erase_EQW:
 
 
 if __name__ == '__main__':
-    qw = Erase_EQW(select_exp_indexes=[10, 20, 30, 40])
-    qw.run_simulation()
-    qw.run_plot_surface()
-    qw.run_gif_surface(plot_t_step=100)
-    qw.run_plot_heatmap()
-    qw.run_gif_heatmap(plot_t_step=20)
-    # qw.run_kl_div()
+    qw = Normal_qw()
+    # qw.run_simulation()
+    # qw.run_plot_surface()
+    # qw.run_gif_surface()
+    # qw.run_gif_surface(plot_t_step=2000)
+    # qw.run_plot_heatmap()
+    # qw.run_gif_heatmap()
+    # qw.run_gif_heatmap(plot_t_step=2000)
+    erase_qw = Erase_EQW(select_exp_indexes=[10, 20, 30, 40])
+    qw.run_kl_div(qw_obj=erase_qw)

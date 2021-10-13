@@ -250,13 +250,13 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
 
 def calc_probability(PSY, len_x, len_y):
     probability = np.zeros([len_x, len_y])
-    probability, err = calculate_dict(len_x, len_y, probability, PSY)
+    probability, p_sum, err = calculate_dict(len_x, len_y, probability, PSY)
     if err:
-        print_warning(f"確率に問題がある可能性があります：確率の合計＝{probability.sum()}")
+        print_warning(f"確率に問題がある可能性があります：{p_sum}")
     return probability
 
 
-@njit('Tuple((f8[:,:],b1))(i8,i8,f8[:,:],c16[:,:,:])', cache=True)
+@njit('Tuple((f8[:,:],f8,b1))(i8,i8,f8[:,:],c16[:,:,:])', cache=True)
 def calculate_dict(len_x, len_y, probability, PSY):
     for x in range(0, len_x):
         for y in range(0, len_y):
@@ -268,4 +268,4 @@ def calculate_dict(len_x, len_y, probability, PSY):
     err = False
     if round(probability_sum, 13) != 1.0:
         err = True
-    return probability, err
+    return probability, probability_sum, err

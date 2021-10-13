@@ -99,7 +99,7 @@ def config_var_save_path(exp_name):
 # KLダイバージェンスの保存場所
 def config_KL_div_save_path():
     # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/KL_div/"
+    path = f"result/KL_div"
     os.makedirs(path, exist_ok=True)
     return path
 

@@ -17,7 +17,6 @@ def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None):
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
         plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index)
-        plotter.select_plot_t_step()
         plotter.start_parallel_processing(plot_type=plot_type)
 
 
@@ -35,22 +34,11 @@ class Plotter:
         self.exp_name = None
         self.plot_exp_index = None
         self.p = None
-        self.t_list = None
+        self.t_list = select_plot_t_step()
 
     def set_up_conditions(self, exp_name, plot_exp_index):
         self.exp_name = exp_name
         self.plot_exp_index = plot_exp_index
-
-    def select_plot_t_step(self):
-        # どのデータ抽出するかを選択する
-        t_list = list(range(0, 105, 5))
-        if Config_simulation.max_time_step == 2000:
-            t_list += list(range(120, 2020, 20))
-        elif Config_simulation.max_time_step == 600:
-            t_list += list(range(120, 620, 20))
-        elif Config_simulation.max_time_step == 200:
-            t_list += list(range(105, 205, 5))
-        self.t_list = t_list
 
     def start_parallel_processing(self, plot_type):
         # 並列処理させるために、各プロセスに渡す引数を生成する
@@ -211,3 +199,15 @@ def check_plot_progress(exp_name, plot_exp_index, T):
         print_green_text(f"plot_exp_index={plot_exp_index}：既に完了")
         finished = True
     return finished
+
+
+def select_plot_t_step():
+    # どのデータ抽出するかを選択する
+    t_list = list(range(0, 105, 5))
+    if Config_simulation.max_time_step == 2000:
+        t_list += list(range(120, 2020, 20))
+    elif Config_simulation.max_time_step == 600:
+        t_list += list(range(120, 620, 20))
+    elif Config_simulation.max_time_step == 200:
+        t_list += list(range(105, 205, 5))
+    return t_list
