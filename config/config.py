@@ -28,11 +28,6 @@ class Config_simulation:
         plot_parallel_num = 4
 
 
-#
-# class Config_save_log:
-#     path = "log/log_data"
-
-
 def print_warning(text):
     warning = '*' * 30 + '\n'
     warning += '*{:^28}*\n'.format('Warning')
