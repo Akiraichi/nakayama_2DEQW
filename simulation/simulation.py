@@ -5,6 +5,12 @@ from multiprocessing import Pool
 import glob
 
 
+def start_simulation_2dqw(exp_conditions, start_step_t=0):
+    simulation = Simulation_qw()
+    simulation.set_up_conditions(exp_conditions, start_step_t)
+    simulation.start_parallel_processing()
+
+
 class Simulation_qw:
     def __init__(self):
         self.exp_conditions = None
@@ -23,16 +29,26 @@ class Simulation_qw:
         # 最大並列数を設定
         p = Pool(Config_simulation.simulation_parallel_num)
         # 並列処理を開始する
-        p.map(wrapper_simulation, arguments)
+        p.map(Simulation_qw.wrapper, arguments)
 
         # 処理完了後にprocessをclose
         print_finish("execute_simulation")
         p.close()
         p.terminate()
 
+    @staticmethod
+    def wrapper(args):
+        return Simulation_qw.main_simulation(*args)
 
-def wrapper_simulation(args):
-    return exact_simulation(*args)
+    @staticmethod
+    def main_simulation(condition, start_step_t):
+        simulation = qw_2d_simulation()
+        simulation.set_up_condition(condition, start_step_t)
+        if simulation.check_finished():
+            return
+        else:
+            simulation.run()
+            simulation.save()
 
 
 class qw_2d_simulation:
@@ -78,19 +94,3 @@ class qw_2d_simulation:
         save_data(data=data, path=config_simulation_data_save_path(self.exp_name, self.exp_index),
                   file_name=config_simulation_data_name(index=self.exp_index))
         print_finish(f"exp_index={self.exp_index}")
-
-
-def start_simulation_2dqw(exp_conditions, start_step_t=0):
-    simulation = Simulation_qw()
-    simulation.set_up_conditions(exp_conditions, start_step_t)
-    simulation.start_parallel_processing()
-
-
-def exact_simulation(condition, start_step_t):
-    simulation = qw_2d_simulation()
-    simulation.set_up_condition(condition, start_step_t)
-    if not simulation.check_finished():
-        simulation.run()
-        simulation.save()
-    else:
-        return

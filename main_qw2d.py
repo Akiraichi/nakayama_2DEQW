@@ -29,8 +29,8 @@ class QW:
         else:
             raise MaxTimeError(Config_simulation.max_time_step)
 
-    def run_simulation(self):
-        start_simulation_2dqw(exp_conditions=self.selected_conditions)
+    def run_simulation(self, start_step_t=0):
+        start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t)
 
     def run_plot_surface(self):
         plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes)

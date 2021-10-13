@@ -37,8 +37,8 @@ def simulation_QW2D(condition, continue_t):
     glob関数あるいはgoogle driveの使用により一度に取得可能なファイル数が999までだったからだ。
     continue_tステップ目から再開する。
     continue_t=99なら、98ステップをロードし、99ステップのシミュレーションから開始する
-    
     """
+
     if continue_t == 0:
         # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
         # ここでセーブする。保存するのは初期状態のPSY
@@ -51,33 +51,6 @@ def simulation_QW2D(condition, continue_t):
         PSY_now = joblib.load(path)["シミュレーションデータ"]
         start_t = continue_t
     print(f"start_t={start_t}")
-    #
-    # simulation_data_file_names = glob.glob(f"{config_simulation_data_save_path(exp_name, exp_index)}/*.jb")
-    # simulation_data_file_names.sort()  # 実験順にsortする。
-    # start_t = 1
-    # if len(simulation_data_file_names) == 0:
-    #     # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
-    #     # ここでセーブする。保存するのは初期状態のPSY
-    #     save_t_step_psy(psy=PSY_now, t=0, exp_name=exp_name, i=exp_index, condition=condition)
-    # else:
-    #     # 途中からシミュレーションを再開
-    #
-    #     PSY_now = joblib.load(simulation_data_file_names[-2])["シミュレーションデータ"]  # 最も最後から一つ前からシミュレーションを再開する
-    #     print(simulation_data_file_names[-2])
-    #     """
-    #      simulation_data_file_names[-2] // 'result/exp_018/simulation_data_exp_018/00/098.jb'
-    #      a.split("/") //  ['result', 'exp_018', 'simulation_data_exp_018', '00', '098.jb']
-    #      a.split("/")[-1] // '098.jb'
-    #      b[:-3] // '098'
-    #     """
-    #     load_t = int(simulation_data_file_names[-2].split("/")[-1][:-3])
-    #     print(f"load_t={load_t}")
-    #     """
-    #     t=load_tのシミュレーションデータをPSY_nowとしてロードする。
-    #     ゆえに、次のtはload_t+1であれば良い
-    #     """
-    #     start_t = load_t + 1
-    #     print(f"start_t={start_t}")
 
     # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
     for t in range(start_t, T + 1):
@@ -86,7 +59,6 @@ def simulation_QW2D(condition, continue_t):
         PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P=P, Q=Q, R=R, S=S, t=t,
                                  erase_t=erase_t)
         # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
-        # TODO:セーブに時間がかかるようだったら、10ステップごとに保存する、などする
         save_t_step_psy(psy=PSY_now, t=t, exp_name=exp_name, i=exp_index, condition=condition)
 
 
