@@ -65,7 +65,7 @@ class Make_gif:
             # resultのplotの中にあるexpフォルダ名を取得
             folder_names = glob.glob(self.plot_exp_path)
             plot_image_names = [folder_name + f"/{self.plot_t_step_zfill}.png" for folder_name in folder_names]
-            self.save_path = self.path + f"{str(self.plot_t_step).zfill(4)}.gif"
+            self.save_path = self.path + f"t_{str(self.plot_t_step).zfill(4)}.gif"
             self.__core_make_gif(plot_image_names)
 
     def __core_make_gif(self, plot_image_names):
