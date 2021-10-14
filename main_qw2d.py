@@ -16,7 +16,8 @@ class MaxTimeError(Exception):
 class QW:
     def __init__(self, e1, e2, select_exp_indexes=None):
         self.selected_exp_indexes = select_exp_indexes
-        if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100:
+        if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100 \
+                or Config_simulation.max_time_step == 200:
             if select_exp_indexes is None:
                 self.selected_conditions, self.exp_name = e1()
             else:
@@ -72,17 +73,17 @@ class Erase_EQW(QW):
 
 if __name__ == '__main__':
     qw = Normal_QW()
-    qw.run_simulation(start_step_t=96)
-    qw.run_plot_surface()
-    qw.run_gif_surface()
-    qw.run_gif_surface(plot_t_step=100)
+    qw.run_simulation()
+    # qw.run_plot_surface()
+    # qw.run_gif_surface()
+    # qw.run_gif_surface(plot_t_step=100)
     qw.run_plot_heatmap()
     qw.run_gif_heatmap()
-    qw.run_gif_heatmap(plot_t_step=100)
+    # qw.run_gif_heatmap(plot_t_step=100)
 
-    erase_qw = Erase_EQW(select_exp_indexes=[10, 20, 30, 40])
-    erase_qw.run_simulation()
-    erase_qw.run_plot_surface()
-    erase_qw.run_gif_surface(plot_t_step=100)
+    # erase_qw = Erase_EQW(select_exp_indexes=[20])
+    # erase_qw.run_simulation()
+    # erase_qw.run_plot_surface()
+    # erase_qw.run_gif_surface(plot_t_step=100)
 
-    qw.run_kl_div(qw_obj=erase_qw)
+    # qw.run_kl_div(qw_obj=erase_qw)

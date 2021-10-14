@@ -180,7 +180,10 @@ def do_plot_heatmap(prob_list, path, file_name, title):
     # sns.heatmap(df, square=True, cmap="Blues")
     ax.set_title(title, size=24)
     plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
-    plt.close('all')
+    # メモリ解放
+    fig.clf()
+    ax.cla()
+    plt.close()
 
 
 def check_plot_progress(exp_name, plot_exp_index, T):
