@@ -17,7 +17,7 @@ class Config_simulation:
         # シミュレーションの並列数
         simulation_parallel_num = 3
         # plotの並列数
-        plot_parallel_num = 4
+        plot_parallel_num = 2
     else:
         print("Execute in local")
         # 実験条件の設定
@@ -25,7 +25,7 @@ class Config_simulation:
         # シミュレーションの並列数
         simulation_parallel_num = 4
         # plotの並列数
-        plot_parallel_num = 4
+        plot_parallel_num = 2
 
 
 def print_warning(text):
