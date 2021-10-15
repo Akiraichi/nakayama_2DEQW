@@ -1,6 +1,6 @@
 # calc
 import numpy as np
-from simulation.algorithm import calc_probability
+from simulation.simulation_core import calc_probability
 # plot
 import matplotlib.pyplot as plt
 # config
@@ -40,7 +40,7 @@ class Plot_KL:
             arguments.append(
                 [self.exp1_name, self.exp1_index, self.exp2_name, exp2_index])
         # 並列数
-        p = Pool(Config_simulation.plot_parallel_num)
+        p = Pool(ConfigSimulation.PlotParallelNum)
         # 並列処理開始
         p.map(Plot_KL.wrapper, arguments)
         print_finish("FINISH：KLダイバージェンス")

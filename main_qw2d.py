@@ -16,19 +16,19 @@ class MaxTimeError(Exception):
 class QW:
     def __init__(self, e1, e2, select_exp_indexes=None):
         self.selected_exp_indexes = select_exp_indexes
-        if Config_simulation.max_time_step == 600 or Config_simulation.max_time_step == 100 \
-                or Config_simulation.max_time_step == 200:
+        if ConfigSimulation.MaxTimeStep == 600 or ConfigSimulation.MaxTimeStep == 100 \
+                or ConfigSimulation.MaxTimeStep == 200:
             if select_exp_indexes is None:
                 self.selected_conditions, self.exp_name = e1()
             else:
                 self.selected_conditions, self.exp_name = e1(select_exp_indexes)
-        elif Config_simulation.max_time_step == 2000:
+        elif ConfigSimulation.MaxTimeStep == 2000:
             if select_exp_indexes is None:
                 self.selected_conditions, self.exp_name = e2()
             else:
                 self.selected_conditions, self.exp_name = e2(select_exp_indexes)
         else:
-            raise MaxTimeError(Config_simulation.max_time_step)
+            raise MaxTimeError(ConfigSimulation.MaxTimeStep)
 
     def run_simulation(self, start_step_t=0):
         start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t)
@@ -51,7 +51,6 @@ class QW:
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes)
 
-
 class Normal_QW(QW):
     """
     通常の量子ウォーク
@@ -71,14 +70,24 @@ class Erase_EQW(QW):
         super().__init__(e1=exp_019, e2=exp_021, select_exp_indexes=select_exp_indexes)
 
 
+class SlowEraseEQW(QW):
+    """
+    ゆっくり電場を消す電場量子ウォーク
+    pi/60
+    """
+
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_023, e2=exp_024, select_exp_indexes=select_exp_indexes)
+
+
 if __name__ == '__main__':
-    qw = Normal_QW()
+    qw = SlowEraseEQW(select_exp_indexes=[0])
     qw.run_simulation()
-    # qw.run_plot_surface()
-    # qw.run_gif_surface()
+    qw.run_plot_surface()
+    qw.run_gif_surface()
     # qw.run_gif_surface(plot_t_step=100)
-    qw.run_plot_heatmap()
-    qw.run_gif_heatmap()
+    # qw.run_plot_heatmap()
+    # qw.run_gif_heatmap()
     # qw.run_gif_heatmap(plot_t_step=100)
 
     # erase_qw = Erase_EQW(select_exp_indexes=[20])

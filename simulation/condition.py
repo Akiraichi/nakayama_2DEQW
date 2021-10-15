@@ -1,5 +1,5 @@
 import numpy as np
-from config.config import Config_simulation
+from config.config import ConfigSimulation
 
 
 class Condition:
@@ -22,7 +22,7 @@ class Condition:
 def set_basic_condition(condition):
     # シミュレーション条件
     condition.PSY_init = None
-    condition.T = Config_simulation.max_time_step  # 最大時間発展T
+    condition.T = ConfigSimulation.MaxTimeStep  # 最大時間発展T
     condition.P = np.array([[-1 / 2, 1 / 2, 1 / 2, 1 / 2], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
                            dtype=np.complex128)
     condition.Q = np.array([[0, 0, 0, 0], [1 / 2, -1 / 2, 1 / 2, 1 / 2], [0, 0, 0, 0], [0, 0, 0, 0]],

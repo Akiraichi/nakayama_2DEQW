@@ -1,6 +1,6 @@
 import numpy as np
 from numba import njit, jit
-from config.config import print_warning, print_green_text
+from config.config import print_warning, print_green_text, ConfigSimulation
 
 
 # 1/0での挙動が想定外である。
@@ -16,8 +16,8 @@ def e_i_phi(position, T, phi, pow_n):
     return res
 
 
-@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8)', cache=True)
-def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t):
+@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8,i8)', cache=True)
+def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t, EraseTimeStep):
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
@@ -152,6 +152,34 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                      Q @ PSY_of_Q + \
                                      R @ PSY_of_R + \
                                      S @ PSY_of_S
+                else:
+                    PSY_next[x, y] = np.exp(1j * (x - T) * phi) * ((P @ PSY_of_P) +
+                                                                   (Q @ PSY_of_Q) +
+                                                                   (R @ PSY_of_R) +
+                                                                   (S @ PSY_of_S))
+            elif Algorithm == 200:
+                """
+                電場をゆっくり消す場合。
+                離散量ウォークだから、どのみち離散的に電場は変化していく必要がある。今までは突然、電場を消していたが、
+                ゆっくり電場を減少させていくことで、多少、なんら中の違いが生まれる可能性はあると思う。
+                線形的に小さくしていくことで消していく
+                では、何ステップ使って、電場を消していくかだが、configで設定できるようにしておくことにする。
+                """
+                # x軸で電場をかけた
+                if t >= erase_t:
+                    per = t - erase_t
+                    if per < EraseTimeStep:
+                        per = 1 - per / EraseTimeStep
+
+                        PSY_next[x, y] = np.exp(1j * (x - T) * phi * per) * ((P @ PSY_of_P) +
+                                                                             (Q @ PSY_of_Q) +
+                                                                             (R @ PSY_of_R) +
+                                                                             (S @ PSY_of_S))
+                    else:
+                        PSY_next[x, y] = P @ PSY_of_P + \
+                                         Q @ PSY_of_Q + \
+                                         R @ PSY_of_R + \
+                                         S @ PSY_of_S
                 else:
                     PSY_next[x, y] = np.exp(1j * (x - T) * phi) * ((P @ PSY_of_P) +
                                                                    (Q @ PSY_of_Q) +

@@ -1,11 +1,12 @@
 import os
 import termcolor
+import sys
 
 
-class Config_simulation:
-    import sys
+class ConfigSimulation:
     moduleList = sys.modules
     ENV_COLAB = False
+    EraseTimeStep = 100
 
     if 'google.colab' in moduleList:
         ENV_COLAB = True
@@ -13,19 +14,19 @@ class Config_simulation:
     if ENV_COLAB:
         print("Execute in google_colab")
         # 実験条件の設定
-        max_time_step = 2000  # 最大時間ステップ数
+        MaxTimeStep = 2000  # 最大時間ステップ数
         # シミュレーションの並列数
-        simulation_parallel_num = 3
+        SimulationParallelNum = 3
         # plotの並列数
-        plot_parallel_num = 2
+        PlotParallelNum = 2
     else:
         print("Execute in local")
         # 実験条件の設定
-        max_time_step = 100  # 最大時間ステップ数
+        MaxTimeStep = 100  # 最大時間ステップ数
         # シミュレーションの並列数
-        simulation_parallel_num = 4
+        SimulationParallelNum = 4
         # plotの並列数
-        plot_parallel_num = 2
+        PlotParallelNum = 2
 
 
 def print_warning(text):

@@ -1,5 +1,5 @@
 from config.config import *
-from simulation.algorithm import calculate_QW2D
+from simulation.simulation_core import calculate_QW2D
 from simulation.save import save_data, exp_data_pack_memory_save
 from multiprocessing import Pool
 import glob
@@ -29,7 +29,7 @@ class Simulation_qw:
             arguments.append([condition, self.start_step_t])
 
         # 最大並列数を設定
-        p = Pool(Config_simulation.simulation_parallel_num)
+        p = Pool(ConfigSimulation.SimulationParallelNum)
         # 並列処理を開始する
         p.map(Simulation_qw.wrapper, arguments)
 
@@ -144,7 +144,8 @@ class qw_2d_simulation:
             PSY_next = np.zeros([2 * self.T + 1, 2 * self.T + 1, 4], dtype=np.complex128)
             print(f"{t}：ステップ")
             PSY_now = calculate_QW2D(self.T, self.init_vector, self.phi, PSY_now, PSY_next, self.Algorithm,
-                                     P=self.P, Q=self.Q, R=self.R, S=self.S, t=t, erase_t=self.erase_t)
+                                     P=self.P, Q=self.Q, R=self.R, S=self.S, t=t, erase_t=self.erase_t,
+                                     EraseTimeStep=ConfigSimulation.EraseTimeStep)
             # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
             self.save(psy=PSY_now, t=t)
 

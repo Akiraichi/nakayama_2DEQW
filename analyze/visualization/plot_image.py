@@ -5,7 +5,7 @@ from config.config import *
 import joblib
 from multiprocessing import Pool
 import glob
-from simulation.algorithm import calc_probability
+from simulation.simulation_core import calc_probability
 
 import seaborn as sns
 import pandas as pd
@@ -52,7 +52,7 @@ class Plotter:
             arguments.append([simulation_data_file_names[t], plot_type])
 
         # 最大並列数を設定
-        p = Pool(Config_simulation.plot_parallel_num)
+        p = Pool(ConfigSimulation.PlotParallelNum)
         # 並列処理開始
         p.map(Plotter.wrapper, arguments)
         print_finish(plot_type)
@@ -167,7 +167,7 @@ def do_plot_heatmap(prob_list, path, file_name, title):
     """heatmapをプロットする"""
     # プロット用のデータフレームの作成
     x_len = prob_list.shape[0]
-    T = Config_simulation.max_time_step
+    T = ConfigSimulation.MaxTimeStep
     l = []
     for k in range(x_len):
         l.append(str(k - T))
@@ -207,10 +207,10 @@ def check_plot_progress(exp_name, plot_exp_index, T):
 def select_plot_t_step():
     # どのデータ抽出するかを選択する
     t_list = list(range(0, 105, 5))
-    if Config_simulation.max_time_step == 2000:
+    if ConfigSimulation.MaxTimeStep == 2000:
         t_list += list(range(120, 2020, 20))
-    elif Config_simulation.max_time_step == 600:
+    elif ConfigSimulation.MaxTimeStep == 600:
         t_list += list(range(120, 620, 20))
-    elif Config_simulation.max_time_step == 200:
+    elif ConfigSimulation.MaxTimeStep == 200:
         t_list += list(range(105, 205, 5))
     return t_list

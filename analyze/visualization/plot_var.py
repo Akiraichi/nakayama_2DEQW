@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from config.config import *
 import joblib
 import glob
-from simulation.algorithm import calc_probability
+from simulation.simulation_core import calc_probability
 
 
 # 実験環境データの読みこみと展開
