@@ -51,6 +51,7 @@ class QW:
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes)
 
+
 class Normal_QW(QW):
     """
     通常の量子ウォーク
@@ -74,6 +75,8 @@ class SlowEraseEQW(QW):
     """
     ゆっくり電場を消す電場量子ウォーク
     pi/60
+    電場をどのくらいゆっくり消すかによって、実験を変えるのか、電場をどのくらいゆっくり消すかは固定にさせて、
+    色々なパラメータで実験するのかを検討
     """
 
     def __init__(self, select_exp_indexes):
