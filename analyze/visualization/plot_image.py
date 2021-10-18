@@ -17,7 +17,8 @@ def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None):
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
         plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index)
-        plotter.start_parallel_processing(plot_type=plot_type)
+        plotter.start_processing(plot_type=plot_type)
+        # plotter.start_parallel_processing(plot_type=plot_type)
 
 
 def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None):
@@ -39,6 +40,15 @@ class Plotter:
     def set_up_conditions(self, exp_name, plot_exp_index):
         self.exp_name = exp_name
         self.plot_exp_index = plot_exp_index
+
+    def start_processing(self, plot_type):
+        # 並列処理させるために、各プロセスに渡す引数を生成する
+        # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
+        simulation_data_file_names = glob.glob(
+            f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
+        simulation_data_file_names.sort()  # 実験順にsortする。
+        for simulation_data_file_name in simulation_data_file_names:
+            self.plot_image(simulation_data_file_name, plot_type)
 
     def start_parallel_processing(self, plot_type):
         # 並列処理させるために、各プロセスに渡す引数を生成する
