@@ -84,16 +84,16 @@ class SlowEraseEQW(QW):
 
 
 if __name__ == '__main__':
-    qw = SlowEraseEQW(select_exp_indexes=[0])
+    qw = Normal_QW()
     qw.run_simulation()
     qw.run_plot_surface()
     qw.run_gif_surface()
     # qw.run_gif_surface(plot_t_step=100)
-    # qw.run_plot_heatmap()
-    # qw.run_gif_heatmap()
+    qw.run_plot_heatmap()
+    qw.run_gif_heatmap()
     # qw.run_gif_heatmap(plot_t_step=100)
 
-    # erase_qw = Erase_EQW(select_exp_indexes=[20])
+    erase_qw = Erase_EQW(select_exp_indexes=[20])
     # erase_qw.run_simulation()
     # erase_qw.run_plot_surface()
     # erase_qw.run_gif_surface(plot_t_step=100)
