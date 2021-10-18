@@ -47,8 +47,8 @@ class Plotter:
         simulation_data_file_names = glob.glob(
             f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
         simulation_data_file_names.sort()  # 実験順にsortする。
-        for simulation_data_file_name in simulation_data_file_names:
-            self.plot_image(simulation_data_file_name, plot_type)
+        for t in self.t_list:
+            self.plot_image(simulation_data_file_names[t], plot_type)
 
     def start_parallel_processing(self, plot_type):
         # 並列処理させるために、各プロセスに渡す引数を生成する
