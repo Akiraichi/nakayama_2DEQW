@@ -1,5 +1,5 @@
-from simulation.condition import Condition
-from simulation.condition import set_basic_condition
+from simulation.codition import Condition
+from simulation.codition import set_basic_condition
 import numpy as np
 import sympy
 
