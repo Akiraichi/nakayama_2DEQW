@@ -6,7 +6,7 @@ import sys
 class ConfigSimulation:
     moduleList = sys.modules
     ENV_COLAB = False
-    EraseTimeStep = 100 # 電場を完全に消すまでにかかるステップ数
+    EraseTimeStep = 100  # 電場を完全に消すまでにかかるステップ数
 
     if 'google.colab' in moduleList:
         ENV_COLAB = True
@@ -18,7 +18,7 @@ class ConfigSimulation:
         # シミュレーションの並列数
         SimulationParallelNum = 3
         # plotの並列数
-        PlotParallelNum = 2
+        PlotParallelNum = 4
     else:
         print("Execute in local")
         # 実験条件の設定
