@@ -128,7 +128,7 @@ class Main_Plotter:
         # plot処理で共通に使うもの
         self.phi_latex = condition.phi_latex
         self.t_index = str(self.t).zfill(4)
-        self.title = f"$t={self.t},erase_t={self.erase_t}$"
+        self.title = f"$t={self.t}$," + "$t_{erase}$" + f"={self.erase_t}"
         self.mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
         self.file_name = f"{self.t_index}.png"
         self.plot_save_path = plot_save_path(self.exp_name, self.plot_type, self.exp_index)
@@ -216,11 +216,13 @@ def check_plot_progress(exp_name, plot_exp_index, T):
 
 def select_plot_t_step():
     # どのデータ抽出するかを選択する
-    t_list = list(range(0, 105, 5))
+    t_list = None
     if ConfigSimulation.MaxTimeStep == 2000:
-        t_list += list(range(120, 2020, 20))
+        t_list = list(range(0, 2020, 20))
     elif ConfigSimulation.MaxTimeStep == 600:
-        t_list += list(range(120, 620, 20))
+        t_list = list(range(0, 620, 20))
     elif ConfigSimulation.MaxTimeStep == 200:
-        t_list += list(range(105, 205, 5))
+        t_list = list(range(0, 205, 5))
+    elif ConfigSimulation.MaxTimeStep == 100:
+        t_list = list(range(0, 105, 5))
     return t_list

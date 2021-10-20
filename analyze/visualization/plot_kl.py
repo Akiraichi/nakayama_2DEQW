@@ -70,6 +70,7 @@ class Main_KL_div:
         self.save_path = None
         self.KLdiv_list = None
         self.t_list = select_plot_t_step()
+        self.title = None
 
     def set_up(self, exp1_name, exp1_index, exp2_name, exp2_index):
         self.exp1_name = exp1_name
@@ -88,6 +89,10 @@ class Main_KL_div:
         # plot関係
         self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}.png'
 
+        # title設定のために一つデータをロードする。
+        condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
+        self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
+
     def plot(self):
         KLdiv_list = []
         for t_step in self.t_list:
@@ -97,7 +102,7 @@ class Main_KL_div:
             KLdiv = get_kl_div(p1=p1, p2=p2)
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
-        do_plot_kl_div(self.save_path, KLdiv_list, self.t_list)
+        do_plot_kl_div(self.save_path, KLdiv_list, self.t_list, self.title)
 
 
 def get_probability(simulation_data_file_names, index):
@@ -143,9 +148,10 @@ def get_kl_div(p1, p2):
     return kl_div
 
 
-def do_plot_kl_div(file_name, KL_div_list, t_list):
+def do_plot_kl_div(file_name, KL_div_list, t_list, title):
     fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=400)
     ax = fig.add_subplot(111, xlabel="t", ylabel="KL_div")
+    ax.set_title(title, size=24)
     ax.scatter(t_list, KL_div_list, c='blue')
     fig.savefig(file_name)
     print("FIN")
