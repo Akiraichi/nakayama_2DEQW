@@ -79,23 +79,36 @@ class SlowEraseEQW(QW):
     色々なパラメータで実験するのかを検討
     """
 
-    def __init__(self, select_exp_indexes):
+    def __init__(self, select_exp_indexes, erase_time_step=1):
         super().__init__(e1=exp_023, e2=exp_024, select_exp_indexes=select_exp_indexes)
+        self.erase_time_step = erase_time_step
+
+    def run_simulation(self, start_step_t=0):
+        start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t,
+                              erase_time_step=self.erase_time_step)
 
 
 if __name__ == '__main__':
-    qw = Normal_QW()
-    qw.run_simulation()
-    qw.run_plot_surface()
-    qw.run_gif_surface()
+    # qw = Normal_QW()
+    # qw.run_simulation()
+    # qw.run_plot_surface()
+    # qw.run_gif_surface()
     # qw.run_gif_surface(plot_t_step=100)
-    qw.run_plot_heatmap()
-    qw.run_gif_heatmap()
+    # qw.run_plot_heatmap()
+    # qw.run_gif_heatmap()
     # qw.run_gif_heatmap(plot_t_step=100)
 
-    erase_qw = Erase_EQW(select_exp_indexes=[20])
+    # erase_qw = Erase_EQW(select_exp_indexes=[20])
     # erase_qw.run_simulation()
     # erase_qw.run_plot_surface()
+    # erase_qw.run_plot_heatmap()
     # erase_qw.run_gif_surface(plot_t_step=100)
+
+    slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0], erase_time_step=50)
+    slow_erase_qw.run_simulation()
+    slow_erase_qw.run_plot_surface()
+    slow_erase_qw.run_gif_surface()
+    # slow_erase_qw.run_plot_heatmap()
+    # slow_erase_qw.run_gif_heatmap()
 
     # qw.run_kl_div(qw_obj=erase_qw)

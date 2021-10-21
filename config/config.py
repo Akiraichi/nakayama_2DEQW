@@ -6,7 +6,6 @@ import sys
 class ConfigSimulation:
     moduleList = sys.modules
     ENV_COLAB = False
-    EraseTimeStep = 100  # 電場を完全に消すまでにかかるステップ数
 
     if 'google.colab' in moduleList:
         ENV_COLAB = True

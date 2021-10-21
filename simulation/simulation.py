@@ -7,9 +7,9 @@ import numpy as np
 import joblib
 
 
-def start_simulation_2dqw(exp_conditions, start_step_t=0):
+def start_simulation_2dqw(exp_conditions, start_step_t, erase_time_step=None):
     simulation = Simulation_qw()
-    simulation.set_up_conditions(exp_conditions, start_step_t)
+    simulation.set_up_conditions(exp_conditions, start_step_t, erase_time_step)
     simulation.start_parallel_processing()
 
 
@@ -17,16 +17,19 @@ class Simulation_qw:
     def __init__(self):
         self.exp_conditions = None
         self.start_step_t = None
+        self.erase_time_step = None
 
-    def set_up_conditions(self, exp_conditions, start_step_t):
+    def set_up_conditions(self, exp_conditions, start_step_t, erase_time_step):
         self.exp_conditions = exp_conditions
         self.start_step_t = start_step_t
+        # 電場を消すのにかける時間ステップ数
+        self.erase_time_step = erase_time_step
 
     def start_parallel_processing(self):
         # 並列処理させるために、かくプロセスに渡す引数を生成する
         arguments = []
         for condition in self.exp_conditions:
-            arguments.append([condition, self.start_step_t])
+            arguments.append([condition, self.start_step_t, self.erase_time_step])
 
         # 最大並列数を設定
         p = Pool(ConfigSimulation.SimulationParallelNum)
@@ -43,9 +46,9 @@ class Simulation_qw:
         return Simulation_qw.main_simulation(*args)
 
     @staticmethod
-    def main_simulation(condition, start_step_t):
+    def main_simulation(condition, start_step_t, erase_time_step):
         simulation = qw_2d_simulation()
-        simulation.set_up_condition(condition, start_step_t)
+        simulation.set_up_condition(condition, start_step_t, erase_time_step)
         if simulation.check_finished():
             return
         else:
@@ -57,6 +60,7 @@ class Simulation_qw:
 class qw_2d_simulation:
     def __init__(self):
         self.start_step_t = None
+        self.erase_time_step = None
 
         self.condition = None
         self.exp_index = None
@@ -76,8 +80,10 @@ class qw_2d_simulation:
         self.init_PSY_now = None
         self.start_t = None
 
-    def set_up_condition(self, condition, start_step_t):
+    def set_up_condition(self, condition, start_step_t, erase_time_step):
         self.start_step_t = start_step_t
+        # 電場を消すのにかける時間ステップ数
+        self.erase_time_step = erase_time_step
 
         # 展開する
         self.condition = condition
@@ -145,7 +151,7 @@ class qw_2d_simulation:
             print(f"{t}：ステップ")
             PSY_now = calculate_QW2D(self.T, self.init_vector, self.phi, PSY_now, PSY_next, self.Algorithm,
                                      P=self.P, Q=self.Q, R=self.R, S=self.S, t=t, erase_t=self.erase_t,
-                                     EraseTimeStep=ConfigSimulation.EraseTimeStep)
+                                     erase_time_step=self.erase_time_step)
             # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
             self.save(psy=PSY_now, t=t)
 

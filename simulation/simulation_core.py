@@ -17,7 +17,7 @@ def e_i_phi(position, T, phi, pow_n):
 
 
 @njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8,i8)', cache=True)
-def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t, EraseTimeStep):
+def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t, erase_time_step):
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
@@ -168,8 +168,8 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                 # x軸で電場をかけた
                 if t >= erase_t:
                     per = t - erase_t
-                    if per < EraseTimeStep:
-                        per = 1 - per / EraseTimeStep
+                    if per < erase_time_step:
+                        per = 1 - per / erase_time_step
 
                         PSY_next[x, y] = np.exp(1j * (x - T) * phi * per) * ((P @ PSY_of_P) +
                                                                              (Q @ PSY_of_Q) +
