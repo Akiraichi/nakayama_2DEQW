@@ -17,6 +17,8 @@ class Condition:
         self.exp_index = None
         # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
         self.erase_t = 0
+        # 電場をどの程度ゆっくり消すか
+        self.erase_time_step = 0
 
 
 def set_basic_condition(condition):

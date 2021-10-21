@@ -7,9 +7,9 @@ import numpy as np
 import joblib
 
 
-def start_simulation_2dqw(exp_conditions, start_step_t, erase_time_step=None):
+def start_simulation_2dqw(exp_conditions, start_step_t):
     simulation = Simulation_qw()
-    simulation.set_up_conditions(exp_conditions, start_step_t, erase_time_step)
+    simulation.set_up_conditions(exp_conditions, start_step_t)
     simulation.start_parallel_processing()
 
 
@@ -17,19 +17,16 @@ class Simulation_qw:
     def __init__(self):
         self.exp_conditions = None
         self.start_step_t = None
-        self.erase_time_step = None
 
-    def set_up_conditions(self, exp_conditions, start_step_t, erase_time_step):
+    def set_up_conditions(self, exp_conditions, start_step_t):
         self.exp_conditions = exp_conditions
         self.start_step_t = start_step_t
-        # 電場を消すのにかける時間ステップ数
-        self.erase_time_step = erase_time_step
 
     def start_parallel_processing(self):
         # 並列処理させるために、かくプロセスに渡す引数を生成する
         arguments = []
         for condition in self.exp_conditions:
-            arguments.append([condition, self.start_step_t, self.erase_time_step])
+            arguments.append([condition, self.start_step_t])
 
         # 最大並列数を設定
         p = Pool(ConfigSimulation.SimulationParallelNum)
@@ -46,9 +43,9 @@ class Simulation_qw:
         return Simulation_qw.main_simulation(*args)
 
     @staticmethod
-    def main_simulation(condition, start_step_t, erase_time_step):
+    def main_simulation(condition, start_step_t):
         simulation = qw_2d_simulation()
-        simulation.set_up_condition(condition, start_step_t, erase_time_step)
+        simulation.set_up_condition(condition, start_step_t)
         if simulation.check_finished():
             return
         else:
@@ -80,10 +77,8 @@ class qw_2d_simulation:
         self.init_PSY_now = None
         self.start_t = None
 
-    def set_up_condition(self, condition, start_step_t, erase_time_step):
+    def set_up_condition(self, condition, start_step_t):
         self.start_step_t = start_step_t
-        # 電場を消すのにかける時間ステップ数
-        self.erase_time_step = erase_time_step
 
         # 展開する
         self.condition = condition
@@ -100,6 +95,7 @@ class qw_2d_simulation:
         self.Algorithm = condition.algorithm
         self.phi = condition.phi
         self.erase_t = condition.erase_t
+        self.erase_time_step = condition.erase_time_step  # 電場を消すのにかける時間ステップ数
         self.init_vector = np.zeros_like(self.PSY_init, dtype=np.complex128)  # その他の場所の確率振幅ベクトルの設定
 
     def initialize(self):

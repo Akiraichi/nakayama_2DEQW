@@ -1096,3 +1096,79 @@ def exp_024(exp_index_list):
         print(f"t = {s_c.erase_t}")
 
     return selected_conditions, exp_name
+
+
+def exp_025(exp_index_list):
+    """
+    電場を消す時間ステップを変更する。
+    電場は100ステップ目で消し始める
+    600ステップ版
+    """
+    exp_name = "exp_025"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_basic_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 200
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+
+        c.erase_t = 100
+
+        c.exp_index = i
+        c.erase_time_step = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
+
+
+def exp_026(exp_index_list, erase_t):
+    """exp_025の2000ステップ版"""
+    exp_name = "exp_026"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_basic_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 200
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+
+        c.erase_t = erase_t
+
+        c.exp_index = i
+        c.erase_time_step = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
