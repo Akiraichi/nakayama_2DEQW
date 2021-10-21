@@ -1221,7 +1221,7 @@ def exp_028(exp_index_list):
     電場は200ステップ目で消し始める
     2000ステップ版
     """
-    exp_name = "exp_027"
+    exp_name = "exp_028"
     conditions = []
     for i in range(1000):
         c = Condition()
