@@ -83,15 +83,28 @@ class SlowEraseEQW(QW):
         super().__init__(e1=exp_023, e2=exp_024, select_exp_indexes=select_exp_indexes)
 
 
-class SlowEraseEQW_for_erase_time_step(QW):
+class SlowEraseEQW_erase_t_0(QW):
     """
     ゆっくり電場を消す電場量子ウォーク
     pi/60
     電場をどのくらいゆっくり消すか、電場を消す時間ステップ数を変更して実験する
+    t=0で電場を消し始める
     """
 
     def __init__(self, erase_time_steps):
         super().__init__(e1=exp_025, e2=exp_026, select_exp_indexes=erase_time_steps)
+
+
+class SlowEraseEQW_erase_t_200(QW):
+    """
+    ゆっくり電場を消す電場量子ウォーク
+    pi/60
+    電場をどのくらいゆっくり消すか、電場を消す時間ステップ数を変更して実験する
+    t=200で電場を消し始める
+    """
+
+    def __init__(self, erase_time_steps):
+        super().__init__(e1=exp_027, e2=exp_028, select_exp_indexes=erase_time_steps)
 
 
 if __name__ == '__main__':
@@ -117,13 +130,11 @@ if __name__ == '__main__':
     # slow_erase_qw.run_plot_heatmap()
     # slow_erase_qw.run_gif_heatmap()
 
-    qw = SlowEraseEQW_for_erase_time_step(erase_time_steps=[100])
-    qw.run_simulation()
-    qw.run_plot_surface()
-    qw.run_gif_surface()
-    # qw.run_gif_surface(plot_t_step=100)
-    # qw.run_plot_heatmap()
-    # qw.run_gif_heatmap()
-    # qw.run_gif_heatmap(plot_t_step=100)
+    slow_erase_qw_step_0 = SlowEraseEQW_erase_t_0(erase_time_steps=[100])
+    slow_erase_qw_step_0.run_simulation()
+    slow_erase_qw_step_0.run_plot_surface()
+    slow_erase_qw_step_0.run_gif_surface()
+    slow_erase_qw_step_0.run_plot_heatmap()
+    slow_erase_qw_step_0.run_gif_heatmap()
 
     # qw.run_kl_div(qw_obj=erase_qw)
