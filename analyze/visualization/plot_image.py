@@ -11,23 +11,23 @@ import seaborn as sns
 import pandas as pd
 
 
-def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None):
+def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
     if plot_exp_indexes is None:
         plot_exp_indexes = [0]
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
-        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index)
+        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
         plotter.start_processing(plot_type=plot_type)
         # plotter.start_parallel_processing(plot_type=plot_type)
 
 
-def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None):
+def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
     if plot_exp_indexes is None:
         plot_exp_indexes = [0]
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
-        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index)
-        plotter.plot_only_t(plot_t_step=plot_t_step, plot_type=plot_type)
+        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
+        plotter.plot_only_t(plot_t_step=plot_t_step, plot_type=plot_type, is_enlarge=is_enlarge)
 
 
 class Plotter:
@@ -36,19 +36,19 @@ class Plotter:
         self.plot_exp_index = None
         self.p = None
         self.t_list = select_plot_t_step()
+        self.is_enlarge = None
 
-    def set_up_conditions(self, exp_name, plot_exp_index):
+    def set_up_conditions(self, exp_name, plot_exp_index, is_enlarge):
         self.exp_name = exp_name
         self.plot_exp_index = plot_exp_index
+        self.is_enlarge = is_enlarge
 
     def start_processing(self, plot_type):
-        # 並列処理させるために、各プロセスに渡す引数を生成する
-        # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
         simulation_data_file_names = glob.glob(
             f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
         simulation_data_file_names.sort()  # 実験順にsortする。
         for t in self.t_list:
-            self.plot_image(simulation_data_file_names[t], plot_type)
+            self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
 
     def start_parallel_processing(self, plot_type):
         # 並列処理させるために、各プロセスに渡す引数を生成する
@@ -59,7 +59,7 @@ class Plotter:
 
         arguments = []
         for t in self.t_list:
-            arguments.append([simulation_data_file_names[t], plot_type])
+            arguments.append([simulation_data_file_names[t], plot_type, self.is_enlarge])
 
         # 最大並列数を設定
         p = Pool(ConfigSimulation.PlotParallelNum)
@@ -75,16 +75,16 @@ class Plotter:
         return Plotter.plot_image(*args)
 
     @staticmethod
-    def plot_image(simulation_data_file_name, plot_type):
+    def plot_image(simulation_data_file_name, plot_type, is_enlarge):
         plotter = Main_Plotter()
-        plotter.load_data(simulation_data_file_name, plot_type)
+        plotter.load_data(simulation_data_file_name, plot_type, is_enlarge)
         plotter.plot()
 
-    def plot_only_t(self, plot_t_step, plot_type):
+    def plot_only_t(self, plot_t_step, plot_type, is_enlarge):
         plotter = Main_Plotter()
         plotter.load_data(
             f"{config_simulation_data_save_path(self.exp_name)}{str(self.plot_exp_index).zfill(2)}/{str(plot_t_step).zfill(4)}.jb",
-            plot_type)
+            plot_type, is_enlarge)
         plotter.plot()
 
 
@@ -109,9 +109,11 @@ class Main_Plotter:
         self.mesh_z = None
         self.file_name = None
         self.plot_save_path = None
+        self.is_enlarge = None
 
-    def load_data(self, simulation_data_file_name, plot_type):
+    def load_data(self, simulation_data_file_name, plot_type, is_enlarge):
         self.plot_type = plot_type
+        self.is_enlarge = is_enlarge
         # データをロード
         simulation_data = joblib.load(simulation_data_file_name)
         # ロードしたデータを展開
@@ -150,7 +152,14 @@ class Main_Plotter:
         print(f"t={self.t_index}：可視化と保存：完了")
 
     def __plot_heatmap(self):
-        do_plot_heatmap(self.mesh_z, self.plot_save_path, self.file_name, self.title)
+        # 最大でもself.tしか量子ウォーカーは進めないので、-self.t~self.tまでの切り取る
+        if self.is_enlarge:
+            max_x = self.T - int(self.t)
+            max_y = self.T - int(self.t)
+            if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
+                self.mesh_z = self.mesh_z[max_y:-max_y, max_x:-max_x]
+
+        do_plot_heatmap(self.mesh_z, self.plot_save_path, self.file_name, self.title, self.is_enlarge)
         print(f"t={self.t_index}：可視化と保存：完了")
 
 
@@ -173,14 +182,18 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
     plt.close()
 
 
-def do_plot_heatmap(prob_list, path, file_name, title):
+def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     """heatmapをプロットする"""
     # プロット用のデータフレームの作成
     x_len = prob_list.shape[0]
-    T = ConfigSimulation.MaxTimeStep
     l = []
+    if is_enlarge:
+        x_len_max = prob_list.shape[0] // 2
+    else:
+        x_len_max = ConfigSimulation.MaxTimeStep
+
     for k in range(x_len):
-        l.append(str(k - T))
+        l.append(str(k - x_len_max))
     df = pd.DataFrame(prob_list, index=l, columns=l)
 
     # figureを作成しプロットする
