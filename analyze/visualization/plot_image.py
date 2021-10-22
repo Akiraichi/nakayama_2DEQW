@@ -197,7 +197,7 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     df = pd.DataFrame(prob_list, index=l, columns=l)
 
     # figureを作成しプロットする
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16, 12), tight_layout=True)
     ax = fig.add_subplot(1, 1, 1)
     sns.heatmap(df, square=True, cmap="gist_heat_r")
     # sns.heatmap(df, square=True, cmap="Blues")
