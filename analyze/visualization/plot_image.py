@@ -170,7 +170,7 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
     ax.set_ylabel("$y$", size=24)
     ax.set_zlabel("$p$", size=24, labelpad=15)
     # 軸メモリの調整
-    ax.tick_params(labelsize=24)
+    ax.tick_params(labelsize=12)
     # タイトルを設定
     ax.set_title(title, size=24)
     # 曲面を描画
