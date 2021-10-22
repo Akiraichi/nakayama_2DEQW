@@ -145,9 +145,23 @@ class Main_Plotter:
             return
 
     def __plot_surface(self):
-        # 格子点を作成
-        mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
-                                     np.linspace(-self.T, self.T, 2 * self.T + 1), indexing="ij")
+        # t=0つまりプロット点が1点の時の3dplotにはバグがある。そのためパスする
+        # https://stackoverflow.com/questions/65131880/matplotlib-projection-3d-levels-issue
+        if self.is_enlarge and int(self.t) != 0:
+            # 最大でもself.tしか量子ウォーカーは進めないので、-self.t~self.tまでの切り取る
+            max_x = self.T - int(self.t)
+            max_y = self.T - int(self.t)
+            if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
+                self.mesh_z = self.mesh_z[max_y:-max_y, max_x:-max_x]
+            # 格子点を作成
+            t_int = int(self.t)
+            mesh_x, mesh_y = np.meshgrid(np.linspace(-t_int, t_int, 2 * t_int + 1),
+                                         np.linspace(-t_int, t_int, 2 * t_int + 1), indexing="ij")
+
+        else:
+            # 格子点を作成
+            mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
+                                         np.linspace(-self.T, self.T, 2 * self.T + 1), indexing="ij")
         do_plot_surface(mesh_x, mesh_y, self.mesh_z, self.plot_save_path, self.file_name, self.title)
         print(f"t={self.t_index}：可視化と保存：完了")
 
