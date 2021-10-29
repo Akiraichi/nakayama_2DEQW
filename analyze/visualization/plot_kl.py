@@ -102,7 +102,7 @@ class Main_KL_div:
             KLdiv = get_kl_div(p1=p1, p2=p2)
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
-        do_plot_kl_div(self.save_path, KLdiv_list, self.t_list, self.title)
+        do_plot_graph(self.save_path, KLdiv_list, self.t_list, self.title, xlabel="t", ylabel="KL_div")
 
 
 def get_probability(simulation_data_file_names, index):
@@ -148,10 +148,10 @@ def get_kl_div(p1, p2):
     return kl_div
 
 
-def do_plot_kl_div(file_name, KL_div_list, t_list, title):
+def do_plot_graph(file_name, dates, t_list, title, xlabel, ylabel):
     fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=400)
-    ax = fig.add_subplot(111, xlabel="t", ylabel="KL_div")
+    ax = fig.add_subplot(111, xlabel=xlabel, ylabel=ylabel)
     ax.set_title(title, size=24)
-    ax.scatter(t_list, KL_div_list, c='blue')
+    ax.scatter(t_list, dates, c='blue')
     fig.savefig(file_name)
     print("FIN")

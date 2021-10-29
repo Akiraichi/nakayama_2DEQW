@@ -1,6 +1,7 @@
 # config
 from analyze.visualization.plot_kl import plot_kl
 # exp_setting
+from analyze.visualization.plot_width_prob import plot_width_prob
 from exp_setting.exp import *
 # simulation
 from simulation.simulation import start_simulation_2dqw
@@ -33,8 +34,9 @@ class QW:
     def run_simulation(self, start_step_t=0):
         start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t)
 
-    def run_plot_surface(self):
-        plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes)
+    def run_plot_surface(self, is_enlarge=False):
+        plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
+                   is_enlarge=is_enlarge)
 
     def run_plot_heatmap(self, is_enlarge=False):
         plot_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
@@ -51,6 +53,9 @@ class QW:
     def run_kl_div(self, qw_obj):
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes)
+
+    def run_plot_width(self):
+        plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
 
 
 class Normal_QW(QW):
@@ -109,20 +114,21 @@ class SlowEraseEQW_erase_t_200(QW):
 
 
 if __name__ == '__main__':
-    qw = Normal_QW()
+    # qw = Normal_QW()
     # qw.run_simulation()
-    # qw.run_plot_surface()
+    # qw.run_plot_surface(is_enlarge=True)
     # qw.run_gif_surface()
     # qw.run_gif_surface(plot_t_step=100)
-    qw.run_plot_heatmap(is_enlarge=True)
+    # qw.run_plot_heatmap(is_enlarge=True)
     # qw.run_gif_heatmap()
     # qw.run_gif_heatmap(plot_t_step=100)
-
-    # erase_qw = Erase_EQW(select_exp_indexes=[20])
+    # qw.run_plot_width()
+    erase_qw = Erase_EQW(select_exp_indexes=[200])
     # erase_qw.run_simulation()
     # erase_qw.run_plot_surface()
-    # erase_qw.run_plot_heatmap()
+    # erase_qw.run_plot_heatmap(is_enlarge=True)
     # erase_qw.run_gif_surface(plot_t_step=100)
+    erase_qw.run_plot_width()
 
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])
     # slow_erase_qw.run_simulation()
