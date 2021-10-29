@@ -124,10 +124,10 @@ if __name__ == '__main__':
     # qw.run_gif_heatmap(plot_t_step=100)
     # qw.run_plot_width()
     erase_qw = Erase_EQW(select_exp_indexes=[200])
-    # erase_qw.run_simulation()
+    erase_qw.run_simulation()
     # erase_qw.run_plot_surface()
     # erase_qw.run_plot_heatmap(is_enlarge=True)
-    # erase_qw.run_gif_surface(plot_t_step=100)
+    erase_qw.run_gif_surface()
     erase_qw.run_plot_width()
 
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])

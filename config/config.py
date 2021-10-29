@@ -23,9 +23,9 @@ class ConfigSimulation:
         # 実験条件の設定
         MaxTimeStep = 200  # 最大時間ステップ数
         # シミュレーションの並列数
-        SimulationParallelNum = 4
+        SimulationParallelNum = 1
         # plotの並列数
-        PlotParallelNum = 2
+        PlotParallelNum = 1
 
 
 def print_warning(text):
@@ -95,6 +95,14 @@ def config_var_save_path(exp_name):
 def config_KL_div_save_path():
     # 実験データの保存先のフォルダーがなければ作成する
     path = f"result/KL_div"
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+# KLダイバージェンスの保存場所
+def config_prob_width_save_path():
+    # 実験データの保存先のフォルダーがなければ作成する
+    path = f"result/width"
     os.makedirs(path, exist_ok=True)
     return path
 

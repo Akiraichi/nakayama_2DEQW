@@ -37,7 +37,7 @@ class WidthPlotter:
         self.t_index = None
         self.title = None
         self.mesh_z = None
-        self.file_name = None
+        # self.file_name = None
         self.plot_save_path = None
 
     def set_up_conditions(self, exp_name, plot_exp_index):
@@ -72,22 +72,36 @@ class WidthPlotter:
         # plot処理で共通に使うもの
         self.phi_latex = condition.phi_latex
         self.t_index = str(self.t).zfill(4)
-        self.title = "test_title"
+        self.title = f"{self.exp_name}-{self.exp_index}"
         self.mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
-        self.file_name = "test.png"
+        self.plot_save_path = f"{config_prob_width_save_path()}/width_{self.exp_name}-{self.exp_index}.png"
         # self.plot_save_path = plot_save_path(self.exp_name, self.plot_type, self.exp_index)
 
     def plot_image(self):
-        do_plot_graph(self.file_name, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
+        do_plot_graph(self.plot_save_path, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
 
 
 def get_width(mesh_z, len_x, len_y):
     """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
-    threshold = 0.01  # 閾値
+    threshold = 0.00000001  # 閾値
     x_max = 0
     x_min = 0
     y_max = 0
     y_min = 0
+
+    # 初期値として見つかった値を一つ代入しておく
+    for x in range(len_x):
+        for y in range(len_y):
+            if mesh_z[x, y] > threshold:
+                x_max = x
+                x_min = x
+                y_max = y
+                y_min = y
+                break
+        else:
+            continue
+        break
+
     for x in range(len_x):
         for y in range(len_y):
             if mesh_z[x, y] > threshold:
