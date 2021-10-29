@@ -13,9 +13,9 @@ from numba import njit
 from multiprocessing import Pool
 
 
-def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes):
+def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, is_cut_circle=False):
     plotter = Plot_KL()
-    plotter.set_up_conditions(exp1_name, exp1_index, exp2_name, exp2_indexes)
+    plotter.set_up_conditions(exp1_name, exp1_index, exp2_name, exp2_indexes, is_cut_circle)
     plotter.start_parallel_processing()
 
 
@@ -25,12 +25,14 @@ class Plot_KL:
         self.exp2_name = None
         self.exp1_index = None
         self.exp2_indexes = None
+        self.is_cut_circle = None
 
-    def set_up_conditions(self, exp1_name, exp1_index, exp2_name, exp2_indexes):
+    def set_up_conditions(self, exp1_name, exp1_index, exp2_name, exp2_indexes, is_cut_circle):
         self.exp1_name = exp1_name
         self.exp2_name = exp2_name
         self.exp1_index = exp1_index
         self.exp2_indexes = exp2_indexes
+        self.is_cut_circle = is_cut_circle
 
     def start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
@@ -38,7 +40,7 @@ class Plot_KL:
         arguments = []
         for exp2_index in self.exp2_indexes:
             arguments.append(
-                [self.exp1_name, self.exp1_index, self.exp2_name, exp2_index])
+                [self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.is_cut_circle])
         # 並列数
         p = Pool(ConfigSimulation.PlotParallelNum)
         # 並列処理開始
@@ -53,9 +55,9 @@ class Plot_KL:
         return Plot_KL.plot_image(*args)
 
     @staticmethod
-    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index):
+    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, is_cut_circle):
         plotter = Main_KL_div()
-        plotter.set_up(exp1_name, exp1_index, exp2_name, exp2_index)
+        plotter.set_up(exp1_name, exp1_index, exp2_name, exp2_index, is_cut_circle)
         plotter.plot()
 
 
@@ -71,8 +73,9 @@ class Main_KL_div:
         self.KLdiv_list = None
         self.t_list = select_plot_t_step()
         self.title = None
+        self.is_cut_circle = None
 
-    def set_up(self, exp1_name, exp1_index, exp2_name, exp2_index):
+    def set_up(self, exp1_name, exp1_index, exp2_name, exp2_index, is_cut_circle):
         self.exp1_name = exp1_name
         self.exp2_name = exp2_name
         self.exp1_index = exp1_index
@@ -87,11 +90,16 @@ class Main_KL_div:
         print(f"exp_name_2のデータ数：{len(self.simulation_data_names_2)}")
 
         # plot関係
-        self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}.png'
+        if is_cut_circle:
+            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}_cut.png'
+        else:
+            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}.png'
 
         # title設定のために一つデータをロードする。
         condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
+
+        self.is_cut_circle = is_cut_circle
 
     def plot(self):
         KLdiv_list = []
@@ -99,7 +107,11 @@ class Main_KL_div:
             # t=t_stepのシミュレーションデータをロード
             p1 = get_probability(self.simulation_data_names_1, t_step)
             p2 = get_probability(self.simulation_data_names_2, t_step)
-            KLdiv = get_kl_div(p1=p1, p2=p2)
+            if self.is_cut_circle:
+                d = 40
+                KLdiv = get_kl_div_cut_circle(p1=p1, p2=p2, d=d)
+            else:
+                KLdiv = get_kl_div(p1=p1, p2=p2)
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
         do_plot_graph(self.save_path, KLdiv_list, self.t_list, self.title, xlabel="t", ylabel="KL_div")
@@ -142,6 +154,34 @@ def get_kl_div(p1, p2):
             if p2[x, y] == 0:
                 continue
             if p1[x, y] == 0:
+                continue
+            kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
+
+    return kl_div
+
+
+# @njit('f8(f8[:,:],f8[:,:])', cache=True)
+def get_kl_div_cut_circle(p1, p2, d):
+    """
+        概要
+            量子ウォークの確率分布のKLダイバージェンスを求める。
+            中心が原点で直径が指定した値である円形領域では、KLダイバージェンスの値を0とする（領域内を無視する）
+        引数
+            p1,p2：大きさの等しい2次元リストp1[x,y]のように指定できること。
+        """
+    kl_div = 0
+    # 属性shapeで形状（行数、列数）が取得可能。
+    len_x = p1.shape[1]
+    len_y = p1.shape[0]
+    T = len_x // 2
+    for x in range(len_x):
+        for y in range(len_y):
+            if p2[x, y] == 0:
+                continue
+            if p1[x, y] == 0:
+                continue
+            if (x - T) ** 2 + (y - T) ** 2 < (d / 2) ** 2:
+                # 円形内
                 continue
             kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
 

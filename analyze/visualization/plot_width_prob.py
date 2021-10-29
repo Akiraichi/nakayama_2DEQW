@@ -84,7 +84,6 @@ class WidthPlotter:
         do_plot_graph(self.plot_save_path_y, self.y_widths, self.t_list, self.title, xlabel="t", ylabel="width")
 
 
-
 def get_width(mesh_z, len_x, len_y):
     """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
     threshold = 0.00000001  # 閾値
