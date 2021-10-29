@@ -79,7 +79,7 @@ class Main_KL_div:
         self.is_cut_circle = None
         self.radius = None
 
-    def set_up(self, exp1_name, exp1_index, exp2_name, exp2_index, is_cut_circle, d):
+    def set_up(self, exp1_name, exp1_index, exp2_name, exp2_index, is_cut_circle, radius):
         self.exp1_name = exp1_name
         self.exp2_name = exp2_name
         self.exp1_index = exp1_index
@@ -93,18 +93,18 @@ class Main_KL_div:
         print(f"exp_name_1のデータ数：{len(self.simulation_data_names_1)}")
         print(f"exp_name_2のデータ数：{len(self.simulation_data_names_2)}")
 
+        # title設定のために一つデータをロードする。
+        condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
+
         # plot関係
         if is_cut_circle:
-            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}_cut.png'
+            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}_r={radius}.png'
         else:
             self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}.png'
 
-        # title設定のために一つデータをロードする。
-        condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
-
         self.is_cut_circle = is_cut_circle
-        self.radius = d
+        self.radius = radius
 
     def plot(self):
         KLdiv_list = []
