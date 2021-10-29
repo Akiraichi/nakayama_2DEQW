@@ -38,7 +38,8 @@ class WidthPlotter:
         self.title = None
         self.mesh_z = None
         # self.file_name = None
-        self.plot_save_path = None
+        self.plot_save_path_x = None
+        self.plot_save_path_y = None
 
     def set_up_conditions(self, exp_name, plot_exp_index):
         self.exp_name = exp_name
@@ -74,11 +75,14 @@ class WidthPlotter:
         self.t_index = str(self.t).zfill(4)
         self.title = f"{self.exp_name}-{self.exp_index}"
         self.mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
-        self.plot_save_path = f"{config_prob_width_save_path()}/width_{self.exp_name}-{self.exp_index}.png"
+        self.plot_save_path_x = f"{config_prob_width_save_path()}/X_width_{self.exp_name}-{self.exp_index}.png"
+        self.plot_save_path_y = f"{config_prob_width_save_path()}/Y_width_{self.exp_name}-{self.exp_index}.png"
         # self.plot_save_path = plot_save_path(self.exp_name, self.plot_type, self.exp_index)
 
     def plot_image(self):
-        do_plot_graph(self.plot_save_path, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
+        do_plot_graph(self.plot_save_path_x, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
+        do_plot_graph(self.plot_save_path_y, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
+
 
 
 def get_width(mesh_z, len_x, len_y):
