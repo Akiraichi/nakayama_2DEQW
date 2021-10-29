@@ -50,9 +50,9 @@ class QW:
         make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
                        plot_t_step=plot_t_step)
 
-    def run_kl_div(self, qw_obj, is_cut_circle=False):
+    def run_kl_div(self, qw_obj, is_cut_circle=False, radius=None):
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
-                exp2_indexes=qw_obj.selected_exp_indexes, is_cut_circle=is_cut_circle)
+                exp2_indexes=qw_obj.selected_exp_indexes, is_cut_circle=is_cut_circle, radius=radius)
 
     def run_plot_width(self):
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     # qw.run_plot_surface(is_enlarge=True)
     # qw.run_gif_surface()
     # qw.run_gif_surface(plot_t_step=100)
-    # qw.run_plot_heatmap(is_enlarge=True)
+    # qw.run_plot_heatmap()
     # qw.run_gif_heatmap()
     # qw.run_gif_heatmap(plot_t_step=100)
     # qw.run_plot_width()
@@ -146,4 +146,4 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
 
-    qw.run_kl_div(qw_obj=erase_qw, is_cut_circle=False)
+    qw.run_kl_div(qw_obj=erase_qw, is_cut_circle=True, radius=160)
