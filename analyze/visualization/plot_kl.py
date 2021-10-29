@@ -160,7 +160,7 @@ def get_kl_div(p1, p2):
     return kl_div
 
 
-# @njit('f8(f8[:,:],f8[:,:])', cache=True)
+@njit('f8(f8[:,:],f8[:,:],i8)', cache=True)
 def get_kl_div_cut_circle(p1, p2, d):
     """
         概要
