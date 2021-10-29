@@ -81,7 +81,7 @@ class WidthPlotter:
 
     def plot_image(self):
         do_plot_graph(self.plot_save_path_x, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
-        do_plot_graph(self.plot_save_path_y, self.x_widths, self.t_list, self.title, xlabel="t", ylabel="width")
+        do_plot_graph(self.plot_save_path_y, self.y_widths, self.t_list, self.title, xlabel="t", ylabel="width")
 
 
 
