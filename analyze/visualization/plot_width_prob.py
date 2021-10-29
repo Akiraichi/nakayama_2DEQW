@@ -1,4 +1,4 @@
-from analyze.visualization.plot_image import select_plot_t_step
+from analyze.visualization.plot_image import select_plot_t_step, select_plot_t_step_detail
 from analyze.visualization.plot_kl import do_plot_graph
 from config.config import *
 import joblib
@@ -21,7 +21,7 @@ class WidthPlotter:
         self.plot_exp_index = None
         self.x_widths = []
         self.y_widths = []
-        self.t_list = select_plot_t_step()
+        self.t_list = select_plot_t_step_detail()
 
         self.T = None
         self.len_x = None
