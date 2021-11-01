@@ -119,11 +119,11 @@ class Main_KL_div:
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
         # テキストファイルに保存する
-        self.save_text_file(KLdiv_list)
+        self.save_csv_file(KLdiv_list)
         # plotする
         do_plot_graph(self.save_path, KLdiv_list, self.t_list, self.title, xlabel="t", ylabel="KL_div")
 
-    def save_text_file(self, KLdiv_list):
+    def save_csv_file(self, KLdiv_list):
         with open(
                 f"{config_KL_div_save_path()}/KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}.csv",
                 mode='w') as f:
@@ -213,19 +213,3 @@ def do_plot_graph(file_name, dates, t_list, title, xlabel, ylabel):
     ax.scatter(t_list, dates, c='blue')
     fig.savefig(file_name)
     print("FIN")
-
-
-def connect_csv():
-    import pandas as pd
-
-    csv_files = glob.glob(f'{config_KL_div_save_path()}/*.csv')
-    data_list = []
-    for i, file in enumerate(csv_files):
-        if i == 0:
-            data_list.append(pd.read_csv(file))
-        else:
-            data = pd.read_csv(file)
-            data_list.append(data.iloc[:, 1])
-
-    df = pd.concat(data_list, axis=1)
-    df.to_csv('marge_result.csv', index=False)
