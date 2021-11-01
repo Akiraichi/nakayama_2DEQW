@@ -118,7 +118,20 @@ class Main_KL_div:
                 KLdiv = get_kl_div(p1=p1, p2=p2)
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
+        # テキストファイルに保存する
+        self.save_text_file(KLdiv_list)
+        # plotする
         do_plot_graph(self.save_path, KLdiv_list, self.t_list, self.title, xlabel="t", ylabel="KL_div")
+
+    def save_text_file(self, KLdiv_list):
+        with open(
+                f"{config_KL_div_save_path()}/KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}.csv",
+                mode='w') as f:
+            f.write("t,KLdiv\n")
+            for i in range(len(KLdiv_list)):
+                s = f"{self.t_list[i]},{KLdiv_list[i]}\n"
+                print(s)
+                f.write(s)
 
 
 def get_probability(simulation_data_file_names, index):
