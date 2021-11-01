@@ -127,7 +127,8 @@ class Main_KL_div:
         with open(
                 f"{config_KL_div_save_path()}/KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}.csv",
                 mode='w') as f:
-            f.write("t,KLdiv\n")
+            f.write(
+                f"t,KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}\n")
             for i in range(len(KLdiv_list)):
                 s = f"{self.t_list[i]},{KLdiv_list[i]}\n"
                 print(s)
@@ -212,3 +213,19 @@ def do_plot_graph(file_name, dates, t_list, title, xlabel, ylabel):
     ax.scatter(t_list, dates, c='blue')
     fig.savefig(file_name)
     print("FIN")
+
+
+def connect_csv():
+    import pandas as pd
+
+    csv_files = glob.glob(f'{config_KL_div_save_path()}/*.csv')
+    data_list = []
+    for i, file in enumerate(csv_files):
+        if i == 0:
+            data_list.append(pd.read_csv(file))
+        else:
+            data = pd.read_csv(file)
+            data_list.append(data.iloc[:, 1])
+
+    df = pd.concat(data_list, axis=1)
+    df.to_csv('marge_result.csv', index=False)
