@@ -83,7 +83,7 @@ class Main_KL_div:
         self.exp1_name = exp1_name
         self.exp2_name = exp2_name
         self.exp1_index = exp1_index
-        self.exp2_index = exp2_index
+        self.exp2_index = str(exp2_index).zfill(4)
 
         self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
         self.simulation_data_names_1.sort()  # 実験順にsortする。
@@ -97,14 +97,15 @@ class Main_KL_div:
         condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
 
         # plot関係
+        self.radius = radius
         if is_cut_circle:
-            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}_r={radius}.png'
+            self.save_path = f'{config_KL_div_save_path()}/r={self.radius}_KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.png'
         else:
-            self.save_path = f'{config_KL_div_save_path()}/KL_{exp1_name}_index{exp1_index}-{exp2_name}_index{exp2_index}.png'
+            self.save_path = f'{config_KL_div_save_path()}/KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.png'
 
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
         self.is_cut_circle = is_cut_circle
-        self.radius = radius
+
 
     def plot(self):
         KLdiv_list = []
@@ -125,10 +126,10 @@ class Main_KL_div:
 
     def save_csv_file(self, KLdiv_list):
         with open(
-                f"{config_KL_div_save_path()}/KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}.csv",
+                f"{config_KL_div_save_path()}/r={self.radius}_KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.csv",
                 mode='w') as f:
             f.write(
-                f"t,KL_{self.exp1_name}_index{self.exp1_index}-{self.exp2_name}_index{self.exp2_index}_r={self.radius}\n")
+                f"t,r={self.radius}_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}\n")
             for i in range(len(KLdiv_list)):
                 s = f"{self.t_list[i]},{KLdiv_list[i]}\n"
                 print(s)
