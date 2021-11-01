@@ -13,3 +13,7 @@ def connect_csv():
 
     df = pd.concat(data_list, axis=1)
     df.to_csv('marge_result.csv', index=False)
+
+
+if __name__ == '__main__':
+    connect_csv()
