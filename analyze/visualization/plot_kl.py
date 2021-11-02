@@ -106,28 +106,30 @@ class Main_KL_div:
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
         self.is_cut_circle = is_cut_circle
 
-
     def plot(self):
         KLdiv_list = []
+        KLdiv_in_circle_list = []
         for t_step in self.t_list:
             # t=t_stepのシミュレーションデータをロード
             p1 = get_probability(self.simulation_data_names_1, t_step)
             p2 = get_probability(self.simulation_data_names_2, t_step)
             if self.is_cut_circle:
-                KLdiv = get_kl_div_cut_circle(p1=p1, p2=p2, radius=self.radius)
+                KLdiv, kl_div_in_circle = get_kl_div_cut_circle(p1=p1, p2=p2, radius=self.radius)
+                KLdiv_in_circle_list.append(kl_div_in_circle)
             else:
                 KLdiv = get_kl_div(p1=p1, p2=p2)
             KLdiv_list.append(KLdiv)
             print(f"t={t_step}")
         # テキストファイルに保存する
-        self.save_csv_file(KLdiv_list)
+        self.save_csv_file(KLdiv_list,f"{config_KL_div_save_path()}/r={self.radius}_KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.csv")
+        if KLdiv_in_circle_list:
+            self.save_csv_file(KLdiv_in_circle_list,f"{config_KL_div_save_path()}/r={self.radius}_in_circle_KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.csv")
+
         # plotする
         do_plot_graph(self.save_path, KLdiv_list, self.t_list, self.title, xlabel="t", ylabel="KL_div")
 
-    def save_csv_file(self, KLdiv_list):
-        with open(
-                f"{config_KL_div_save_path()}/r={self.radius}_KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}.csv",
-                mode='w') as f:
+    def save_csv_file(self, KLdiv_list, file_name):
+        with open(file_name, mode='w') as f:
             f.write(
                 f"t,r={self.radius}_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}\n")
             for i in range(len(KLdiv_list)):
@@ -183,13 +185,15 @@ def get_kl_div(p1, p2):
 def get_kl_div_cut_circle(p1, p2, radius):
     """
         概要
-            量子ウォークの確率分布のKLダイバージェンスを求める。
-            中心が原点で直径が指定した値である円形領域では、KLダイバージェンスの値を0とする（領域内を無視する）
+            量子ウォークの確率分布のKLダイバージェンスを求める。ただし中心が原点で直径が指定した値である円形領域では、KLダイバージェンスの値を0とする（領域内を無視する）
+            また、その領域内のKLダイバージェンスを求める。
         引数
             p1,p2：大きさの等しい2次元リストp1[x,y]のように指定できること。
+        返却値
+            円形領域を無視した場合のKLダイバージェンスと、その円形領域のKLダイバージェンスを返却する
         """
     kl_div = 0
-    # 属性shapeで形状（行数、列数）が取得可能。
+    kl_div_in_circle = 0
     len_x = p1.shape[1]
     len_y = p1.shape[0]
     T = len_x // 2
@@ -201,10 +205,12 @@ def get_kl_div_cut_circle(p1, p2, radius):
                 continue
             if (x - T) ** 2 + (y - T) ** 2 < radius ** 2:
                 # 円形内
+                kl_div_in_circle += p1[x, y] * np.log(p1[x, y] / p2[x, y])
                 continue
+            # 円形外
             kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
-
-    return kl_div
+    print("in circle", kl_div_in_circle)  # デバッグ用
+    return kl_div, kl_div_in_circle
 
 
 def do_plot_graph(file_name, dates, t_list, title, xlabel, ylabel):
