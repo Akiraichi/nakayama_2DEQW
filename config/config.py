@@ -92,14 +92,22 @@ def config_var_save_path(exp_name):
 
 
 # KLダイバージェンスの保存場所
-def config_KL_div_save_path():
+def config_KL_div_save_path(folder_name, ext):
     # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/KL_div"
+    if ext == "png":
+        path = f"result/KL_div/{folder_name}/png"
+    elif ext == "csv":
+        path = f"result/KL_div/{folder_name}/csv"
+    elif ext == "csv_in_circle":
+        path = f"result/KL_div/{folder_name}/csv_in_circle"
+    else:
+        print_warning("拡張子を間違っています")
+        path = None
     os.makedirs(path, exist_ok=True)
     return path
 
 
-# KLダイバージェンスの保存場所
+# 確率分布幅の保存場所
 def config_prob_width_save_path():
     # 実験データの保存先のフォルダーがなければ作成する
     path = f"result/width"
