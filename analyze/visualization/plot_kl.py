@@ -55,9 +55,9 @@ class Plot_KL:
         return Plot_KL.plot_image(*args)
 
     @staticmethod
-    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, cut_cirlce_r):
+    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r):
         plotter = Main_KL_div()
-        plotter.set_up(exp1_name, exp1_index, exp2_name, exp2_index, cut_cirlce_r)
+        plotter.set_up(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r)
         plotter.plot()
 
 
@@ -166,31 +166,6 @@ def get_probability(simulation_data_file_names, index):
     # probability[x,y]として(x,y)座標の確率を求められる。
     probability = calc_probability(PSY, len_x, len_y)
     return probability
-
-
-# @njit('f8(f8[:,:],f8[:,:])', cache=True)
-# def get_kl_div(p1, p2):
-#     """
-#         概要
-#             量子ウォークの確率分布のKLダイバージェンスを求める
-#         処理の流れ
-#             （1）二つのprobabilityを引数から受け取る。その二つの確率分布のKLダイバージェンスを返却する
-#         引数
-#             p1,p2：大きさの等しい2次元リストp1[x,y]のように指定できること。
-#         """
-#     kl_div = 0
-#     # 属性shapeで形状（行数、列数）が取得可能。
-#     len_x = p1.shape[1]
-#     len_y = p1.shape[0]
-#     for x in range(len_x):
-#         for y in range(len_y):
-#             if p2[x, y] == 0:
-#                 continue
-#             if p1[x, y] == 0:
-#                 continue
-#             kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
-#
-#     return kl_div
 
 
 @njit('Tuple((f8,f8))(f8[:,:],f8[:,:],i8)', cache=True)
