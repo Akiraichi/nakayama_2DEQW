@@ -82,9 +82,16 @@ def plot_index(df, path):
 
 
 if __name__ == '__main__':
+    """フォルダ選択"""
     # フォルダ名を指定すると、そのフォルダ内のcsvファイルをマージしたものとプロットした結果を返す
-    select_folder = "r=100_KL_exp_018_0-exp_019"
-    path = f'result/KL_div_marge/{select_folder}/csv'
+    folder_list = glob.glob(f'result/KL_div_marge/*')
+    for i, folder in enumerate(folder_list):
+        print(f"（{i}）", folder)
+    select = int(input("どのフォルダにしますか？"))
+    path = f'{folder_list[select]}/csv'
+    print(path)
+
+    """選択したフォルダのcsvを結合"""
     df = connect_csv(path)
     plot_t(df, path, [100, 200, 300])
     plot_index(df, path)
