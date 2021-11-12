@@ -17,8 +17,8 @@ def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
         plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
-        # plotter.start_processing(plot_type=plot_type)
-        plotter.start_parallel_processing(plot_type=plot_type)
+        plotter.start_processing(plot_type=plot_type)
+        # plotter.start_parallel_processing(plot_type=plot_type)
 
 
 def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
