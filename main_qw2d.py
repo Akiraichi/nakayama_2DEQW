@@ -115,21 +115,19 @@ class SlowEraseEQW_erase_t_200(QW):
 
 if __name__ == '__main__':
     qw = Normal_QW()
-    # qw.run_simulation()
-    # qw.run_plot_surface(is_enlarge=True)
-    # qw.run_gif_surface()
-    # qw.run_gif_surface(plot_t_step=100)
-    # qw.run_plot_heatmap()
-    # qw.run_gif_heatmap()
-    # qw.run_gif_heatmap(plot_t_step=100)
+    # qw.run_simulation(start_step_t=0)
+    qw.run_plot_surface(is_enlarge=False)
+    # qw.run_plot_heatmap(is_enlarge=True)
+    # qw.run_gif_surface(plot_t_step=None)
+    # qw.run_gif_heatmap(plot_t_step=None)
     # qw.run_plot_width()
 
     erase_qw = Erase_EQW(select_exp_indexes=[20])
-    # erase_qw.run_simulation()
-    # erase_qw.run_plot_surface()
+    # erase_qw.run_simulation(start_step_t=0)
+    # erase_qw.run_plot_surface(is_enlarge=False)
     # erase_qw.run_plot_heatmap(is_enlarge=True)
-    # erase_qw.run_gif_surface()
-    # erase_qw.run_gif_heatmap()
+    # erase_qw.run_gif_surface(plot_t_step=None)
+    # erase_qw.run_gif_heatmap(plot_t_step=None)
     # erase_qw.run_plot_width()
 
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])
@@ -138,7 +136,7 @@ if __name__ == '__main__':
     # slow_erase_qw.run_gif_surface()
     # slow_erase_qw.run_plot_heatmap()
     # slow_erase_qw.run_gif_heatmap()
-
+    #
     # slow_erase_qw_step_0 = SlowEraseEQW_erase_t_0(erase_time_steps=[100])
     # slow_erase_qw_step_0.run_simulation()
     # slow_erase_qw_step_0.run_plot_surface()

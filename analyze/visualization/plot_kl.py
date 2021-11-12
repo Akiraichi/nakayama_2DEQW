@@ -16,7 +16,7 @@ from multiprocessing import Pool
 def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0):
     plotter = Plot_KL()
     plotter.set_up_conditions(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r)
-    plotter.start_parallel_processing()
+    plotter.start_processing(parallel=False)
 
 
 class Plot_KL:
@@ -34,7 +34,7 @@ class Plot_KL:
         self.exp2_indexes = exp2_indexes
         self.cut_circle_r = cut_circle_r
 
-    def start_parallel_processing(self):
+    def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
         # 並列処理用の前処理
         arguments = []
@@ -45,10 +45,19 @@ class Plot_KL:
         p = Pool(ConfigSimulation.PlotParallelNum)
         # 並列処理開始
         p.map(Plot_KL.wrapper, arguments)
-        print_finish("FINISH：KLダイバージェンス")
         # processをclose
         p.close()
         p.terminate()
+
+    def start_processing(self, parallel=False):
+        if parallel:
+            self.__start_parallel_processing()
+        else:
+            for exp2_index in self.exp2_indexes:
+                plotter = Main_KL_div()
+                plotter.set_up(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r)
+                plotter.plot()
+        print_finish("FINISH：KLダイバージェンス")
 
     @staticmethod
     def wrapper(args):

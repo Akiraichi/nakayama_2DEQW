@@ -89,9 +89,18 @@ if __name__ == '__main__':
         print(f"（{i}）", folder)
     select = int(input("どのフォルダにしますか？"))
     path = f'{folder_list[select]}/csv'
+    # path = f'{folder_list[select]}/csv_in_circle'
     print(path)
 
     """選択したフォルダのcsvを結合"""
     df = connect_csv(path)
-    plot_t(df, path, [100, 200, 300])
+    plot_t(df, path, [100, 200, 300, 400, 500, 600])
+    # plot_t(df, path, [100,120, 140, 160, 180, 200])
+    # plot_t(df, path, [220, 240, 260, 280, 300, 400, 500, 600])
+    # plot_t(df, path, [300, 320, 340, 360, 380, 400, 500, 600])
+    # plot_t(df, path, list(range(400, 620, 20)))
+    # plot_t(df, path, list(range(280, 620, 20)))
+
+    # plot_t(df, path, list(range(600, 2000, 100)))
+
     plot_index(df, path)
