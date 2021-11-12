@@ -144,4 +144,4 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
 
-    qw.run_kl_div(qw_obj=erase_qw, cut_circle_r=10)
+    qw.run_kl_div(qw_obj=erase_qw, cut_circle_r=20)
