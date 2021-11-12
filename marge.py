@@ -64,13 +64,23 @@ def plot_t(df, path, step_t_list):
     plt.savefig(f"{path}/compare_erase_t.png", dpi=400)
 
 
-def plot_index(df, path):
+def plot_index(df, path, t_erase_list, start_t):
     """
     indexで比較したい時に使う
     横軸：時間発展ステップ数
     縦軸：KLダイバージェンス
     """
     df = change_columns(df, str_flag=True)
+    # dfの中から指定したものを抽出する
+    select = ["t"]
+    for t_erase in t_erase_list:
+        s = "$t_{erase}=$"
+        s += str(t_erase)
+        select.append(s)
+    df = df[select]
+
+    # start_tから先のものを抽出する
+
     ax = df.plot(grid=True, x="t", figsize=(8, 6))
     ax.set_xlabel("$t$", size=24, labelpad=5)
     ax.set_ylabel("$KL divergence$", size=24)
@@ -88,13 +98,14 @@ if __name__ == '__main__':
     for i, folder in enumerate(folder_list):
         print(f"（{i}）", folder)
     select = int(input("どのフォルダにしますか？"))
-    path = f'{folder_list[select]}/csv'
-    # path = f'{folder_list[select]}/csv_in_circle'
+    # path = f'{folder_list[select]}/csv'
+    path = f'{folder_list[select]}/csv_in_circle'
     print(path)
 
     """選択したフォルダのcsvを結合"""
     df = connect_csv(path)
-    plot_t(df, path, [100, 200, 300, 400, 500, 600])
+    # plot_t(df, path, [100, 200, 300, 400, 500, 600])
+    # plot_t(df, path, [100, 200, 300, 400, 500, 1000, 2000])
     # plot_t(df, path, [100,120, 140, 160, 180, 200])
     # plot_t(df, path, [220, 240, 260, 280, 300, 400, 500, 600])
     # plot_t(df, path, [300, 320, 340, 360, 380, 400, 500, 600])
@@ -103,4 +114,4 @@ if __name__ == '__main__':
 
     # plot_t(df, path, list(range(600, 2000, 100)))
 
-    plot_index(df, path)
+    plot_index(df, path, [10, 20, 30, 100, 200, 300], start_t=200)
