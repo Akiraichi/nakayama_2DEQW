@@ -53,10 +53,11 @@ class Plot_KL:
         if parallel:
             self.__start_parallel_processing()
         else:
-            for exp2_index in self.exp2_indexes:
+            for i, exp2_index in enumerate(self.exp2_indexes):
                 plotter = Main_KL_div()
                 plotter.set_up(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r)
                 plotter.plot()
+                print(i, "番目の処理")
         print_finish("FINISH：KLダイバージェンス")
 
     @staticmethod
