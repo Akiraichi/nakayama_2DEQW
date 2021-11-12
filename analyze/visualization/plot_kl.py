@@ -156,7 +156,7 @@ class Main_KL_div:
                 f"t,r={self.cut_circle_r}_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}_{self.exp2_index}\n")
             for i in range(len(KLdiv_list)):
                 s = f"{self.t_list[i]},{KLdiv_list[i]}\n"
-                print(s)
+                # print(s)　# デバッグ
                 f.write(s)
 
 
@@ -190,7 +190,6 @@ def get_kl_div(p1, p2, radius):
             円形領域を無視した場合のKLダイバージェンスと、その円形領域のKLダイバージェンスを返却する
         """
     kl_div = 0  # 通常のKLダイバージェンス
-    kl_div_cut = 0  # 中心付近の円形領域をカットした場合のKLダイバージェンス
     kl_div_in_circle = 0  # 中心付近の円形領域内のKL大ダイバージェンス
 
     len_x = p1.shape[1]
@@ -213,7 +212,7 @@ def get_kl_div(p1, p2, radius):
             else:
                 # 全体
                 kl_div += p1[x, y] * np.log(p1[x, y] / p2[x, y])
-    print("in circle", kl_div_in_circle)  # デバッグ用
+    # print("in circle", kl_div_in_circle)  # デバッグ用
     return kl_div, kl_div_in_circle
 
 
