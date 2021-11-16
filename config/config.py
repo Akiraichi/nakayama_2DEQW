@@ -107,6 +107,14 @@ def config_KL_div_save_path(folder_name, ext):
     return path
 
 
+# 確率の保存場所
+def config_prob_save_path(folder_name):
+    # 実験データの保存先のフォルダーがなければ作成する
+    path = f"result/prob/{folder_name}"
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 # 確率分布幅の保存場所
 def config_prob_width_save_path():
     # 実験データの保存先のフォルダーがなければ作成する

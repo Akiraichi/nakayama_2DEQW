@@ -1,6 +1,7 @@
 # config
 from analyze.visualization.plot_kl import plot_kl
 # exp_setting
+from analyze.visualization.plot_prob import plot_prob
 from analyze.visualization.plot_width_prob import plot_width_prob
 from exp_setting.exp import *
 # simulation
@@ -56,6 +57,10 @@ class QW:
 
     def run_plot_width(self):
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
+
+    def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r):
+        plot_prob(exp2_name=self.exp_name, exp2_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+                  circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r)
 
 
 class Normal_QW(QW):
