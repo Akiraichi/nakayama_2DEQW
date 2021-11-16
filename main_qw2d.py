@@ -59,7 +59,7 @@ class QW:
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
 
     def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r):
-        plot_prob(exp2_name=self.exp_name, exp2_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+        plot_prob(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
                   circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r)
 
 
@@ -119,7 +119,7 @@ class SlowEraseEQW_erase_t_200(QW):
 
 
 if __name__ == '__main__':
-    qw = Normal_QW()
+    # qw = Normal_QW()
     # qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False)
     # qw.run_plot_heatmap(is_enlarge=True)
@@ -134,6 +134,7 @@ if __name__ == '__main__':
     # erase_qw.run_gif_surface(plot_t_step=None)
     # erase_qw.run_gif_heatmap(plot_t_step=None)
     # erase_qw.run_plot_width()
+    erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50)
 
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])
     # slow_erase_qw.run_simulation()
@@ -149,4 +150,4 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
 
-    qw.run_kl_div(qw_obj=erase_qw, cut_circle_r=20)
+    # qw.run_kl_div(qw_obj=erase_qw, cut_circle_r=20)
