@@ -247,7 +247,7 @@ def select_plot_t_step():
     if ConfigSimulation.MaxTimeStep == 2000:
         t_list = list(range(0, 2020, 20))
     elif ConfigSimulation.MaxTimeStep == 600:
-        t_list = list(range(0, 620, 20))
+        t_list = list(range(0, 605, 5))
     elif ConfigSimulation.MaxTimeStep == 200:
         t_list = list(range(0, 205, 5))
     elif ConfigSimulation.MaxTimeStep == 100:

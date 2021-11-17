@@ -168,23 +168,31 @@ class Marge:
             plot_t(df, self.path, step_t_list=t_list, file_name=f"KL_{t_list}")
         elif self.type == "prob":
             df_in, df_out, df_circle = self.__connect_csv()
-            plot_t(df_in, self.path, step_t_list=t_list,file_name=f"prob_in_{t_list}")
-            plot_t(df_out, self.path, step_t_list=t_list,file_name=f"prob_out_{t_list}")
-            plot_t(df_circle, self.path, step_t_list=t_list,file_name=f"prob_circle_{t_list}")
+            plot_t(df_in, self.path, step_t_list=t_list, file_name=f"prob_in_{t_list}")
+            plot_t(df_out, self.path, step_t_list=t_list, file_name=f"prob_out_{t_list}")
+            plot_t(df_circle, self.path, step_t_list=t_list, file_name=f"prob_circle_{t_list}")
 
     def plot_index(self, indexes, start_t):
         if self.type == "KL":
             """選択したフォルダのcsvを結合"""
             df = self.__connect_csv()
-            plot_index(df, self.path, t_erase_list=indexes, start_t=start_t,file_name=f"KL_start_t={start_t}_indexes={indexes}")
+            plot_index(df, self.path, t_erase_list=indexes, start_t=start_t,
+                       file_name=f"KL_start_t={start_t}_indexes={indexes}")
         elif self.type == "prob":
             df_in, df_out, df_circle = self.__connect_csv()
-            plot_index_prob(df_in, self.path, indexes, start_t=start_t,file_name=f"prob_in_start_t={start_t}_indexes={indexes}")
-            plot_index_prob(df_out, self.path, indexes, start_t=start_t,file_name=f"prob_out_start_t={start_t}_indexes={indexes}")
-            plot_index_prob(df_circle, self.path, indexes, start_t=start_t,file_name=f"prob_circle_start_t={start_t}_indexes={indexes}")
+            plot_index_prob(df_in, self.path, indexes, start_t=start_t,
+                            file_name=f"prob_in_start_t={start_t}_indexes={indexes}")
+            plot_index_prob(df_out, self.path, indexes, start_t=start_t,
+                            file_name=f"prob_out_start_t={start_t}_indexes={indexes}")
+            plot_index_prob(df_circle, self.path, indexes, start_t=start_t,
+                            file_name=f"prob_circle_start_t={start_t}_indexes={indexes}")
 
 
 if __name__ == '__main__':
-    marge = Marge(type="prob")
-    # marge.plot_t(t_list=[10, 30, 50, 100, 200])
-    marge.plot_index(indexes=[20, 30, 40], start_t=100)
+    marge = Marge(type="KL")
+    # t_list = [100, 200, 300, 400, 500, 600, 1000, 2000]
+    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
+    t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # t_list = [100, 200, 300, 400, 500, 1000, 2000]
+    marge.plot_t(t_list=t_list)
+    # marge.plot_index(indexes=indexes, start_t=220)
