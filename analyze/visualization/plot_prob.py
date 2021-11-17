@@ -108,7 +108,7 @@ class MainPlotProb:
     def save_csv_file(self, p_in_circle_list, p_out_circle_list, p_circle_list, folder_path, file_path):
         with open(f"{folder_path}/{file_path}", mode='w') as f:
             f.write(
-                f"t,in_circle,out_circle,circle\n")
+                f"t,in_circle_{self.exp_index},out_circle_{self.exp_index},circle_{self.exp_index}\n")
             for i in range(len(p_in_circle_list)):
                 s = f"{self.t_list[i]},{p_in_circle_list[i]},{p_out_circle_list[i]},{p_circle_list[i]}\n"
                 # print(s)　# デバッグ

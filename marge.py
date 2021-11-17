@@ -3,26 +3,6 @@ import glob
 import matplotlib.pyplot as plt
 
 
-def connect_csv(folder_name):
-    import pandas as pd
-    import glob
-
-    csv_files = glob.glob(f'{folder_name}/*.csv')
-    csv_files.sort()
-
-    data_list = []
-    for i, file in enumerate(csv_files):
-        if i == 0:
-            data_list.append(pd.read_csv(file))
-        else:
-            data = pd.read_csv(file)
-            data_list.append(data.iloc[:, 1])
-
-    df = pd.concat(data_list, axis=1)
-
-    return df
-
-
 def change_columns(df, str_flag):
     # 列名を変更する
     column_list = df.columns.values  # 今の列名を全て取得する
@@ -37,7 +17,7 @@ def change_columns(df, str_flag):
     return df
 
 
-def plot_t(df, path, step_t_list):
+def plot_t(df, path, step_t_list, file_name):
     """
     tステップで比較したい時のプロット
     横軸：exp番号。つまり電場を消した時の時間ステップ
@@ -61,10 +41,10 @@ def plot_t(df, path, step_t_list):
         df.loc["t=" + str(step_t_list[i])].plot(grid=True, x="t", figsize=(8, 6), ax=ax)  # 同じ表に次々とプロットしていく
     plt.legend()
     # plt.show()
-    plt.savefig(f"{path}/compare_erase_t.png", dpi=400)
+    plt.savefig(f"{path}/{file_name}.png", dpi=400)
 
 
-def plot_index(df, path, t_erase_list, start_t):
+def plot_index(df, path, t_erase_list, start_t, file_name):
     """
     indexで比較したい時に使う
     横軸：時間発展ステップ数
@@ -92,32 +72,119 @@ def plot_index(df, path, t_erase_list, start_t):
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
     # plt.show()
-    plt.savefig(f"{path}/marge.png", dpi=400)
+    plt.savefig(f"{path}/{file_name}.png", dpi=400)
+
+
+def plot_index_prob(df, path, t_erase_list, start_t, file_name):
+    """
+       indexで比較したい時に使う
+       横軸：時間発展ステップ数
+       縦軸：確率
+    """
+    df = change_columns(df, str_flag=False)
+
+    """dfの中から指定したものを抽出する"""
+    select = ["t"] + t_erase_list
+    df = df[select]
+
+    """start_tから先のものを抽出する"""
+    # start_tのindex番号を取得する
+    index = df.query(f't == {start_t}').index[0]
+    # index番号以降のデータを抽出する
+    df = df[index:]
+    ax = df.plot(grid=True, x="t", figsize=(8, 6))
+    ax.set_xlabel("$t$", size=24, labelpad=5)
+    ax.set_ylabel("$KL divergence$", size=24)
+
+    plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{path}/{file_name}.png", dpi=400)
+
+
+class Marge:
+    def __init__(self, type):
+        self.type = type
+        self.file_name = None
+        if type == "KL":
+            folder_list = glob.glob(f'result/KL_div_marge/*')
+
+        elif type == "prob":
+            folder_list = glob.glob(f'result/prob/*')
+        else:
+            raise Exception
+        self.__select(folder_list)
+
+    def __select(self, folder_list):
+        for i, folder in enumerate(folder_list):
+            print(f"（{i}）", folder)
+        select = int(input("どのフォルダにしますか？"))
+        if self.type == "KL":
+            self.path = f'{folder_list[select]}/csv'
+        elif self.type == "prob":
+            self.path = f'{folder_list[select]}'
+        print(self.path)
+
+    def __connect_csv(self):
+        csv_files = glob.glob(f'{self.path}/*.csv')
+        csv_files.sort()
+        if self.type == "KL":
+            data_list = []
+            for i, file in enumerate(csv_files):
+                if i == 0:
+                    data_list.append(pd.read_csv(file))
+                else:
+                    data = pd.read_csv(file)
+                    data_list.append(data.iloc[:, 1])
+            df = pd.concat(data_list, axis=1)
+            return df
+
+        elif self.type == "prob":
+            in_circle_list = []
+            out_circle_list = []
+            circle_list = []
+            for i, file in enumerate(csv_files):
+                df = pd.read_csv(file)
+                index = file[-8:-4]
+                print(index)  # デバッグ
+                if i == 0:
+                    in_circle_list.append(df.loc[:, ['t', f'in_circle_{index}']])
+                    out_circle_list.append(df.loc[:, ['t', f'out_circle_{index}']])
+                    circle_list.append(df.loc[:, ['t', f'circle_{index}']])
+                else:
+                    in_circle_list.append(df.loc[:, [f'in_circle_{index}']])
+                    out_circle_list.append(df.loc[:, [f'out_circle_{index}']])
+                    circle_list.append(df.loc[:, [f'circle_{index}']])
+
+            df_in = pd.concat(in_circle_list, axis=1)
+            df_out = pd.concat(out_circle_list, axis=1)
+            df_circle = pd.concat(circle_list, axis=1)
+            return df_in, df_out, df_circle
+
+    def plot_t(self, t_list):
+        if self.type == "KL":
+            """選択したフォルダのcsvを結合"""
+            df = self.__connect_csv()
+            plot_t(df, self.path, step_t_list=t_list, file_name=f"KL_{t_list}")
+        elif self.type == "prob":
+            df_in, df_out, df_circle = self.__connect_csv()
+            plot_t(df_in, self.path, step_t_list=t_list,file_name=f"prob_in_{t_list}")
+            plot_t(df_out, self.path, step_t_list=t_list,file_name=f"prob_out_{t_list}")
+            plot_t(df_circle, self.path, step_t_list=t_list,file_name=f"prob_circle_{t_list}")
+
+    def plot_index(self, indexes, start_t):
+        if self.type == "KL":
+            """選択したフォルダのcsvを結合"""
+            df = self.__connect_csv()
+            plot_index(df, self.path, t_erase_list=indexes, start_t=start_t,file_name=f"KL_start_t={start_t}_indexes={indexes}")
+        elif self.type == "prob":
+            df_in, df_out, df_circle = self.__connect_csv()
+            plot_index_prob(df_in, self.path, indexes, start_t=start_t,file_name=f"prob_in_start_t={start_t}_indexes={indexes}")
+            plot_index_prob(df_out, self.path, indexes, start_t=start_t,file_name=f"prob_out_start_t={start_t}_indexes={indexes}")
+            plot_index_prob(df_circle, self.path, indexes, start_t=start_t,file_name=f"prob_circle_start_t={start_t}_indexes={indexes}")
 
 
 if __name__ == '__main__':
-    """フォルダ選択"""
-    # フォルダ名を指定すると、そのフォルダ内のcsvファイルをマージしたものとプロットした結果を返す
-    folder_list = glob.glob(f'result/KL_div_marge/*')
-    for i, folder in enumerate(folder_list):
-        print(f"（{i}）", folder)
-    select = int(input("どのフォルダにしますか？"))
-    path = f'{folder_list[select]}/csv'
-    # path = f'{folder_list[select]}/csv_in_circle'
-    print(path)
-
-    """選択したフォルダのcsvを結合"""
-    df = connect_csv(path)
-    # plot_t(df, path, [100, 200, 300, 400, 500, 600])
-    plot_t(df, path, [100, 200, 300, 400, 500, 1000, 2000])
-    # plot_t(df, path, [100,120, 140, 160, 180, 200])
-    # plot_t(df, path, [220, 240, 260, 280, 300, 400, 500, 600])
-    # plot_t(df, path, [300, 320, 340, 360, 380, 400, 500, 600])
-    # plot_t(df, path, list(range(400, 620, 20)))
-    # plot_t(df, path, list(range(280, 620, 20)))
-    # plot_t(df, path, list(range(220, 400, 20)))
-
-    # plot_t(df, path, list(range(600, 2000, 100)))
-
-    # plot_index(df, path, [10, 20, 30, 100, 200, 300], start_t=200)
-    # plot_index(df, path, t_erase_list=[100, 200, 300, 400, 500], start_t=800)
+    marge = Marge(type="prob")
+    # marge.plot_t(t_list=[10, 30, 50, 100, 200])
+    marge.plot_index(indexes=[20, 30, 40], start_t=100)
