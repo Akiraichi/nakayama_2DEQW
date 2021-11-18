@@ -9,9 +9,9 @@ from multiprocessing import Pool
 from analyze.visualization.plot_kl import get_probability
 
 
-def plot_prob(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r):
+def plot_prob(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r, parallel):
     plotter = PlotProb(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r)
-    plotter.start_processing(parallel=False)
+    plotter.start_processing(parallel=parallel)
 
 
 class PlotProb:

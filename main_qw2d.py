@@ -35,13 +35,13 @@ class QW:
     def run_simulation(self, start_step_t=0):
         start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t)
 
-    def run_plot_surface(self, is_enlarge=False):
+    def run_plot_surface(self, is_enlarge, parallel):
         plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
-                   is_enlarge=is_enlarge)
+                   is_enlarge=is_enlarge, parallel=parallel)
 
-    def run_plot_heatmap(self, is_enlarge=False):
+    def run_plot_heatmap(self, is_enlarge, parallel):
         plot_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
-                   is_enlarge=is_enlarge)
+                   is_enlarge=is_enlarge, parallel=parallel)
 
     def run_gif_surface(self, plot_t_step=None):
         make_gif_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
@@ -58,9 +58,9 @@ class QW:
     def run_plot_width(self):
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
 
-    def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r):
+    def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r, parallel):
         plot_prob(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
-                  circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r)
+                  circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, parallel=parallel)
 
 
 class Normal_QW(QW):

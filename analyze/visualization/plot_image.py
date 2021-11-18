@@ -11,14 +11,13 @@ import seaborn as sns
 import pandas as pd
 
 
-def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
+def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False, parallel=False):
     if plot_exp_indexes is None:
         plot_exp_indexes = [0]
     for plot_exp_index in plot_exp_indexes:
         plotter = Plotter()
         plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
-        plotter.start_processing(plot_type=plot_type)
-        # plotter.start_parallel_processing(plot_type=plot_type)
+        plotter.start_processing(plot_type=plot_type, parallel=parallel)
 
 
 def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
@@ -43,14 +42,17 @@ class Plotter:
         self.plot_exp_index = plot_exp_index
         self.is_enlarge = is_enlarge
 
-    def start_processing(self, plot_type):
-        simulation_data_file_names = glob.glob(
-            f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
-        simulation_data_file_names.sort()  # 実験順にsortする。
-        for t in self.t_list:
-            self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
+    def start_processing(self, plot_type, parallel):
+        if parallel:
+            self.__start_parallel_processing(plot_type)
+        else:
+            simulation_data_file_names = glob.glob(
+                f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
+            simulation_data_file_names.sort()  # 実験順にsortする。
+            for t in self.t_list:
+                self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
 
-    def start_parallel_processing(self, plot_type):
+    def __start_parallel_processing(self, plot_type):
         # 並列処理させるために、各プロセスに渡す引数を生成する
         # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
         simulation_data_file_names = glob.glob(
