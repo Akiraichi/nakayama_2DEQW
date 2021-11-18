@@ -36,18 +36,13 @@ class Plot_KL:
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
-        # 並列処理用の前処理
         arguments = []
         for exp2_index in self.exp2_indexes:
-            arguments.append(
-                [self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r])
-        # 並列数
-        p = Pool(ConfigSimulation.PlotParallelNum)
-        # 並列処理開始
-        p.map(Plot_KL.wrapper, arguments)
-        # processをclose
-        p.close()
-        p.terminate()
+            arguments.append([self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r])
+
+        with Pool(ConfigSimulation.PlotParallelNum) as p:
+            # 並列処理開始
+            p.starmap(func=Plot_KL.plot_image, iterable=arguments)
 
     def start_processing(self, parallel=False):
         if parallel:
@@ -59,10 +54,6 @@ class Plot_KL:
                 plotter.plot()
                 print(i, "番目の処理")
         print_finish("FINISH：KLダイバージェンス")
-
-    @staticmethod
-    def wrapper(args):
-        return Plot_KL.plot_image(*args)
 
     @staticmethod
     def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r):

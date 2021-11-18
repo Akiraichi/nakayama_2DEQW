@@ -27,20 +27,9 @@ class Simulation_qw:
         arguments = []
         for condition in self.exp_conditions:
             arguments.append([condition, self.start_step_t])
-
-        # 最大並列数を設定
-        p = Pool(ConfigSimulation.SimulationParallelNum)
-        # 並列処理を開始する
-        p.map(Simulation_qw.wrapper, arguments)
-
-        # 処理完了後にprocessをclose
+        with Pool(ConfigSimulation.SimulationParallelNum) as p:
+            p.starmap(func=Simulation_qw.main_simulation, iterable=arguments)
         print_finish("execute_simulation")
-        p.close()
-        p.terminate()
-
-    @staticmethod
-    def wrapper(args):
-        return Simulation_qw.main_simulation(*args)
 
     @staticmethod
     def main_simulation(condition, start_step_t):

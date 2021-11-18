@@ -24,18 +24,13 @@ class PlotProb:
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
-        # 並列処理用の前処理
         arguments = []
         for exp_index in self.exp_indexes:
-            arguments.append(
-                [self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r, self.circle_outer_r])
-        # 並列数
-        p = Pool(ConfigSimulation.PlotParallelNum)
-        # 並列処理開始
-        p.map(PlotProb.wrapper, arguments)
-        # processをclose
-        p.close()
-        p.terminate()
+            arguments.append([self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r, self.circle_outer_r])
+
+        with Pool(ConfigSimulation.PlotParallelNum) as p:
+            # 並列処理開始
+            p.starmap(func=PlotProb.plot_image, iterable=arguments)
 
     def start_processing(self, parallel=False):
         if parallel:
@@ -47,10 +42,6 @@ class PlotProb:
                 plotter.plot()
                 print(i, "番目の処理")
         print_finish("確率計算")
-
-    @staticmethod
-    def wrapper(args):
-        return PlotProb.plot_image(*args)
 
     @staticmethod
     def plot_image(exp_name, exp_index, cut_circle_r, circle_inner_r, circle_outer_r):

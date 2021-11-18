@@ -63,18 +63,10 @@ class Plotter:
         for t in self.t_list:
             arguments.append([simulation_data_file_names[t], plot_type, self.is_enlarge])
 
-        # 最大並列数を設定
-        p = Pool(ConfigSimulation.PlotParallelNum)
-        # 並列処理開始
-        p.map(Plotter.wrapper, arguments)
+        with Pool(ConfigSimulation.PlotParallelNum) as p:
+            # 並列処理開始
+            p.starmap(func=Plotter.plot_image, iterable=arguments)
         print_finish(plot_type)
-        # processをclose
-        p.close()
-        p.terminate()
-
-    @staticmethod
-    def wrapper(args):
-        return Plotter.plot_image(*args)
 
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge):
