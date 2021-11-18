@@ -13,10 +13,10 @@ from numba import njit
 from multiprocessing import Pool
 
 
-def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0):
+def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0, parallel=False):
     plotter = Plot_KL()
     plotter.set_up_conditions(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r)
-    plotter.start_processing(parallel=False)
+    plotter.start_processing(parallel=parallel)
 
 
 class Plot_KL:

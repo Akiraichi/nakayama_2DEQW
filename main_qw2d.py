@@ -51,9 +51,9 @@ class QW:
         make_gif_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
                        plot_t_step=plot_t_step)
 
-    def run_kl_div(self, qw_obj, cut_circle_r=0):
+    def run_kl_div(self, qw_obj, cut_circle_r, parallel):
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
-                exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r)
+                exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
 
     def run_plot_width(self):
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     # qw.run_gif_heatmap(plot_t_step=None)
     # qw.run_plot_width()
 
-    erase_qw = Erase_EQW(select_exp_indexes=[20,30,40])
+    erase_qw = Erase_EQW(select_exp_indexes=[20, 30, 40])
     erase_qw.run_simulation(start_step_t=0)
     # erase_qw.run_plot_surface(is_enlarge=False)
     # erase_qw.run_plot_heatmap(is_enlarge=True)
