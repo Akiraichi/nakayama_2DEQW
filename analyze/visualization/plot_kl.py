@@ -51,6 +51,8 @@ class Plot_KL:
             # 並列処理開始
             p_list = p.starmap(func=get_probability, iterable=arguments)
 
+        print_finish("前処理完了")
+
         arguments = []
         for exp2_index in self.exp2_indexes:
             arguments.append((self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p_list))
@@ -161,16 +163,16 @@ class Main_KL_div:
             if self.cut_circle_r != 0:
                 KLdiv_in_circle_list.append(kl_div_in_circle)
             KLdiv_list.append(KLdiv)
-            print(f"t={t_step}")
+            print(self.exp2_index, f"t={t_step}")
 
         if self.cut_circle_r != 0:
             self.save_csv_file(KLdiv_in_circle_list, self.save_path_csv_in_circle,
                                f"{self.file_name_only_in_circle}.csv")
         self.save_csv_file(KLdiv_list, self.save_path_csv, f"{self.file_name}.csv")
-
+        print_finish(self.exp2_index)
         # plotする
-        do_plot_graph(f"{self.save_path_png}/{self.file_name}.png", KLdiv_list, self.t_list, self.title, xlabel="t",
-                      ylabel="KL_div")
+        # do_plot_graph(f"{self.save_path_png}/{self.file_name}.png", KLdiv_list, self.t_list, self.title, xlabel="t",
+        #               ylabel="KL_div")
 
     def save_csv_file(self, KLdiv_list, folder_path, file_path):
         with open(f"{folder_path}/{file_path}", mode='w') as f:
