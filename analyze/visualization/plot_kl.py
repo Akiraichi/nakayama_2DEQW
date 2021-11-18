@@ -10,7 +10,7 @@ from analyze.visualization.plot_image import select_plot_t_step
 import joblib
 import glob
 from numba import njit
-# from multiprocessing import Pool
+from multiprocessing import Pool
 from multiprocessing import Process
 
 
@@ -30,35 +30,49 @@ class Plot_KL:
 
         self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
         self.simulation_data_names_1.sort()  # 実験順にsortする。
+    #
+    # def a(self, i):
+    #     return i
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
-        # arguments = []
-        # for exp2_index in self.exp2_indexes:
-        #     arguments.append((self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r))
 
+        # if len(self.exp2_indexes) > 60:
+        #     print_warning("exp2_indexesの数が多すぎます")
+        #     raise Exception
         # with Pool(ConfigSimulation.PlotParallelNum) as p:
         #     # 並列処理開始
-        #     p.starmap(func=Plot_KL.plot_image, iterable=arguments)
-        if len(self.exp2_indexes) > 60:
-            print_warning("exp2_indexesの数が多すぎます")
-            raise Exception
-        p1_list = []
+        #     p_list = p.starmap(func=self.a, iterable=[[1], [2], [3], [4], [5], [6], [7], [10], [20], [100000], [1000], [3], [5]])
+
+        arguments = []
         for t_step in self.t_list:
-            # t=t_stepのシミュレーションデータをロード
-            p1 = get_probability(self.simulation_data_names_1, t_step)
-            p1_list.append(p1)
+            arguments.append([self.simulation_data_names_1, t_step])
+        with Pool(ConfigSimulation.PlotParallelNum) as p:
+            # 並列処理開始
+            p_list = p.starmap(func=get_probability, iterable=arguments)
 
+        arguments = []
+        for exp2_index in self.exp2_indexes:
+            arguments.append((self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p_list))
 
-        process_list = []
-        for i, exp2_index in enumerate(self.exp2_indexes):
-            process = Process(target=Plot_KL.plot_image,
-                              args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p1_list))
-            process.start()
-            process_list.append(process)
+        with Pool(ConfigSimulation.PlotParallelNum) as p:
+            # 並列処理開始
+            p.starmap(func=Plot_KL.plot_image, iterable=arguments)
 
-        for process in process_list:
-            process.join()
+        # for t_step in self.t_list:
+        #     # t=t_stepのシミュレーションデータをロード
+        #     p1 = get_probability(self.simulation_data_names_1, t_step)
+        #     p1_list.append(p1)
+
+        # process_list = []
+        # for i, exp2_index in enumerate(self.exp2_indexes):
+        #     process = Process(target=Plot_KL.plot_image,
+        #                       args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p1_list))
+        #     process.start()
+        #     process_list.append(process)
+        #
+        # for process in process_list:
+        #     process.join()
 
     def start_processing(self, parallel=False):
         if parallel:
