@@ -10,7 +10,8 @@ from analyze.visualization.plot_image import select_plot_t_step
 import joblib
 import glob
 from numba import njit
-from multiprocessing import Pool
+# from multiprocessing import Pool
+from multiprocessing import Process
 
 
 def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0, parallel=False):
@@ -36,13 +37,26 @@ class Plot_KL:
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
-        arguments = []
-        for exp2_index in self.exp2_indexes:
-            arguments.append([self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r])
+        # arguments = []
+        # for exp2_index in self.exp2_indexes:
+        #     arguments.append((self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r))
 
-        with Pool(ConfigSimulation.PlotParallelNum) as p:
-            # 並列処理開始
-            p.starmap(func=Plot_KL.plot_image, iterable=arguments)
+        # with Pool(ConfigSimulation.PlotParallelNum) as p:
+        #     # 並列処理開始
+        #     p.starmap(func=Plot_KL.plot_image, iterable=arguments)
+        if len(self.exp2_indexes) > 60:
+            print_warning("exp2_indexesの数が多すぎます")
+            raise Exception
+
+        process_list = []
+        for i, exp2_index in enumerate(self.exp2_indexes):
+            process = Process(target=Plot_KL.plot_image,
+                              args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r))
+            process.start()
+            process_list.append(process)
+
+        for process in process_list:
+            process.join()
 
     def start_processing(self, parallel=False):
         if parallel:
