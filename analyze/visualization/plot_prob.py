@@ -5,8 +5,8 @@ from analyze.visualization.plot_image import select_plot_t_step
 import joblib
 import glob
 from numba import njit
-from multiprocessing import Pool
 from analyze.visualization.plot_kl import get_probability
+from multiprocessing import Process
 
 
 def plot_prob(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r, parallel):
@@ -24,13 +24,26 @@ class PlotProb:
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
-        arguments = []
-        for exp_index in self.exp_indexes:
-            arguments.append([self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r, self.circle_outer_r])
+        # arguments = []
+        # for exp_index in self.exp_indexes:
+        #     arguments.append([self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r, self.circle_outer_r])
+        #
+        # with Pool(ConfigSimulation.PlotParallelNum) as p:
+        #     # 並列処理開始
+        #     p.starmap(func=PlotProb.plot_image, iterable=arguments)
+        if len(self.exp_indexes) > 60:
+            print_warning("exp_indexesの数が多すぎます")
+            raise Exception
 
-        with Pool(ConfigSimulation.PlotParallelNum) as p:
-            # 並列処理開始
-            p.starmap(func=PlotProb.plot_image, iterable=arguments)
+        process_list = []
+        for i, exp_index in enumerate(self.exp_indexes):
+            process = Process(target=PlotProb.plot_image,
+                              args=(self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r, self.circle_outer_r))
+            process.start()
+            process_list.append(process)
+
+        for process in process_list:
+            process.join()
 
     def start_processing(self, parallel=False):
         if parallel:
