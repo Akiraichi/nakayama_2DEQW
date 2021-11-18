@@ -15,25 +15,21 @@ from multiprocessing import Process
 
 
 def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0, parallel=False):
-    plotter = Plot_KL()
-    plotter.set_up_conditions(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r)
+    plotter = Plot_KL(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r)
     plotter.start_processing(parallel=parallel)
 
 
 class Plot_KL:
-    def __init__(self):
-        self.exp1_name = None
-        self.exp2_name = None
-        self.exp1_index = None
-        self.exp2_indexes = None
-        self.cut_circle_r = None
-
-    def set_up_conditions(self, exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r):
+    def __init__(self, exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r):
         self.exp1_name = exp1_name
         self.exp2_name = exp2_name
         self.exp1_index = exp1_index
         self.exp2_indexes = exp2_indexes
         self.cut_circle_r = cut_circle_r
+        self.t_list = select_plot_t_step()
+
+        self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
+        self.simulation_data_names_1.sort()  # 実験順にsortする。
 
     def __start_parallel_processing(self):
         # 並列処理させるために、各プロセスに渡す引数を生成する
@@ -47,11 +43,17 @@ class Plot_KL:
         if len(self.exp2_indexes) > 60:
             print_warning("exp2_indexesの数が多すぎます")
             raise Exception
+        p1_list = []
+        for t_step in self.t_list:
+            # t=t_stepのシミュレーションデータをロード
+            p1 = get_probability(self.simulation_data_names_1, t_step)
+            p1_list.append(p1)
+
 
         process_list = []
         for i, exp2_index in enumerate(self.exp2_indexes):
             process = Process(target=Plot_KL.plot_image,
-                              args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r))
+                              args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p1_list))
             process.start()
             process_list.append(process)
 
@@ -70,10 +72,10 @@ class Plot_KL:
         print_finish("FINISH：KLダイバージェンス")
 
     @staticmethod
-    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r):
+    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r, p1_list):
         plotter = Main_KL_div()
         plotter.set_up(exp1_name, exp1_index, exp2_name, exp2_index, cut_circle_r)
-        plotter.plot()
+        plotter.plot(p1_list)
 
 
 class Main_KL_div:
@@ -132,12 +134,13 @@ class Main_KL_div:
         # プロットのタイトルを設定する
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
 
-    def plot(self):
+    def plot(self, p1_list):
         KLdiv_list = []
         KLdiv_in_circle_list = []
-        for t_step in self.t_list:
+        for i, t_step in enumerate(self.t_list):
             # t=t_stepのシミュレーションデータをロード
-            p1 = get_probability(self.simulation_data_names_1, t_step)
+            # p1 = get_probability(self.simulation_data_names_1, t_step)
+            p1 = p1_list[i]
             p2 = get_probability(self.simulation_data_names_2, t_step)
 
             KLdiv, kl_div_in_circle = get_kl_div(p1=p1, p2=p2, radius=self.cut_circle_r)
