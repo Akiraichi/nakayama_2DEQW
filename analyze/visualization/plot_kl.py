@@ -11,12 +11,11 @@ import joblib
 import glob
 from numba import njit
 from multiprocessing import Pool
-from multiprocessing import Process
 
 
 def plot_kl(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r=0, parallel=False):
     plotter = Plot_KL(exp1_name, exp1_index, exp2_name, exp2_indexes, cut_circle_r)
-    plotter.start_processing(parallel=parallel)
+    plotter.start_processing(parallel=parallel)  # 現状parallelはfalseでしか動作しない。
 
 
 class Plot_KL:
@@ -31,9 +30,6 @@ class Plot_KL:
         self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
         self.simulation_data_names_1.sort()  # 実験順にsortする。
 
-    #
-    # def a(self, i):
-    #     return i
     def __load_common_data(self):
         arguments = []
         for t_step in self.t_list:
@@ -44,38 +40,14 @@ class Plot_KL:
         print_finish("前処理完了")
 
     def __start_parallel_processing(self):
-        # 並列処理させるために、各プロセスに渡す引数を生成する
-
-        # if len(self.exp2_indexes) > 60:
-        #     print_warning("exp2_indexesの数が多すぎます")
-        #     raise Exception
-        # with Pool(ConfigSimulation.PlotParallelNum) as p:
-        #     # 並列処理開始
-        #     p_list = p.starmap(func=self.a, iterable=[[1], [2], [3], [4], [5], [6], [7], [10], [20], [100000], [1000], [3], [5]])
-
         arguments = []
         for exp2_index in self.exp2_indexes:
             arguments.append(
-                (self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, self.p_list))
+                [self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, self.p_list])
 
         with Pool(ConfigSimulation.PlotParallelNum) as p:
             # 並列処理開始
             p.starmap(func=Plot_KL.plot_image, iterable=arguments)
-
-        # for t_step in self.t_list:
-        #     # t=t_stepのシミュレーションデータをロード
-        #     p1 = get_probability(self.simulation_data_names_1, t_step)
-        #     p1_list.append(p1)
-
-        # process_list = []
-        # for i, exp2_index in enumerate(self.exp2_indexes):
-        #     process = Process(target=Plot_KL.plot_image,
-        #                       args=(self.exp1_name, self.exp1_index, self.exp2_name, exp2_index, self.cut_circle_r, p1_list))
-        #     process.start()
-        #     process_list.append(process)
-        #
-        # for process in process_list:
-        #     process.join()
 
     def start_processing(self, parallel=False):
         self.__load_common_data()
@@ -103,7 +75,6 @@ class Main_KL_div:
         self.exp2_name = None
         self.exp1_index = None
         self.exp2_index = None
-        self.simulation_data_names_1 = None
         self.simulation_data_names_2 = None
 
         self.save_path_png = None
@@ -123,12 +94,12 @@ class Main_KL_div:
         self.exp1_index = exp1_index
         self.exp2_index = str(exp2_index).zfill(4)
 
-        self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
-        self.simulation_data_names_1.sort()  # 実験順にsortする。
+        # self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
+        # self.simulation_data_names_1.sort()  # 実験順にsortする。
         self.simulation_data_names_2 = glob.glob(f"{config_simulation_data_save_path(exp2_name, exp2_index)}/*.jb")
         self.simulation_data_names_2.sort()  # 実験順にsortする。
 
-        print(f"exp_name_1のデータ数：{len(self.simulation_data_names_1)}")
+        # print(f"exp_name_1のデータ数：{len(self.simulation_data_names_1)}")
         print(f"exp_name_2のデータ数：{len(self.simulation_data_names_2)}")
 
         self.cut_circle_r = cut_circle_r
@@ -153,25 +124,14 @@ class Main_KL_div:
         # プロットのタイトルを設定する
         self.title = f"{self.exp2_name}" + " " + "$t_{erase}$" + f"={condition.erase_t}"
 
-    def __load_exp2_data(self):
-        arguments = []
-        for t_step in self.t_list:
-            arguments.append([self.simulation_data_names_2, t_step])
-        with Pool(ConfigSimulation.PlotParallelNum) as p:
-            # 並列処理開始
-            self.p2_list = p.starmap(func=get_probability, iterable=arguments)
-        print_finish("exp2のデータのロード完了")
-
     def plot(self, p1_list):
         KLdiv_list = []
         KLdiv_in_circle_list = []
-        self.__load_exp2_data()
 
         for i, t_step in enumerate(self.t_list):
             # t=t_stepのシミュレーションデータをロード
-            # p1 = get_probability(self.simulation_data_names_1, t_step)
             p1 = p1_list[i]
-            p2 = self.p2_list[i]
+            p2 = get_probability(self.simulation_data_names_2, t_step)
 
             KLdiv, kl_div_in_circle = get_kl_div(p1=p1, p2=p2, radius=self.cut_circle_r)
             if self.cut_circle_r != 0:
