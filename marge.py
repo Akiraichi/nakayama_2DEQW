@@ -120,7 +120,8 @@ class Marge:
             print(f"（{i}）", folder)
         select = int(input("どのフォルダにしますか？"))
         if self.type == "KL":
-            self.path = f'{folder_list[select]}/csv'
+            # self.path = f'{folder_list[select]}/csv'
+            self.path = f'{folder_list[select]}/csv_in_circle'
         elif self.type == "prob":
             self.path = f'{folder_list[select]}'
         print(self.path)
@@ -190,9 +191,12 @@ class Marge:
 
 if __name__ == '__main__':
     marge = Marge(type="KL")
-    # t_list = [100, 200, 300, 400, 500, 600, 1000, 2000]
-    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
-    t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # t_list = [100, 200, 300, 400, 500, 1000, 2000]
+    t_list = list(range(400, 2100, 200))
+    # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # t_list = [100, 200, 300, 400, 500, 1000, 2000]
+    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
+    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500]
     marge.plot_t(t_list=t_list)
-    # marge.plot_index(indexes=indexes, start_t=220)
+    # marge.plot_index(indexes=indexes, start_t=900)
