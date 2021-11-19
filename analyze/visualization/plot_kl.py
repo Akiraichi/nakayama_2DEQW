@@ -31,12 +31,17 @@ class Plot_KL:
         self.simulation_data_names_1.sort()  # 実験順にsortする。
 
     def __load_common_data(self):
-        arguments = []
+        """loadをparallelにする。google driveで動作しないのでコメントアウト"""
+        # arguments = []
+        # for t_step in self.t_list:
+        #     arguments.append([self.simulation_data_names_1, t_step])
+        # with Pool(ConfigSimulation.PlotParallelNum) as p:
+        #     # 並列処理開始
+        #     self.p_list = p.starmap(func=get_probability, iterable=arguments)
+        self.p_list = []
         for t_step in self.t_list:
-            arguments.append([self.simulation_data_names_1, t_step])
-        with Pool(ConfigSimulation.PlotParallelNum) as p:
-            # 並列処理開始
-            self.p_list = p.starmap(func=get_probability, iterable=arguments)
+            prob = get_probability(self.simulation_data_names_1, t_step)
+            self.p_list.append(prob)
         print_finish("前処理完了")
 
     def __start_parallel_processing(self):
