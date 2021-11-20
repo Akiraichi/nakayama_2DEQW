@@ -53,7 +53,6 @@ class PlotProb:
                 plotter = MainPlotProb(self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r,
                                        self.circle_outer_r)
                 plotter.plot()
-                print(i, "番目の処理")
         print_finish("確率計算")
 
     @staticmethod
@@ -92,6 +91,7 @@ class MainPlotProb:
         p_out_circle_list = []
         p_circle_list = []
         for t_step in self.t_list:
+            print(self.exp_index, f"t={t_step}")
             # t=t_stepのシミュレーションデータをロード
             p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
             p_in_circle, p_out_circle, p_circle = get_prob(prob=p1, radius=self.cut_circle_r,
