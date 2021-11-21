@@ -204,9 +204,9 @@ class Marge:
         elif self.type == "prob":
             df_in, df_out, df_circle = self.__connect_csv()
             plot_index_prob(df_in, self.path, indexes, start_t=start_t,
-                            file_name=f"prob_in_start_t={start_t}_indexes={indexes}")
+                            file_name=f"prob_in_start_t={start_t}_indexes={indexes}", label="p")
             plot_index_prob(df_out, self.path, indexes, start_t=start_t,
-                            file_name=f"prob_out_start_t={start_t}_indexes={indexes}")
+                            file_name=f"prob_out_start_t={start_t}_indexes={indexes}", label="p")
             plot_index_prob(df_circle, self.path, indexes, start_t=start_t,
                             file_name=f"prob_circle_start_t={start_t}_indexes={indexes}", label="p")
         elif self.type == "var":

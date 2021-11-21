@@ -38,7 +38,7 @@ class Analyzer:
             analyzer.save_prob_csv_file()
             print("確率計算完了")
 
-            analyzer.analyze_probability()
+            analyzer.analyze_var()
             analyzer.save_var_csv_file()
             print("分散計算完了")
         print_finish("全体完了")
@@ -172,7 +172,7 @@ def get_prob(prob, radius, circle_inner_r, circle_outer_r):
     return p_in_circle, p_out_circle, p_circle
 
 
-# @njit('Tuple((f8,f8,f8))(f8[:,:],i8,i8,i8)', cache=True)
+@njit('f8(f8[:,:],i8)', cache=True)
 def get_var(prob, radius):
     """
     prob：確率分布
@@ -191,5 +191,6 @@ def get_var(prob, radius):
             if (x - T) ** 2 + (y - T) ** 2 < radius ** 2:
                 # 円形内の確率prob[x,y]について分散を求める。
                 in_circle_p.append(prob[x, y])
+    in_circle_p = np.array(in_circle_p)
     var = np.var(in_circle_p)  # 分散を求める
     return var
