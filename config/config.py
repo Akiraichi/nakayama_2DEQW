@@ -83,14 +83,6 @@ def plot_save_path(exp_name, plot_type, index=None):
     return path
 
 
-# 分散データの保存場所
-def config_var_save_path(exp_name):
-    # 実験データの保存先のフォルダーがなければ作成する
-    path = f"result/{exp_name}/var_{exp_name}"
-    os.makedirs(path, exist_ok=True)
-    return path
-
-
 # KLダイバージェンスの保存場所
 def config_KL_div_save_path(folder_name, ext):
     # 実験データの保存先のフォルダーがなければ作成する
@@ -111,6 +103,14 @@ def config_KL_div_save_path(folder_name, ext):
 def config_prob_save_path(folder_name):
     # 実験データの保存先のフォルダーがなければ作成する
     path = f"result/prob/{folder_name}"
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+# 分散の保存場所
+def config_var_save_path(folder_name):
+    # 実験データの保存先のフォルダーがなければ作成する
+    path = f"result/var/{folder_name}"
     os.makedirs(path, exist_ok=True)
     return path
 

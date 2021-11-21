@@ -1,4 +1,5 @@
 # config
+from analyze.visualization.analyze_prob import main_analyze
 from analyze.visualization.plot_kl import plot_kl
 # exp_setting
 from analyze.visualization.plot_prob import plot_prob
@@ -59,8 +60,18 @@ class QW:
         plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
 
     def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r, parallel):
-        plot_prob(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
-                  circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, parallel=parallel)
+        # plot_prob(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+        #           circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, parallel=parallel)
+        main_analyze(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+                     circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, ext="prob")
+
+    def run_var(self, cut_circle_r):
+        main_analyze(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+                     circle_inner_r=0, circle_outer_r=0, ext="var")
+
+    def run_analyze(self, cut_circle_r, circle_inner_r, circle_outer_r):
+        main_analyze(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+                     circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, ext="all")
 
 
 class Normal_QW(QW):
