@@ -85,13 +85,6 @@ class AnalyzerCore:
         self.exp_index = str(exp_index).zfill(4)
         self.cut_circle_r = cut_circle_r
         self.t_list = select_plot_t_step()
-        self.__set_data_names()
-        self.__set_plot_option()
-
-        if ConfigSimulation.MaxTimeStep == 2000:
-            pass  # 2000の場合は事前にデータをロードせず、個別にロード
-        else:
-            self.__load_data()  # データをロード
 
         # probの固有設定
         self.circle_inner_r = circle_inner_r
@@ -108,6 +101,14 @@ class AnalyzerCore:
         self.Y_width_center_list = []  # 中心付近の確率分布の確率幅
         self.X_width_outer_list = []  # 円周付近の確率分布の確率幅
         self.Y_width_outer_list = []  # 円周付近の確率分布の確率幅
+
+        # 関数定義された設定
+        self.__set_data_names()
+        self.__set_plot_option()
+        if ConfigSimulation.MaxTimeStep == 2000:
+            pass  # 2000の場合は事前にデータをロードせず、個別にロード
+        else:
+            self.__load_data()  # データをロード
 
     def __set_data_names(self):
         self.simulation_data_names = glob.glob(
@@ -198,7 +199,7 @@ class AnalyzerCore:
         with open(f"{self.save_width_csv_path}/{self.file_name}.csv", mode='w') as f:
             f.write(
                 f"t,X_width_center_{self.exp_index},Y_width_center_{self.exp_index},X_width_outer_{self.exp_index},Y_width_outer_{self.exp_index}\n")
-            for i in range(len(self.var_list)):
+            for i in range(len(self.X_width_center_list)):
                 s = f"{self.t_list[i]},{self.X_width_center_list[i]},{self.Y_width_center_list[i]},{self.X_width_outer_list[i]},{self.Y_width_outer_list[i]}\n"
                 f.write(s)
 
@@ -252,6 +253,7 @@ def get_var(prob, radius):
     return var
 
 
+@njit('Tuple((i8,i8))(f8[:,:])', cache=True)
 def get_width_outer(prob):
     """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
     len_x = prob.shape[1]
@@ -290,6 +292,7 @@ def get_width_outer(prob):
     return x_max - x_min, y_max - y_min
 
 
+@njit('Tuple((i8,i8))(f8[:,:],i8)', cache=True)
 def get_width_center(prob, radius):
     """
     半径radiusの円領域の中で、x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。
