@@ -17,7 +17,7 @@ def change_columns(df, str_flag):
     return df
 
 
-def plot_t(df, path, step_t_list, file_name):
+def plot_t(df, path, step_t_list, file_name, label):
     """
     tステップで比較したい時のプロット
     横軸：exp番号。つまり電場を消した時の時間ステップ
@@ -35,7 +35,7 @@ def plot_t(df, path, step_t_list, file_name):
     # プロットする
     ax = df.loc["t=" + str(step_t_list[0])].plot(grid=True, x="t=0", figsize=(8, 6))  # step_tステップ目のデータを抽出してプロットする
     ax.set_xlabel("$t_{erase}$", size=24, labelpad=5)
-    ax.set_ylabel("$KL divergence$", size=24)
+    ax.set_ylabel(f"${label}$", size=24)
 
     for i in range(1, len(step_t_list)):
         df.loc["t=" + str(step_t_list[i])].plot(grid=True, x="t", figsize=(8, 6), ax=ax)  # 同じ表に次々とプロットしていく
@@ -67,7 +67,7 @@ def plot_index(df, path, t_erase_list, start_t, file_name):
     df = df[index:]
     ax = df.plot(grid=True, x="t", figsize=(8, 6))
     ax.set_xlabel("$t$", size=24, labelpad=5)
-    ax.set_ylabel("$KL divergence$", size=24)
+    ax.set_ylabel(f"$KLdivergence$", size=24)
 
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
@@ -94,7 +94,7 @@ def plot_index_prob(df, path, t_erase_list, start_t, file_name):
     df = df[index:]
     ax = df.plot(grid=True, x="t", figsize=(8, 6))
     ax.set_xlabel("$t$", size=24, labelpad=5)
-    ax.set_ylabel("$KL divergence$", size=24)
+    ax.set_ylabel("$p$", size=24)
 
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
@@ -166,12 +166,12 @@ class Marge:
         if self.type == "KL":
             """選択したフォルダのcsvを結合"""
             df = self.__connect_csv()
-            plot_t(df, self.path, step_t_list=t_list, file_name=f"KL_{t_list}")
+            plot_t(df, self.path, step_t_list=t_list, file_name=f"KL_{t_list}", label="KLdivergence")
         elif self.type == "prob":
             df_in, df_out, df_circle = self.__connect_csv()
-            plot_t(df_in, self.path, step_t_list=t_list, file_name=f"prob_in_{t_list}")
-            plot_t(df_out, self.path, step_t_list=t_list, file_name=f"prob_out_{t_list}")
-            plot_t(df_circle, self.path, step_t_list=t_list, file_name=f"prob_circle_{t_list}")
+            plot_t(df_in, self.path, step_t_list=t_list, file_name=f"prob_in_{t_list}", label="p")
+            plot_t(df_out, self.path, step_t_list=t_list, file_name=f"prob_out_{t_list}", label="p")
+            plot_t(df_circle, self.path, step_t_list=t_list, file_name=f"prob_circle_{t_list}", label="p")
 
     def plot_index(self, indexes, start_t):
         if self.type == "KL":
@@ -190,14 +190,15 @@ class Marge:
 
 
 if __name__ == '__main__':
-    marge = Marge(type="KL")
+    marge = Marge(type="prob")
     # t_list = [100, 200, 300, 400, 500, 1000, 2000]
     # t_list = list(range(400, 2100, 200))
     # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    # t_list = [100, 200, 300, 400, 500, 1000, 2000]
+    # t_list = [300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000]
+    # t_list = [300, 350, 400, 450, 500, 550, 600]
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
-    indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    # indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500]
     # marge.plot_t(t_list=t_list)
-    marge.plot_index(indexes=indexes, start_t=220)
+    marge.plot_index(indexes=indexes, start_t=570)
