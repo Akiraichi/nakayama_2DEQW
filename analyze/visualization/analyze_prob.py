@@ -81,7 +81,10 @@ class AnalyzerCore:
         # 設定するための関数を実行
         self.__set_data_names()
         self.__set_plot_option()
-        self.__load_data()  # データをロード
+        if ConfigSimulation.MaxTimeStep == 2000:
+            pass
+        else:
+            self.__load_data()  # データをロード
 
     def __set_data_names(self):
         self.simulation_data_names = glob.glob(
@@ -114,8 +117,10 @@ class AnalyzerCore:
     def analyze_probability(self):
         for i, t_step in enumerate(self.t_list):
             print(self.exp_index, f"t={t_step}")
-            # p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
-            p1 = self.p1_list[i]
+            if ConfigSimulation.MaxTimeStep == 2000:
+                p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
+            else:
+                p1 = self.p1_list[i]
             p_in_circle, p_out_circle, p_circle = get_prob(prob=p1, radius=self.cut_circle_r,
                                                            circle_inner_r=self.circle_inner_r,
                                                            circle_outer_r=self.circle_outer_r)
@@ -134,7 +139,10 @@ class AnalyzerCore:
     def analyze_var(self):
         for i, t_step in enumerate(self.t_list):
             print(self.exp_index, f"t={t_step}")
-            p1 = self.p1_list[i]
+            if ConfigSimulation.MaxTimeStep == 2000:
+                p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
+            else:
+                p1 = self.p1_list[i]
             var = get_var(prob=p1, radius=self.cut_circle_r)
             self.var_list.append(var)
 
