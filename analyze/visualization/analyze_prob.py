@@ -16,8 +16,10 @@ def main_analyze(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_out
         analyzer.analyze_prob()  # 確率の総和を解析
     elif ext == "var":
         analyzer.analyze_var()  # 確率の分散を解析
+    elif ext == "width":
+        analyzer.analyze_width()  # 確率の分布幅を解析
     elif ext == "all":
-        analyzer.analyze_all()
+        analyzer.analyze_all()  # 全部を実行
     else:
         print_warning("該当するものがありません")
 
@@ -41,6 +43,10 @@ class Analyzer:
             analyzer.analyze_var()
             analyzer.save_var_csv_file()
             print("分散計算完了")
+
+            analyzer.analyze_width()
+            analyzer.save_width_csv_file()
+            print("分布幅計算完了")
         print_finish("全体完了")
 
     def analyze_prob(self):
@@ -63,28 +69,45 @@ class Analyzer:
             analyzer.save_var_csv_file()
         print_finish("分散の計算")
 
+    def analyze_width(self):
+        for i, exp_index in enumerate(self.exp_indexes):
+            analyzer = AnalyzerCore(self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r,
+                                    self.circle_outer_r)
+            analyzer.analyze_width()
+            analyzer.save_width_csv_file()
+        print_finish("確率分布幅の計算")
+
 
 class AnalyzerCore:
     def __init__(self, exp_name, exp_index, cut_circle_r, circle_inner_r, circle_outer_r):
+        # 共通設定
         self.exp_name = exp_name
         self.exp_index = str(exp_index).zfill(4)
         self.cut_circle_r = cut_circle_r
+        self.t_list = select_plot_t_step()
+        self.__set_data_names()
+        self.__set_plot_option()
+
+        if ConfigSimulation.MaxTimeStep == 2000:
+            pass  # 2000の場合は事前にデータをロードせず、個別にロード
+        else:
+            self.__load_data()  # データをロード
+
+        # probの固有設定
         self.circle_inner_r = circle_inner_r
         self.circle_outer_r = circle_outer_r
-        self.t_list = select_plot_t_step()
         self.p_in_circle_list = []
         self.p_out_circle_list = []
         self.p_circle_list = []
 
+        # varの固有設定
         self.var_list = []
 
-        # 設定するための関数を実行
-        self.__set_data_names()
-        self.__set_plot_option()
-        if ConfigSimulation.MaxTimeStep == 2000:
-            pass
-        else:
-            self.__load_data()  # データをロード
+        # widthの固有設定
+        self.X_width_center_list = []  # 中心付近の確率分布の確率幅
+        self.Y_width_center_list = []  # 中心付近の確率分布の確率幅
+        self.X_width_outer_list = []  # 円周付近の確率分布の確率幅
+        self.Y_width_outer_list = []  # 円周付近の確率分布の確率幅
 
     def __set_data_names(self):
         self.simulation_data_names = glob.glob(
@@ -93,10 +116,11 @@ class AnalyzerCore:
         print(f"exp_nameのデータ数：{len(self.simulation_data_names)}")
 
     def __set_plot_option(self):
-        folder_name = f'cut_r={self.cut_circle_r}_inner_r={self.circle_inner_r}_outer_r={self.circle_outer_r}_{self.exp_name}'
         # 保存先の設定
+        folder_name = f'cut_r={self.cut_circle_r}_inner_r={self.circle_inner_r}_outer_r={self.circle_outer_r}_{self.exp_name}'
         self.save_prob_csv_path = config_prob_save_path(folder_name=folder_name)
         self.save_var_csv_path = config_var_save_path(folder_name=folder_name)
+        self.save_width_csv_path = config_width_save_path(folder_name=folder_name)
 
         # ファイル名を設定する
         self.file_name = folder_name + f"_{self.exp_index}"
@@ -154,6 +178,30 @@ class AnalyzerCore:
                 s = f"{self.t_list[i]},{self.var_list[i]}\n"
                 f.write(s)
 
+    def analyze_width(self):
+        for i, t_step in enumerate(self.t_list):
+            print(self.exp_index, f"t={t_step}")
+            if ConfigSimulation.MaxTimeStep == 2000:
+                p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
+            else:
+                p1 = self.p1_list[i]
+
+            X_width_center, Y_width_center = get_width_center(prob=p1, radius=self.cut_circle_r)
+            self.X_width_center_list.append(X_width_center)
+            self.Y_width_center_list.append(Y_width_center)
+
+            X_width_outer, Y_width_outer = get_width_outer(prob=p1)
+            self.X_width_outer_list.append(X_width_outer)
+            self.Y_width_outer_list.append(Y_width_outer)
+
+    def save_width_csv_file(self):
+        with open(f"{self.save_width_csv_path}/{self.file_name}.csv", mode='w') as f:
+            f.write(
+                f"t,X_width_center_{self.exp_index},Y_width_center_{self.exp_index},X_width_outer_{self.exp_index},Y_width_outer_{self.exp_index}\n")
+            for i in range(len(self.var_list)):
+                s = f"{self.t_list[i]},{self.X_width_center_list[i]},{self.Y_width_center_list[i]},{self.X_width_outer_list[i]},{self.Y_width_outer_list[i]}\n"
+                f.write(s)
+
 
 @njit('Tuple((f8,f8,f8))(f8[:,:],i8,i8,i8)', cache=True)
 def get_prob(prob, radius, circle_inner_r, circle_outer_r):
@@ -202,3 +250,73 @@ def get_var(prob, radius):
     in_circle_p = np.array(in_circle_p)
     var = np.var(in_circle_p)  # 分散を求める
     return var
+
+
+def get_width_outer(prob):
+    """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
+    len_x = prob.shape[1]
+    len_y = prob.shape[0]
+    threshold = 0.00000001  # 閾値
+    x_max = 0
+    x_min = 0
+    y_max = 0
+    y_min = 0
+
+    # 初期値として見つかった値を一つ代入しておく
+    for x in range(len_x):
+        for y in range(len_y):
+            if prob[x, y] > threshold:
+                x_max = x
+                x_min = x
+                y_max = y
+                y_min = y
+                break
+        else:
+            continue
+        break
+
+    for x in range(len_x):
+        for y in range(len_y):
+            if prob[x, y] > threshold:
+                if x > x_max:
+                    x_max = x
+                if x < x_min:
+                    x_min = x
+                if y > y_max:
+                    y_max = y
+                if y < y_min:
+                    y_min = y
+
+    return x_max - x_min, y_max - y_min
+
+
+def get_width_center(prob, radius):
+    """
+    半径radiusの円領域の中で、x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。
+    """
+    len_x = prob.shape[1]
+    len_y = prob.shape[0]
+    threshold = 0.00000001  # 閾値
+    # 0,0は初期値として妥当。
+    x_max = 0
+    x_min = 0
+    y_max = 0
+    y_min = 0
+
+    T = len_x // 2
+    for x in range(len_x):
+        for y in range(len_y):
+            if (x - T) ** 2 + (y - T) ** 2 < radius ** 2:
+                # 円形内
+                # 閾値よりも大きい値があれば、更新する。
+                if prob[x, y] > threshold:
+                    if x > x_max:
+                        x_max = x
+                    if x < x_min:
+                        x_min = x
+                    if y > y_max:
+                        y_max = y
+                    if y < y_min:
+                        y_min = y
+
+    return x_max - x_min, y_max - y_min

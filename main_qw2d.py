@@ -56,8 +56,10 @@ class QW:
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
 
-    def run_plot_width(self):
-        plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
+    def run_plot_width(self,cut_circle_r):
+        # plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
+        main_analyze(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
+                     circle_inner_r=0, circle_outer_r=0, ext="width")
 
     def run_prob(self, cut_circle_r, circle_inner_r, circle_outer_r, parallel):
         # plot_prob(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
@@ -144,8 +146,10 @@ if __name__ == '__main__':
     # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)
     # erase_qw.run_gif_surface(plot_t_step=None)
     # erase_qw.run_gif_heatmap(plot_t_step=None)
-    # erase_qw.run_plot_width()
-    erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50, parallel=False)
+    erase_qw.run_plot_width()
+    # erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50, parallel=False)
+    # erase_qw.run_var(cut_circle_r=20)
+    # erase_qw.run_analyze(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50)
 
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])
     # slow_erase_qw.run_simulation()
