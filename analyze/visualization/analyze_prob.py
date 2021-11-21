@@ -59,7 +59,7 @@ class Analyzer:
         for i, exp_index in enumerate(self.exp_indexes):
             analyzer = AnalyzerCore(self.exp_name, exp_index, self.cut_circle_r, self.circle_inner_r,
                                     self.circle_outer_r)
-            analyzer.analyze_probability()
+            analyzer.analyze_var()
             analyzer.save_var_csv_file()
         print_finish("分散の計算")
 
@@ -81,10 +81,11 @@ class AnalyzerCore:
         # 設定するための関数を実行
         self.__set_data_names()
         self.__set_plot_option()
+        self.__load_data()  # データをロード
 
     def __set_data_names(self):
         self.simulation_data_names = glob.glob(
-            f"{config_simulation_data_save_path(self.exp_name, self.exp_index)}/*.jb")
+            f"{config_simulation_data_save_path(self.exp_name, int(self.exp_index))}/*.jb")
         self.simulation_data_names.sort()  # 実験順にsortする。
         print(f"exp_nameのデータ数：{len(self.simulation_data_names)}")
 
@@ -105,7 +106,7 @@ class AnalyzerCore:
     def __load_data(self):
         self.p1_list = []
         for t_step in self.t_list:
-            print(self.exp_index, f"t={t_step}")
+            print("データロード", self.exp_index, f"t={t_step}")
             p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
             self.p1_list.append(p1)
         print_finish("データの事前ロード")

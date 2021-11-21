@@ -75,7 +75,7 @@ def plot_index(df, path, t_erase_list, start_t, file_name):
     plt.savefig(f"{path}/{file_name}.png", dpi=400)
 
 
-def plot_index_prob(df, path, t_erase_list, start_t, file_name):
+def plot_index_prob(df, path, t_erase_list, start_t, file_name, label):
     """
        indexで比較したい時に使う
        横軸：時間発展ステップ数
@@ -94,7 +94,7 @@ def plot_index_prob(df, path, t_erase_list, start_t, file_name):
     df = df[index:]
     ax = df.plot(grid=True, x="t", figsize=(8, 6))
     ax.set_xlabel("$t$", size=24, labelpad=5)
-    ax.set_ylabel("$p$", size=24)
+    ax.set_ylabel(f"${label}$", size=24)
 
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
@@ -111,6 +111,9 @@ class Marge:
 
         elif type == "prob":
             folder_list = glob.glob(f'result/prob/*')
+
+        elif type == "var":
+            folder_list = glob.glob(f'result/var/*')
         else:
             raise Exception
         self.__select(folder_list)
@@ -123,6 +126,8 @@ class Marge:
             # self.path = f'{folder_list[select]}/csv'
             self.path = f'{folder_list[select]}/csv_in_circle'
         elif self.type == "prob":
+            self.path = f'{folder_list[select]}'
+        elif self.type == "var":
             self.path = f'{folder_list[select]}'
         print(self.path)
 
@@ -162,6 +167,19 @@ class Marge:
             df_circle = pd.concat(circle_list, axis=1)
             return df_in, df_out, df_circle
 
+        elif self.type == "var":
+            var_list = []
+            for i, file in enumerate(csv_files):
+                df = pd.read_csv(file)
+                index = file[-8:-4]
+                print(index)  # デバッグ
+                if i == 0:
+                    var_list.append(df.loc[:, ['t', f'var_{index}']])
+                else:
+                    var_list.append(df.loc[:, [f'var_{index}']])
+            df_var = pd.concat(var_list, axis=1)
+            return df_var
+
     def plot_t(self, t_list):
         if self.type == "KL":
             """選択したフォルダのcsvを結合"""
@@ -172,6 +190,10 @@ class Marge:
             plot_t(df_in, self.path, step_t_list=t_list, file_name=f"prob_in_{t_list}", label="p")
             plot_t(df_out, self.path, step_t_list=t_list, file_name=f"prob_out_{t_list}", label="p")
             plot_t(df_circle, self.path, step_t_list=t_list, file_name=f"prob_circle_{t_list}", label="p")
+
+        elif self.type == "var":
+            df_var = self.__connect_csv()
+            plot_t(df_var, self.path, step_t_list=t_list, file_name=f"var_{t_list}", label="var")
 
     def plot_index(self, indexes, start_t):
         if self.type == "KL":
@@ -186,11 +208,15 @@ class Marge:
             plot_index_prob(df_out, self.path, indexes, start_t=start_t,
                             file_name=f"prob_out_start_t={start_t}_indexes={indexes}")
             plot_index_prob(df_circle, self.path, indexes, start_t=start_t,
-                            file_name=f"prob_circle_start_t={start_t}_indexes={indexes}")
+                            file_name=f"prob_circle_start_t={start_t}_indexes={indexes}", label="p")
+        elif self.type == "var":
+            df_var = self.__connect_csv()
+            plot_index_prob(df_var, self.path, indexes, start_t=start_t,
+                            file_name=f"var_start_t={start_t}_indexes={indexes}", label="var")
 
 
 if __name__ == '__main__':
-    marge = Marge(type="prob")
+    marge = Marge(type="var")
     # t_list = [100, 200, 300, 400, 500, 1000, 2000]
     # t_list = list(range(400, 2100, 200))
     # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -198,7 +224,9 @@ if __name__ == '__main__':
     # t_list = [300, 350, 400, 450, 500, 550, 600]
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500]
+
     # marge.plot_t(t_list=t_list)
-    marge.plot_index(indexes=indexes, start_t=570)
+    indexes = [20, 30, 40]
+    marge.plot_index(indexes=indexes, start_t=100)
