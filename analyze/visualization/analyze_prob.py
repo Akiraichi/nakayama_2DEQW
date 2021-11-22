@@ -258,7 +258,7 @@ def get_width_outer(prob):
     """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
     len_x = prob.shape[1]
     len_y = prob.shape[0]
-    threshold = 0.00000001  # 閾値
+    threshold = 0.00001  # 閾値
     x_max = 0
     x_min = 0
     y_max = 0
@@ -299,7 +299,7 @@ def get_width_center(prob, radius):
     """
     len_x = prob.shape[1]
     len_y = prob.shape[0]
-    threshold = 0.00000001  # 閾値
+    threshold = 0.00001  # 閾値
     # 0,0は初期値として妥当。
     x_max = 0
     x_min = 0
