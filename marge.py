@@ -114,6 +114,8 @@ class Marge:
 
         elif type == "var":
             folder_list = glob.glob(f'result/var/*')
+        elif type == "width":
+            folder_list = glob.glob(f'result/width/*')
         else:
             raise Exception
         self.__select(folder_list)
@@ -129,11 +131,14 @@ class Marge:
             self.path = f'{folder_list[select]}'
         elif self.type == "var":
             self.path = f'{folder_list[select]}'
+        elif self.type == "width":
+            self.path = f'{folder_list[select]}'
         print(self.path)
 
     def __connect_csv(self):
         csv_files = glob.glob(f'{self.path}/*.csv')
         csv_files.sort()
+
         if self.type == "KL":
             data_list = []
             for i, file in enumerate(csv_files):
@@ -180,6 +185,33 @@ class Marge:
             df_var = pd.concat(var_list, axis=1)
             return df_var
 
+        elif self.type == "width":
+            df_X_center_list = []
+            df_Y_center_list = []
+            df_X_outer_list = []
+            df_Y_outer_list = []
+
+            for i, file in enumerate(csv_files):
+                df = pd.read_csv(file)
+                index = file[-8:-4]
+                print(index)  # デバッグ
+                if i == 0:
+                    df_X_center_list.append(df.loc[:, ['t', f'X_width_center_{index}']])
+                    df_Y_center_list.append(df.loc[:, ['t', f'Y_width_center_{index}']])
+                    df_X_outer_list.append(df.loc[:, ['t', f'X_width_outer_{index}']])
+                    df_Y_outer_list.append(df.loc[:, ['t', f'Y_width_outer_{index}']])
+                else:
+                    df_X_center_list.append(df.loc[:, [f'X_width_center_{index}']])
+                    df_Y_center_list.append(df.loc[:, [f'Y_width_center_{index}']])
+                    df_X_outer_list.append(df.loc[:, [f'X_width_outer_{index}']])
+                    df_Y_outer_list.append(df.loc[:, [f'Y_width_outer_{index}']])
+
+            df_cX = pd.concat(df_X_center_list, axis=1)
+            df_cY = pd.concat(df_Y_center_list, axis=1)
+            df_oX = pd.concat(df_X_outer_list, axis=1)
+            df_oY = pd.concat(df_Y_outer_list, axis=1)
+            return df_cX, df_cY, df_oX, df_oY
+
     def plot_t(self, t_list):
         if self.type == "KL":
             """選択したフォルダのcsvを結合"""
@@ -194,6 +226,12 @@ class Marge:
         elif self.type == "var":
             df_var = self.__connect_csv()
             plot_t(df_var, self.path, step_t_list=t_list, file_name=f"var_{t_list}", label="var")
+        elif self.type == "width":
+            df_X_center, df_Y_center, df_X_outer, df_Y_outer = self.__connect_csv()
+            plot_t(df_X_center, self.path, step_t_list=t_list, file_name=f"X_center_{t_list}", label="step")
+            plot_t(df_Y_center, self.path, step_t_list=t_list, file_name=f"Y_center_{t_list}", label="step")
+            plot_t(df_X_outer, self.path, step_t_list=t_list, file_name=f"X_outer_{t_list}", label="step")
+            plot_t(df_Y_outer, self.path, step_t_list=t_list, file_name=f"Y_outer_{t_list}", label="step")
 
     def plot_index(self, indexes, start_t):
         if self.type == "KL":
@@ -213,6 +251,16 @@ class Marge:
             df_var = self.__connect_csv()
             plot_index_prob(df_var, self.path, indexes, start_t=start_t,
                             file_name=f"var_start_t={start_t}_indexes={indexes}", label="var")
+        elif self.type == "width":
+            df_X_center, df_Y_center, df_X_outer, df_Y_outer = self.__connect_csv()
+            plot_index_prob(df_X_center, self.path, indexes, start_t=start_t,
+                            file_name=f"X_center_start_t={start_t}_indexes={indexes}", label="step")
+            plot_index_prob(df_Y_center, self.path, indexes, start_t=start_t,
+                            file_name=f"Y_center_start_t={start_t}_indexes={indexes}", label="step")
+            plot_index_prob(df_X_outer, self.path, indexes, start_t=start_t,
+                            file_name=f"X_outer_start_t={start_t}_indexes={indexes}", label="step")
+            plot_index_prob(df_Y_outer, self.path, indexes, start_t=start_t,
+                            file_name=f"Y_outer_start_t={start_t}_indexes={indexes}", label="step")
 
 
 if __name__ == '__main__':
@@ -221,12 +269,12 @@ if __name__ == '__main__':
     # t_list = list(range(400, 2100, 200))
     # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # t_list = [300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000]
-    # t_list = [300, 350, 400, 450, 500, 550, 600]
+    t_list = [300, 350, 400, 450, 500, 550, 600]
+    marge.plot_t(t_list=t_list)
+
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
-    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500]
-
-    # marge.plot_t(t_list=t_list)
-    indexes = [20, 30, 40]
-    marge.plot_index(indexes=indexes, start_t=100)
+    # indexes = [20, 30, 40]
+    marge.plot_index(indexes=indexes, start_t=300)
