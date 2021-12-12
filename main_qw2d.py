@@ -156,13 +156,38 @@ class EraseElectricHadamardWalk2DAlongXY(QW):
         super().__init__(e1=exp_038, e2=exp_039, select_exp_indexes=select_exp_indexes)
 
 
+class DFTWalk2D(QW):
+    def __init__(self):
+        super().__init__(e1=exp_040, e2=exp_041)
+
+
+class ElectricDFTWalk2DAlongX(QW):
+    def __init__(self):
+        super().__init__(e1=exp_042, e2=exp_043)
+
+
+class ElectricDFTdWalk2DAlongXY(QW):
+    def __init__(self):
+        super().__init__(e1=exp_044, e2=exp_045)
+
+
+class EraseElectricDFTWalk2DAlongX(QW):
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_046, e2=exp_047, select_exp_indexes=select_exp_indexes)
+
+
+class EraseElectricDFTWalk2DAlongXY(QW):
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_048, e2=exp_049, select_exp_indexes=select_exp_indexes)
+
+
 if __name__ == '__main__':
     # qw = ElectricHadamardWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False, parallel=True)
     # qw.run_gif_surface(plot_t_step=None)
 
-    erase_qw = EraseElectricHadamardWalk2DAlongXY(select_exp_indexes=[10, 20, 30, 40])
+    erase_qw = EraseElectricDFTWalk2DAlongXY(select_exp_indexes=[10, 20, 30, 40])
     erase_qw.run_simulation(start_step_t=0)
     erase_qw.run_plot_surface(is_enlarge=False, parallel=True)
     # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)

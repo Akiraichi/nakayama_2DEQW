@@ -47,3 +47,17 @@ def set_hadamard_condition(condition):
                            dtype=np.complex128)
     condition.S = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1 / 2, -1 / 2, -1 / 2, 1 / 2]],
                            dtype=np.complex128)
+
+
+def set_DFT_condition(condition):
+    # シミュレーション条件
+    condition.PSY_init = None
+    condition.T = ConfigSimulation.MaxTimeStep  # 最大時間発展T
+    condition.P = np.array([[1 / 2, 1 / 2, 1 / 2, 1 / 2], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+                           dtype=np.complex128)
+    condition.Q = np.array([[0, 0, 0, 0], [1 / 2, 1j / 2, -1 / 2, -1j / 2], [0, 0, 0, 0], [0, 0, 0, 0]],
+                           dtype=np.complex128)
+    condition.R = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [1 / 2, -1 / 2, 1 / 2, -1 / 2], [0, 0, 0, 0]],
+                           dtype=np.complex128)
+    condition.S = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [1 / 2, -1j / 2, -1 / 2, 1j / 2]],
+                           dtype=np.complex128)
