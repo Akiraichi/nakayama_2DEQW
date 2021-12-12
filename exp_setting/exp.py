@@ -1401,3 +1401,155 @@ def exp_035():
     conditions.append(c)
 
     return conditions, exp_name
+
+
+def exp_036(exp_index_list):
+    """
+        Erase Electric 2D Hadamard walk
+        x軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = f"exp_036"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_hadamard_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+        c.algorithm = 100
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
+
+
+def exp_037(exp_index_list):
+    """
+        Erase Electric 2D Hadamard walk
+        x軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = f"exp_037"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_hadamard_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+        c.algorithm = 100
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
+
+
+def exp_038(exp_index_list):
+    """
+        Erase Electric 2D Hadamard walk
+        x,y軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = f"exp_038"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_hadamard_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+        c.algorithm = 110
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
+
+
+def exp_039(exp_index_list):
+    """
+        Erase Electric 2D Hadamard walk
+        x,y軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = f"exp_039"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_hadamard_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+        c.algorithm = 110
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name

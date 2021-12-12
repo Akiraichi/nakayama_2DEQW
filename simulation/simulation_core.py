@@ -157,6 +157,18 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                                    (Q @ PSY_of_Q) +
                                                                    (R @ PSY_of_R) +
                                                                    (S @ PSY_of_S))
+            elif Algorithm == 110:
+                # x,y軸で電場をかけた
+                if t >= erase_t:
+                    PSY_next[x, y] = P @ PSY_of_P + \
+                                     Q @ PSY_of_Q + \
+                                     R @ PSY_of_R + \
+                                     S @ PSY_of_S
+                else:
+                    PSY_next[x, y] = np.exp(1j * (x - T) * phi) * np.exp(1j * (y - T) * phi) * ((P @ PSY_of_P) +
+                                                                                                (Q @ PSY_of_Q) +
+                                                                                                (R @ PSY_of_R) +
+                                                                                                (S @ PSY_of_S))
             elif Algorithm == 200:
                 """
                 電場をゆっくり消す場合。

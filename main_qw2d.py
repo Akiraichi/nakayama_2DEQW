@@ -76,7 +76,7 @@ class QW:
                      circle_inner_r=circle_inner_r, circle_outer_r=circle_outer_r, ext="all")
 
 
-class Normal_QW(QW):
+class GroverWalk2D(QW):
     """
     2D Grover walk
     """
@@ -85,7 +85,7 @@ class Normal_QW(QW):
         super().__init__(e1=exp_018, e2=exp_022)
 
 
-class Erase_EQW(QW):
+class EraseElectricGroverWalk2DAlongX(QW):
     """
     電場量子ウォーク
     pi/60
@@ -131,7 +131,7 @@ class SlowEraseEQW_erase_t_200(QW):
         super().__init__(e1=exp_027, e2=exp_028, select_exp_indexes=erase_time_steps)
 
 
-class HadamardWalk2DAlong(QW):
+class HadamardWalk2D(QW):
     def __init__(self):
         super().__init__(e1=exp_030, e2=exp_031)
 
@@ -146,21 +146,42 @@ class ElectricHadamardWalk2DAlongXY(QW):
         super().__init__(e1=exp_034, e2=exp_035)
 
 
-if __name__ == '__main__':
-    qw = ElectricHadamardWalk2DAlongXY()
-    qw.run_simulation(start_step_t=0)
-    qw.run_plot_surface(is_enlarge=False, parallel=True)
-    qw.run_gif_surface(plot_t_step=None)
+class EraseElectricHadamardWalk2DAlongX(QW):
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_036, e2=exp_037, select_exp_indexes=select_exp_indexes)
 
-    # qw = Normal_QW()
+
+class EraseElectricHadamardWalk2DAlongXY(QW):
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_038, e2=exp_039, select_exp_indexes=select_exp_indexes)
+
+
+if __name__ == '__main__':
+    # qw = ElectricHadamardWalk2DAlongX()
+    # qw.run_simulation(start_step_t=0)
+    # qw.run_plot_surface(is_enlarge=False, parallel=True)
+    # qw.run_gif_surface(plot_t_step=None)
+
+    erase_qw = EraseElectricHadamardWalk2DAlongXY(select_exp_indexes=[10, 20, 30, 40])
+    erase_qw.run_simulation(start_step_t=0)
+    erase_qw.run_plot_surface(is_enlarge=False, parallel=True)
+    # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)
+    erase_qw.run_gif_surface(plot_t_step=None)
+    # erase_qw.run_gif_heatmap(plot_t_step=None)
+    # erase_qw.run_plot_width(cut_circle_r=100)
+    # erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50, parallel=False)
+    # erase_qw.run_var(cut_circle_r=20)
+    # erase_qw.run_analyze(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50)
+
+    # qw = GroverWalk2D()
     # qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False,parallel=True)
     # qw.run_plot_heatmap(is_enlarge=True)
     # qw.run_gif_surface(plot_t_step=None)
     # qw.run_gif_heatmap(plot_t_step=None)
     # qw.run_plot_width()
-
-    # erase_qw = Erase_EQW(select_exp_indexes=[300, 400, 500, 599])
+    #
+    # erase_qw = EraseElectricGroverWalk2DAlongX(select_exp_indexes=[300, 400, 500, 599])
     # erase_qw.run_simulation(start_step_t=0)
     # erase_qw.run_plot_surface(is_enlarge=False)
     # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)
@@ -170,7 +191,7 @@ if __name__ == '__main__':
     # erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50, parallel=False)
     # erase_qw.run_var(cut_circle_r=20)
     # erase_qw.run_analyze(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50)
-
+    #
     # slow_erase_qw = SlowEraseEQW(select_exp_indexes=[0])
     # slow_erase_qw.run_simulation()
     # slow_erase_qw.run_plot_surface()
@@ -184,5 +205,5 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_gif_surface()
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
-
+    #
     # qw.run_kl_div(qw_obj=erase_qw, cut_circle_r=10, parallel=True)
