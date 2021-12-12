@@ -77,22 +77,28 @@ class QW:
 
 
 class GroverWalk2D(QW):
-    """
-    2D Grover walk
-    """
-
     def __init__(self):
-        super().__init__(e1=exp_018, e2=exp_022)
+        super().__init__(e1=exp_050, e2=exp_051)
+
+
+class ElectricGroverWalk2DAlongX(QW):
+    def __init__(self):
+        super().__init__(e1=exp_052, e2=exp_053)
+
+
+class ElectricGroverWalk2DAlongXY(QW):
+    def __init__(self):
+        super().__init__(e1=exp_054, e2=exp_055)
 
 
 class EraseElectricGroverWalk2DAlongX(QW):
-    """
-    電場量子ウォーク
-    pi/60
-    """
-
     def __init__(self, select_exp_indexes):
         super().__init__(e1=exp_019, e2=exp_021, select_exp_indexes=select_exp_indexes)
+
+
+class EraseElectricGroverWalk2DAlongXY(QW):
+    def __init__(self, select_exp_indexes):
+        super().__init__(e1=exp_058, e2=exp_059, select_exp_indexes=select_exp_indexes)
 
 
 class SlowEraseEQW(QW):
@@ -182,12 +188,12 @@ class EraseElectricDFTWalk2DAlongXY(QW):
 
 
 if __name__ == '__main__':
-    # qw = ElectricHadamardWalk2DAlongX()
+    # qw = ElectricDFTWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False, parallel=True)
     # qw.run_gif_surface(plot_t_step=None)
 
-    erase_qw = EraseElectricDFTWalk2DAlongXY(select_exp_indexes=[10, 20, 30, 40])
+    erase_qw = EraseElectricHadamardWalk2DAlongX(select_exp_indexes=[10, 20, 30, 40])
     erase_qw.run_simulation(start_step_t=0)
     erase_qw.run_plot_surface(is_enlarge=False, parallel=True)
     # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)

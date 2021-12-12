@@ -1854,3 +1854,227 @@ def exp_049(exp_index_list):
         print(f"t = {s_c.erase_t}")
 
     return selected_conditions, exp_name
+
+
+def exp_050():
+    """
+        2D Grover walk
+        600ステップの場合
+    """
+    exp_name = "exp_050"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 2
+
+    phi = 0  # phiは使わないので0を入れておく。
+    c.phi = phi
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_051():
+    """
+        2D Grover walk
+        2000ステップの場合
+    """
+    exp_name = "exp_051"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 2
+
+    phi = 0  # phiは使わないので0を入れておく。
+    c.phi = phi
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_052():
+    """
+        Electric 2D Grover walk
+        x軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = "exp_052"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 3
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_053():
+    """
+        Electric 2D Grover walk
+        x軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = "exp_053"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 3
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_054():
+    """
+        Electric 2D Grover walk
+        x,y軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = "exp_054"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 5
+
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_055():
+    """
+        Electric 2D Grover walk
+        x,y軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = "exp_055"
+    conditions = []
+
+    c = Condition()
+    set_grover_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+    c.algorithm = 5
+
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_058(exp_index_list):
+    """
+        Erase Electric 2D Grover walk
+        x,y軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = f"exp_058"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_grover_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 110
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
+
+
+def exp_059(exp_index_list):
+    """
+        Erase Electric 2D Grover walk
+        x,y軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = f"exp_059"
+    conditions = []
+    for i in range(1000):
+        c = Condition()
+        set_grover_condition(c)
+        c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
+        c.algorithm = 110
+
+        x = sympy.Symbol('x')
+        phi = x * sympy.pi / 240
+        phi = phi.subs(x, 4)
+        c.phi = float(phi.evalf())
+        c.phi_latex = sympy.latex(phi)
+        c.exp_name = exp_name
+        c.exp_index = i
+        c.erase_t = i
+        conditions.append(c)
+
+    # 今回のセッションで実験したい内容を、conditionsからexp_index_listをもとにselected_conditionsへ抽出する。
+    # オブジェクトの格納でコピーではないので元のconditionsの変更はselected_conditionsにも影響する。
+    selected_conditions = []
+    for k in exp_index_list:
+        print(conditions[k].phi_latex)
+        selected_conditions.append(conditions[k])
+
+    # 実行する際にerase_tの中身を確認
+    for s_c in selected_conditions:
+        print(f"t = {s_c.erase_t}")
+
+    return selected_conditions, exp_name
