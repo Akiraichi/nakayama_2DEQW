@@ -64,11 +64,11 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                           (S @ PSY_of_S))
             elif Algorithm == 5:
                 # xとy両方
-                PSY_next[x, y] = e_i_phi(x, T, phi, 1) * e_i_phi(y, T, phi, 1) \
-                                 * ((P @ PSY_of_P) +
-                                    (Q @ PSY_of_Q) +
-                                    (R @ PSY_of_R) +
-                                    (S @ PSY_of_S))
+                PSY_next[x, y] = np.exp(1j * (x - T) * phi) * np.exp(1j * (y - T) * phi) * \
+                                 ((P @ PSY_of_P) +
+                                  (Q @ PSY_of_Q) +
+                                  (R @ PSY_of_R) +
+                                  (S @ PSY_of_S))
 
             elif Algorithm == 6:
                 # 固定値-x軸

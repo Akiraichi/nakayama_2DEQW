@@ -264,17 +264,17 @@ class Marge:
 
 
 if __name__ == '__main__':
-    marge = Marge(type="var")
+    marge = Marge(type="KL")
     # t_list = [100, 200, 300, 400, 500, 1000, 2000]
     # t_list = list(range(400, 2100, 200))
     # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    # t_list = [300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000]
-    t_list = [300, 350, 400, 450, 500, 550, 600]
+    t_list = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000]
+    # t_list = list(range(400, 2000, 40))
     marge.plot_t(t_list=t_list)
 
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
-    indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500]
+    # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
     # indexes = [20, 30, 40]
-    marge.plot_index(indexes=indexes, start_t=300)
+    # marge.plot_index(indexes=indexes, start_t=0)

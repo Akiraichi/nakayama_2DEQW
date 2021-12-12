@@ -1,5 +1,5 @@
 from simulation.condition import Condition
-from simulation.condition import set_basic_condition
+from simulation.condition import set_grover_condition, set_hadamard_condition
 import numpy as np
 import sympy
 
@@ -234,7 +234,7 @@ def exp_1010_x_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1010
@@ -249,7 +249,7 @@ def exp_1020_y_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1020
@@ -264,7 +264,7 @@ def exp_1030_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 1030
@@ -355,7 +355,7 @@ def exp_4010_t_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 4010
         c.phi = phi
@@ -369,7 +369,7 @@ def exp_4011_t_xy_set():
     conditions = []
     for phi in phi_list:
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         # x軸のみに電場を加えるため、アルゴリズム番号は3番
         c.algorithm = 4010
@@ -390,7 +390,7 @@ def exp_0000__debug_folder_changed_check_set():
     conditions = []
     for i in range(1, 5):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -413,7 +413,7 @@ def exp_2010_x_set():
     conditions = []
     for i in range(1, 21):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -435,7 +435,7 @@ def exp_3010_x_set():
     conditions = []
     for i in range(1, 61):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -457,7 +457,7 @@ def exp_3011_x_set():
     conditions = []
     for i in range(61, 121):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -479,7 +479,7 @@ def exp_3030_xy_set():
     conditions = []
     for i in range(1, 61):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5
         x = sympy.Symbol('x')
@@ -500,7 +500,7 @@ def exp_3031_xy_set():
     conditions = []
     for i in range(61, 121):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5
         x = sympy.Symbol('x')
@@ -526,7 +526,7 @@ def exp_5010_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
         x = sympy.Symbol('x')
@@ -549,7 +549,7 @@ def exp_6010_prime_number_x_set():
                          97, ]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -571,7 +571,7 @@ def exp_7010_ryoka_x_set():
     prime_number_list = [2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -593,7 +593,7 @@ def exp_8010_Landau_x_set():
     prime_number_list = [1, 2, 3, 4, 6, 12, 15, 20, 30, 60, 84, 105, 140, 210, 420]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -617,7 +617,7 @@ def exp_009_01_00_x_set():
                          171, 191, 211]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -639,7 +639,7 @@ def exp_010_01_00_x_set():
     prime_number_list = [1, 2, 3, 4, 6, 7, 10, 12, 16, 19, 24, 28, 36, 43, 51, 62, 74, 87, 104, 122, 143, 169, 195, 227]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -661,7 +661,7 @@ def exp_011_01_00_x_set():
     prime_number_list = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 100, 120, 150, 200, 300, 600]
     for i, num in enumerate(prime_number_list):  # 変更点
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3  # 変更点
         x = sympy.Symbol('x')
@@ -725,7 +725,7 @@ def exp_014_01_00_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
         x = sympy.Symbol('x')
@@ -746,7 +746,7 @@ def exp_015_01_00_x_set(start_index, end_index):
     conditions = []
     for i in range(start_index, end_index):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 5010
         x = sympy.Symbol('x')
@@ -805,7 +805,7 @@ def exp_016_01_00_x_set(exp_index_list):
     # 0から239まで240回分の実験をconditionsにまとめる
     for i in range(240):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 3
 
@@ -849,7 +849,7 @@ def exp_017(exp_index_list, erase_t):
     # 0から239まで240回分の実験をconditionsにまとめる
     for i in range(240):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 100
 
@@ -881,7 +881,7 @@ def exp_018():
     conditions = []
 
     c = Condition()
-    set_basic_condition(c)
+    set_grover_condition(c)
     c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
     c.algorithm = 2
     phi = 0  # phiは使わないので0を入れておく。
@@ -906,7 +906,7 @@ def exp_019(exp_index_list):
     conditions = []
     for i in range(600):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 100
         x = sympy.Symbol('x')
@@ -945,7 +945,7 @@ def exp_020(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 100
         x = sympy.Symbol('x')
@@ -984,7 +984,7 @@ def exp_021(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 100
         x = sympy.Symbol('x')
@@ -1019,7 +1019,7 @@ def exp_022():
     conditions = []
 
     c = Condition()
-    set_basic_condition(c)
+    set_grover_condition(c)
     c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
     c.algorithm = 2
     phi = 0  # phiは使わないので0を入れておく。
@@ -1038,7 +1038,7 @@ def exp_023(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1071,7 +1071,7 @@ def exp_024(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1108,7 +1108,7 @@ def exp_025(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1147,7 +1147,7 @@ def exp_026(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1186,7 +1186,7 @@ def exp_027(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1225,7 +1225,7 @@ def exp_028(exp_index_list):
     conditions = []
     for i in range(1000):
         c = Condition()
-        set_basic_condition(c)
+        set_grover_condition(c)
         c.PSY_init = 1 / 2 * np.array([1, 1, -1, -1])
         c.algorithm = 200
         x = sympy.Symbol('x')
@@ -1252,3 +1252,152 @@ def exp_028(exp_index_list):
         print(f"t = {s_c.erase_time_step}")
 
     return selected_conditions, exp_name
+
+
+def exp_030():
+    """
+        2D Hadamard walk
+        600ステップの場合
+    """
+    exp_name = "exp_030"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 2
+
+    phi = 0  # phiは使わないので0を入れておく。
+    c.phi = phi
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_031():
+    """
+        2D Hadamard walk
+        2000ステップの場合
+    """
+    exp_name = "exp_031"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 2
+
+    phi = 0  # phiは使わないので0を入れておく。
+    c.phi = phi
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_032():
+    """
+        Electric 2D Hadamard walk
+        x軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = "exp_032"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 3
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_033():
+    """
+        Electric 2D Hadamard walk
+        x軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = "exp_033"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 3
+
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_034():
+    """
+        Electric 2D Hadamard walk
+        x,y軸方向に電場をかけた
+        600ステップの場合
+    """
+    exp_name = "exp_034"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 5
+
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
+
+
+def exp_035():
+    """
+        Electric 2D Hadamard walk
+        x,y軸方向に電場をかけた
+        2000ステップの場合
+    """
+    exp_name = "exp_035"
+    conditions = []
+
+    c = Condition()
+    set_hadamard_condition(c)
+    c.PSY_init = 1 / 2 * np.array([1, -1, 1j, 1j])
+    c.algorithm = 5
+
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, 4)
+    c.phi = float(phi.evalf())
+    c.phi_latex = sympy.latex(phi)
+    c.exp_name = exp_name
+    c.exp_index = 0  # forで240回分のループをしないので、0を代入しておく
+    conditions.append(c)
+
+    return conditions, exp_name
