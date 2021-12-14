@@ -150,12 +150,12 @@ class Main_Plotter:
             # 格子点を作成
             t_int = int(self.t)
             mesh_x, mesh_y = np.meshgrid(np.linspace(-t_int, t_int, 2 * t_int + 1),
-                                         np.linspace(-t_int, t_int, 2 * t_int + 1), indexing="ij")
+                                         np.linspace(-t_int, t_int, 2 * t_int + 1))
 
         else:
             # 格子点を作成
             mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
-                                         np.linspace(-self.T, self.T, 2 * self.T + 1), indexing="ij")
+                                         np.linspace(-self.T, self.T, 2 * self.T + 1))
         do_plot_surface(mesh_x, mesh_y, self.mesh_z, self.plot_save_path, self.file_name, self.title)
         print(f"t={self.t_index}：可視化と保存：完了")
 
