@@ -194,14 +194,12 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     """heatmapをプロットする"""
     # プロット用のデータフレームの作成
     x_len = prob_list.shape[0]
-    l = []
     if is_enlarge:
         x_len_max = prob_list.shape[0] // 2
     else:
         x_len_max = ConfigSimulation.MaxTimeStep
 
-    for k in range(x_len):
-        l.append(str(k - x_len_max))
+    l = [str(k - x_len_max) for k in range(x_len)]
     df = pd.DataFrame(prob_list, index=l, columns=l)
 
     # figureを作成しプロットする
