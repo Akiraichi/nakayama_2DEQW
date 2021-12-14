@@ -18,6 +18,11 @@ def e_i_phi(position, T, phi, pow_n):
 
 @njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8,i8)', cache=True)
 def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t, erase_time_step):
+    """
+    [x,y]：この場合x行y列となるため、数学的には(y,x)となる点に注意すること。
+    可読性の観点から、リストの操作は[x,y]でやる方が望ましいと考えた。
+    しかし、その後の解析操作では、不都合が生じるため、データ使用時は転置する事
+    """
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
@@ -206,7 +211,11 @@ def calc_probability(PSY, len_x, len_y):
     probability, p_sum, err = calculate_dict(len_x, len_y, probability, PSY)
     if err:
         print_warning(f"確率に問題がある可能性があります：{p_sum}")
-    return probability
+    # 転置した値を返却する。[x,y]で数学でx、yとするとx軸がxの値、y軸がyの値となる。
+    # しかし、[x,y]では、x行y列となるので、ちょうどxとyが逆である。
+    # それだと利便上問題があるので、転置して返却する。
+    # まとめると、このprobabirityは完全に2次元格子上の確率分布と一致する。
+    return probability.T
 
 
 @njit('Tuple((f8[:,:],f8,b1))(i8,i8,f8[:,:],c16[:,:,:])', cache=True)
