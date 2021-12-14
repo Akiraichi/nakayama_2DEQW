@@ -198,9 +198,17 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
         x_len_max = prob_list.shape[0] // 2
     else:
         x_len_max = ConfigSimulation.MaxTimeStep
-
-    l = [str(k - x_len_max) for k in range(x_len)]
-    df = pd.DataFrame(prob_list, index=l, columns=l)
+    """
+    現在のprob_listは[x,y]で(x,y)座標の確率を取得できるリストとなっている。
+    heatmapの仕様上、リストの左上はheatmapの左上に表示される。
+    左から右へプラス、下から上へプラス、この方が良いだろう。
+    そのためには、行列を反転させれば、良さそうだ。
+    上下反転させる。
+    """
+    prob_list = np.flipud(prob_list).copy()  # メモリをシェアーすると、他の処理でprob_list使うとき、バグが発生しそうなので、（クラスで共有しているし）やめておく
+    index = [str(x_len_max - k) for k in range(x_len)]
+    columns = [str(k - x_len_max) for k in range(x_len)]
+    df = pd.DataFrame(prob_list, index=index, columns=columns)
 
     # figureを作成しプロットする
     fig = plt.figure(figsize=(16, 12), tight_layout=True)

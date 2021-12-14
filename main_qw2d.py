@@ -192,6 +192,11 @@ class EraseElectricDFTWalk2DAlongXY(QW):
 
 
 if __name__ == '__main__':
+    # test = [[1,2,3],
+    #         [4,5,6],
+    #         [7,8,9]]
+    # np.flipud(test)
+
     # test = np.zeros([10, 10])
     # i = 0
     # for x in range(10):
@@ -201,10 +206,11 @@ if __name__ == '__main__':
     # print(test)
 
     qw = ElectricGroverWalk2DAlongX()
-    # qw.run_simulation(start_step_t=0)
+    qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False, parallel=False)
     # qw.run_gif_surface(plot_t_step=None)
     qw.run_plot_heatmap(is_enlarge=False, parallel=True)
+    # qw.run_gif_heatmap(plot_t_step=None)
 
     # qw = ElectricHadamardWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
