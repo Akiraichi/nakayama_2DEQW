@@ -56,6 +56,10 @@ class QW:
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
 
+    def run_kl_div_compare_t(self, qw_obj, cut_circle_r, parallel):
+        plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
+                exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
+
     def run_plot_width(self, cut_circle_r):
         # plot_width_prob(exp_name=self.exp_name, plot_exp_indexes=self.selected_exp_indexes)
         main_analyze(exp_name=self.exp_name, exp_indexes=self.selected_exp_indexes, cut_circle_r=cut_circle_r,
@@ -172,7 +176,7 @@ class ElectricDFTWalk2DAlongX(QW):
         super().__init__(e1=exp_042, e2=exp_043)
 
 
-class ElectricDFTdWalk2DAlongXY(QW):
+class ElectricDFTWalk2DAlongXY(QW):
     def __init__(self):
         super().__init__(e1=exp_044, e2=exp_045)
 
@@ -188,16 +192,31 @@ class EraseElectricDFTWalk2DAlongXY(QW):
 
 
 if __name__ == '__main__':
-    # qw = ElectricDFTWalk2DAlongX()
+    qw = HadamardWalk2D()
+    qw.run_simulation(start_step_t=0)
+    qw.run_plot_surface(is_enlarge=False, parallel=True)
+    qw.run_gif_surface(plot_t_step=None)
+
+    # qw = ElectricHadamardWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
-    # qw.run_plot_surface(is_enlarge=False, parallel=True)
+    # qw.run_plot_surface(is_enlarge=False, parallel=False)
     # qw.run_gif_surface(plot_t_step=None)
 
-    erase_qw = EraseElectricHadamardWalk2DAlongX(select_exp_indexes=[10, 20, 30, 40])
-    erase_qw.run_simulation(start_step_t=0)
-    erase_qw.run_plot_surface(is_enlarge=False, parallel=True)
-    # erase_qw.run_plot_heatmap(is_enlarge=True, parallel=True)
-    erase_qw.run_gif_surface(plot_t_step=None)
+    # qw = ElectricDFTWalk2DAlongX()
+    # qw.run_simulation(start_step_t=0)
+    # qw.run_plot_surface(is_enlarge=False, parallel=False)
+    # qw.run_gif_surface(plot_t_step=None)
+
+    # qw = ElectricGroverWalk2DAlongXY()
+    # qw.run_simulation(start_step_t=0)
+    # qw.run_plot_surface(is_enlarge=False, parallel=False)
+    # qw.run_gif_surface(plot_t_step=None)
+
+    # erase_qw = EraseElectricDFTWalk2DAlongXY(select_exp_indexes=[10, 20, 30, 40])
+    # erase_qw.run_simulation(start_step_t=0)
+    # erase_qw.run_plot_surface(is_enlarge=False, parallel=False)
+    # erase_qw.run_plot_heatmap(is_enlarge=False, parallel=False)
+    # erase_qw.run_gif_surface(plot_t_step=None)
     # erase_qw.run_gif_heatmap(plot_t_step=None)
     # erase_qw.run_plot_width(cut_circle_r=100)
     # erase_qw.run_prob(cut_circle_r=20, circle_inner_r=30, circle_outer_r=50, parallel=False)

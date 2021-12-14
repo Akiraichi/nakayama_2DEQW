@@ -1259,7 +1259,7 @@ def exp_030():
         2D Hadamard walk
         600ステップの場合
     """
-    exp_name = "exp_030"
+    exp_name = "exp_030_2DHadamardWalk"
     conditions = []
 
     c = Condition()
@@ -1282,7 +1282,7 @@ def exp_031():
         2D Hadamard walk
         2000ステップの場合
     """
-    exp_name = "exp_031"
+    exp_name = "exp_031_2DHadamardWalk"
     conditions = []
 
     c = Condition()
@@ -1306,7 +1306,7 @@ def exp_032():
         x軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_032"
+    exp_name = "exp_032_Electric2DHadamardWalkAlongX"
     conditions = []
 
     c = Condition()
@@ -1331,7 +1331,7 @@ def exp_033():
         x軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_033"
+    exp_name = "exp_033_Electric2DHadamardWalkAlongX"
     conditions = []
 
     c = Condition()
@@ -1357,7 +1357,7 @@ def exp_034():
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_034"
+    exp_name = "exp_034_Electric2DHadamardWalkAlongXY"
     conditions = []
 
     c = Condition()
@@ -1383,7 +1383,7 @@ def exp_035():
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_035"
+    exp_name = "exp_035_Electric2DHadamardWalkAlongXY"
     conditions = []
 
     c = Condition()
@@ -1409,7 +1409,7 @@ def exp_036(exp_index_list):
         x軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_036"
+    exp_name = f"exp_036_EraseElectricHadamardWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1447,7 +1447,7 @@ def exp_037(exp_index_list):
         x軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = f"exp_037"
+    exp_name = f"exp_037_EraseElectricHadamardWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1485,7 +1485,7 @@ def exp_038(exp_index_list):
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_038"
+    exp_name = f"exp_038_EraseElectricHadamardWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1523,7 +1523,7 @@ def exp_039(exp_index_list):
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = f"exp_039"
+    exp_name = f"exp_039_EraseElectricHadamardWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1560,7 +1560,7 @@ def exp_040():
         2D DFT walk
         600ステップの場合
     """
-    exp_name = "exp_040"
+    exp_name = "exp_040_DFTWalk2D"
     conditions = []
 
     c = Condition()
@@ -1583,7 +1583,7 @@ def exp_041():
         2D DFT walk
         2000ステップの場合
     """
-    exp_name = "exp_041"
+    exp_name = "exp_041_DFTWalk2D"
     conditions = []
 
     c = Condition()
@@ -1607,7 +1607,7 @@ def exp_042():
         x軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_042"
+    exp_name = "exp_042_ElectricDFTWalk2DAlongX"
     conditions = []
 
     c = Condition()
@@ -1632,7 +1632,7 @@ def exp_043():
         x軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_043"
+    exp_name = "exp_043_ElectricDFTWalk2DAlongX"
     conditions = []
 
     c = Condition()
@@ -1658,7 +1658,7 @@ def exp_044():
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_044"
+    exp_name = "exp_044_ElectricDFTWalk2DAlongXY"
     conditions = []
 
     c = Condition()
@@ -1684,7 +1684,7 @@ def exp_045():
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_045"
+    exp_name = "exp_045_ElectricDFTWalk2DAlongXY"
     conditions = []
 
     c = Condition()
@@ -1710,7 +1710,7 @@ def exp_046(exp_index_list):
         x軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_046"
+    exp_name = f"exp_046_EraseElectricDFTWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1748,7 +1748,7 @@ def exp_047(exp_index_list):
         x軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = f"exp_047"
+    exp_name = f"exp_047_EraseElectricDFTWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1786,7 +1786,7 @@ def exp_048(exp_index_list):
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_048"
+    exp_name = f"exp_048_EraseElectricDFTWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1824,7 +1824,7 @@ def exp_049(exp_index_list):
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = f"exp_049"
+    exp_name = f"exp_049_EraseElectricDFTWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -1861,7 +1861,7 @@ def exp_050():
         2D Grover walk
         600ステップの場合
     """
-    exp_name = "exp_050"
+    exp_name = "exp_050_GroverWalk2D"
     conditions = []
 
     c = Condition()
@@ -1884,7 +1884,7 @@ def exp_051():
         2D Grover walk
         2000ステップの場合
     """
-    exp_name = "exp_051"
+    exp_name = "exp_051_GroverWalk2D"
     conditions = []
 
     c = Condition()
@@ -1908,7 +1908,7 @@ def exp_052():
         x軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_052"
+    exp_name = "exp_052_ElectricGroverWalk2DAlongX"
     conditions = []
 
     c = Condition()
@@ -1933,7 +1933,7 @@ def exp_053():
         x軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_053"
+    exp_name = "exp_053_ElectricGroverWalk2DAlongX"
     conditions = []
 
     c = Condition()
@@ -1958,7 +1958,7 @@ def exp_054():
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = "exp_054"
+    exp_name = "exp_054_ElectricGroverWalk2DAlongXY"
     conditions = []
 
     c = Condition()
@@ -1984,7 +1984,7 @@ def exp_055():
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = "exp_055"
+    exp_name = "exp_055_ElectricGroverWalk2DAlongXY"
     conditions = []
 
     c = Condition()
@@ -2010,7 +2010,7 @@ def exp_058(exp_index_list):
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_058"
+    exp_name = f"exp_058_EraseElectricGroverWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -2048,7 +2048,7 @@ def exp_059(exp_index_list):
         x,y軸方向に電場をかけた
         2000ステップの場合
     """
-    exp_name = f"exp_059"
+    exp_name = f"exp_059_EraseElectricGroverWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
