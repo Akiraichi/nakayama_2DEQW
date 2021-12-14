@@ -902,7 +902,7 @@ def exp_019(exp_index_list):
         exp_019(erase_t_list)
         //erase_t=10,20,30,40とした場合の、exp_017を実行する。
     """
-    exp_name = f"exp_019"
+    exp_name = f"exp_019_EraseElectricGroverWalk2DAlongX"
     conditions = []
     for i in range(600):
         c = Condition()
@@ -980,7 +980,7 @@ def exp_021(exp_index_list):
         exp_019(erase_t_list)
         //erase_t=10,20,30,40とした場合の、exp_017を実行する。
     """
-    exp_name = f"exp_021"
+    exp_name = f"exp_021_EraseElectricGroverWalk2DAlongX"
     conditions = []
     for i in range(1000):
         c = Condition()
@@ -2010,7 +2010,7 @@ def exp_058(exp_index_list):
         x,y軸方向に電場をかけた
         600ステップの場合
     """
-    exp_name = f"exp_058_EraseElectricGroverWalk2DAlongX"
+    exp_name = f"exp_058_EraseElectricGroverWalk2DAlongXY"
     conditions = []
     for i in range(1000):
         c = Condition()
