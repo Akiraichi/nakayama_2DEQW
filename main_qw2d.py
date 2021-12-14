@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     qw = ElectricGroverWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
-    qw.run_plot_surface(is_enlarge=False, parallel=False)
+    # qw.run_plot_surface(is_enlarge=False, parallel=False)
     # qw.run_gif_surface(plot_t_step=None)
     qw.run_plot_heatmap(is_enlarge=False, parallel=True)
 
