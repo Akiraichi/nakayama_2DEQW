@@ -192,10 +192,19 @@ class EraseElectricDFTWalk2DAlongXY(QW):
 
 
 if __name__ == '__main__':
-    qw = HadamardWalk2D()
-    qw.run_simulation(start_step_t=0)
-    qw.run_plot_surface(is_enlarge=False, parallel=True)
-    qw.run_gif_surface(plot_t_step=None)
+    test = np.zeros([10, 10])
+    i = 0
+    for x in range(10):
+        for y in range(10):
+            test[x, y] = i
+            i += 1
+    print(test)
+
+    # qw = ElectricGroverWalk2DAlongX()
+    # qw.run_simulation(start_step_t=0)
+    # qw.run_plot_surface(is_enlarge=False, parallel=False)
+    # qw.run_gif_surface(plot_t_step=None)
+    # qw.run_plot_heatmap(is_enlarge=False, parallel=True)
 
     # qw = ElectricHadamardWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
