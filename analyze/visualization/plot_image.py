@@ -44,22 +44,24 @@ class Plotter:
 
     def start_processing(self, plot_type, parallel):
         t_list = self.check_finished(plot_type=plot_type)
-        if parallel:
-            self.__start_parallel_processing(plot_type, t_list)
-        else:
-            # exp_indexのフォルダ下の、サブディレクトリも含めた、全ファイルのパスのリストを取得する
+        while True:
             simulation_data_file_names = glob.glob(
                 f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
             simulation_data_file_names.sort()  # 実験順にsortする。
+            if len(simulation_data_file_names) == ConfigSimulation.MaxTimeStep + 1:
+                # シミュレーションデータ全てのpathをgrobできているかのチェック
+                # Google Driveの場合、たまに取得できないことがあるのでコードを追加。
+                break
+
+        if parallel:
+            self.__start_parallel_processing(plot_type, t_list, simulation_data_file_names)
+        else:
             for t in t_list:
                 self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
 
-    def __start_parallel_processing(self, plot_type, t_list):
+    def __start_parallel_processing(self, plot_type, t_list, simulation_data_file_names):
         # 並列処理させるために、各プロセスに渡す引数を生成する
         # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
-        simulation_data_file_names = glob.glob(
-            f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
-        simulation_data_file_names.sort()  # 実験順にsortする。
 
         arguments = []
         for t in t_list:
