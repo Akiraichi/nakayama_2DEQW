@@ -57,7 +57,7 @@ class Plotter:
         # 並列処理させるために、各プロセスに渡す引数を生成する
         # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
         simulation_data_file_names = glob.glob(
-            f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
+            f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
         simulation_data_file_names.sort()  # 実験順にsortする。
 
         arguments = []
