@@ -40,7 +40,7 @@ class Simulation_qw:
         else:
             simulation.initialize()
             simulation.run()
-            simulation.save_env_file()
+            # simulation.save_env_file()
 
 
 class qw_2d_simulation:
@@ -106,24 +106,38 @@ class qw_2d_simulation:
             self.start_t = 1
         else:
             # 途中からシミュレーションを再開
-            path = f"{config_simulation_data_save_path(self.exp_name, self.exp_index)}/{str(self.start_step_t - 1).zfill(4)}.jb"
+            path = f"{config_simulation_data_save_path(self.exp_name, str(self.start_step_t - 1).zfill(4), self.exp_index)}/{str(self.start_step_t - 1).zfill(4)}.jb"
             print(path)
             self.init_PSY_now = joblib.load(path)["シミュレーションデータ"]
             self.start_t = self.start_step_t
 
     def check_finished(self):
-        folder_path = config_simulation_data_save_path(self.exp_name, self.exp_index)
-        file_list = glob.glob(f"{folder_path}/*")
-        # シミュレーションデータ数が必要な数と一致しているかをチェックする。envファイルがあるので＋1する。0〜600で601
-        need_file_num = self.T + 1 + 1
-        file_num = len(file_list)
-        print(f"exp_index={self.exp_index}のデータ数：{file_num}")
-        print(f"必要なデータ数：{need_file_num}")
+        """
+        self.Tが600なら、00、01、02、03、04、05、06のサブフォルダがあり、それぞれに100こずつデータが入っているだろう（06は1個）
+        """
+        finished = True
+        for i in range(0, (self.T // 100)+1): # range(0,2)なら0,1で2がないから。
+            str_t = str(i).zfill(2)
+            # それぞれにデータが必要個数入っているかを確認する
+            folder_path = config_simulation_data_save_path(self.exp_name, str_t, self.exp_index)
+            file_list = glob.glob(f"{folder_path}/*")
+            # シミュレーションデータ数が必要な数と一致しているかをチェックする。envファイルがあるので＋1する。0〜600で601
+            if i == self.T // 100:
+                # 600で1個
+                need_file_num = 1
+            else:
+                # 0~99で100個
+                need_file_num = 100
+            file_num = len(file_list)
+            print(f"exp_index={self.exp_index}, {str_t}, のデータ数：{file_num}")
+            print(f"必要なデータ数：{need_file_num}")
+            if need_file_num != file_num:
+                finished = False
 
-        finished = False
-        if need_file_num == file_num:
+        if finished:
             print_green_text(f"exp_index={self.exp_index}：既に完了")
-            finished = True
+        else:
+            print_warning(f"exp_index={self.exp_index}：完了していません")
         return finished
 
     def run(self):
@@ -142,7 +156,8 @@ class qw_2d_simulation:
 
     def save(self, psy, t):
         t = str(t).zfill(4)
-        simulation_data_save_path = f"{config_simulation_data_save_path(self.exp_name, self.exp_index)}/{t}.jb"
+
+        simulation_data_save_path = f"{config_simulation_data_save_path(self.exp_name, t[:2], self.exp_index)}/{t}.jb"
         data_dict = {
             "シミュレーションデータ": psy,
             "実験条件データ（condition）": self.condition,
@@ -150,11 +165,11 @@ class qw_2d_simulation:
         }
         joblib.dump(data_dict, simulation_data_save_path, compress=3)
 
-    def save_env_file(self):
-        # 実験条件を保存する
-        data = exp_data_pack_memory_save(exp_name=self.exp_name, condition=self.condition, T=self.T,
-                                         len_x=2 * self.T + 1,
-                                         len_y=2 * self.T + 1)
-        save_data(data=data, path=config_simulation_data_save_path(self.exp_name, self.exp_index),
-                  file_name=config_simulation_data_name(index=self.exp_index))
-        print_finish(f"exp_index={self.exp_index}")
+    # def save_env_file(self):
+    #     # 実験条件を保存する
+    #     data = exp_data_pack_memory_save(exp_name=self.exp_name, condition=self.condition, T=self.T,
+    #                                      len_x=2 * self.T + 1,
+    #                                      len_y=2 * self.T + 1)
+    #     save_data(data=data, path=config_simulation_data_save_path(self.exp_name, self.exp_index),
+    #               file_name=config_simulation_data_name(index=self.exp_index))
+    #     print_finish(f"exp_index={self.exp_index}")
