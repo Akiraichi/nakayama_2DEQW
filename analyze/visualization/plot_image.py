@@ -43,17 +43,18 @@ class Plotter:
         self.is_enlarge = is_enlarge
 
     def start_processing(self, plot_type, parallel):
+        t_list = self.check_finished(plot_type=plot_type)
         if parallel:
-            self.__start_parallel_processing(plot_type)
+            self.__start_parallel_processing(plot_type, t_list)
         else:
             # exp_indexのフォルダ下の、サブディレクトリも含めた、全ファイルのパスのリストを取得する
             simulation_data_file_names = glob.glob(
                 f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
             simulation_data_file_names.sort()  # 実験順にsortする。
-            for t in self.t_list:
+            for t in t_list:
                 self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
 
-    def __start_parallel_processing(self, plot_type):
+    def __start_parallel_processing(self, plot_type, t_list):
         # 並列処理させるために、各プロセスに渡す引数を生成する
         # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
         simulation_data_file_names = glob.glob(
@@ -61,13 +62,34 @@ class Plotter:
         simulation_data_file_names.sort()  # 実験順にsortする。
 
         arguments = []
-        for t in self.t_list:
+        for t in t_list:
             arguments.append([simulation_data_file_names[t], plot_type, self.is_enlarge])
 
         with Pool(ConfigSimulation.PlotParallelNum) as p:
             # 並列処理開始
             p.starmap(func=Plotter.plot_image, iterable=arguments)
         print_finish(plot_type)
+
+    def check_finished(self, plot_type):
+        """
+        plotが完了しているかを確認し、plotできていないファイルのみplotする。
+        """
+        path = plot_save_path(self.exp_name, plot_type, self.plot_exp_index)
+
+        plot_files = glob.glob(f"{path}/*")  # すでにプロットされたファイルの一覧
+        plotted_t_list = []  # すでにプロットされたtの一覧
+        for plot_file in plot_files:
+            extract_t = int(plot_file[-8:-4])
+            plotted_t_list.append(extract_t)
+
+        # 共通しない要素を取得
+        t_list = set(self.t_list) ^ set(plotted_t_list)
+
+        if not t_list:
+            print_green_text(f"exp_index={self.plot_exp_index}：既に完了")
+        else:
+            print_warning(f"exp_index={self.plot_exp_index}：完了していません")
+        return t_list
 
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge):
