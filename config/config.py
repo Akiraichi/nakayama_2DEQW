@@ -51,10 +51,13 @@ def print_green_text(text):
 
 
 # 実験データの保存場所。タイムステップごとに分割
-def config_simulation_data_save_path(exp_name, str_t, index=None):
+def config_simulation_data_save_path(exp_name, str_t=None, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
     if index is None:
         path = f"result/{exp_name}/simulation_data_{exp_name}/"
+    elif str_t is None:
+        index = str(index).zfill(2)
+        path = f"result/{exp_name}/simulation_data_{exp_name}/{index}/"
     else:
         # index=実験した時の順番でつけた番号。0埋めする
         index = str(index).zfill(2)

@@ -116,7 +116,7 @@ class qw_2d_simulation:
         self.Tが600なら、00、01、02、03、04、05、06のサブフォルダがあり、それぞれに100こずつデータが入っているだろう（06は1個）
         """
         finished = True
-        for i in range(0, (self.T // 100)+1): # range(0,2)なら0,1で2がないから。
+        for i in range(0, (self.T // 100) + 1):  # range(0,2)なら0,1で2がないから。
             str_t = str(i).zfill(2)
             # それぞれにデータが必要個数入っているかを確認する
             folder_path = config_simulation_data_save_path(self.exp_name, str_t, self.exp_index)

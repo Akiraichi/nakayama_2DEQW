@@ -46,8 +46,9 @@ class Plotter:
         if parallel:
             self.__start_parallel_processing(plot_type)
         else:
+            # exp_indexのフォルダ下の、サブディレクトリも含めた、全ファイルのパスのリストを取得する
             simulation_data_file_names = glob.glob(
-                f"{config_simulation_data_save_path(self.exp_name, self.plot_exp_index)}/*.jb")
+                f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
             simulation_data_file_names.sort()  # 実験順にsortする。
             for t in self.t_list:
                 self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
@@ -77,7 +78,7 @@ class Plotter:
     def plot_only_t(self, plot_t_step, plot_type, is_enlarge):
         plotter = Main_Plotter()
         plotter.load_data(
-            f"{config_simulation_data_save_path(self.exp_name)}{str(self.plot_exp_index).zfill(2)}/{str(plot_t_step).zfill(4)}.jb",
+            f"{config_simulation_data_save_path(self.exp_name, str_t=str(plot_t_step).zfill(4), index=self.plot_exp_index)}{str(plot_t_step).zfill(4)}.jb",
             plot_type, is_enlarge)
         plotter.plot()
 
