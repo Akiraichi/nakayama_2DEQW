@@ -80,5 +80,6 @@ class Make_gif:
             append_images=frames[1:],
             save_all=True,
             duration=self.duration,
-            loop=0)
+            loop=0,
+            optimize=False)
         print_finish(self.plot_type)
