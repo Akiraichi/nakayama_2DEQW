@@ -46,7 +46,7 @@ class Plotter:
         t_list = self.check_finished(plot_type=plot_type)
         while True:
             simulation_data_file_names = glob.glob(
-                f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*")
+                f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*.jb")
             simulation_data_file_names.sort()  # 実験順にsortする。
             if len(simulation_data_file_names) == ConfigSimulation.MaxTimeStep + 1:
                 # シミュレーションデータ全てのpathをgrobできているかのチェック
