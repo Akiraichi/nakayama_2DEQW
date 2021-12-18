@@ -5,6 +5,8 @@ from config.config import *
 import joblib
 from multiprocessing import Pool
 import glob
+
+from helper import return_simulation_data_file_names
 from simulation.simulation_core import calc_probability
 
 import seaborn as sns
@@ -44,14 +46,8 @@ class Plotter:
 
     def start_processing(self, plot_type, parallel):
         t_list = self.check_finished(plot_type=plot_type)
-        while True:
-            simulation_data_file_names = glob.glob(
-                f"{config_simulation_data_save_path(exp_name=self.exp_name, str_t=None, index=self.plot_exp_index)}**/*.jb")
-            simulation_data_file_names.sort()  # 実験順にsortする。
-            if len(simulation_data_file_names) == ConfigSimulation.MaxTimeStep + 1:
-                # シミュレーションデータ全てのpathをgrobできているかのチェック
-                # Google Driveの場合、たまに取得できないことがあるのでコードを追加。
-                break
+        simulation_data_file_names = return_simulation_data_file_names(exp_name=self.exp_name,
+                                                                       exp_index=self.plot_exp_index)
 
         if parallel:
             self.__start_parallel_processing(plot_type, t_list, simulation_data_file_names)

@@ -1,5 +1,7 @@
 # calc
 import numpy as np
+
+from helper import return_simulation_data_file_names
 from simulation.simulation_core import calc_probability
 # plot
 import matplotlib.pyplot as plt
@@ -27,8 +29,7 @@ class Plot_KL:
         self.cut_circle_r = cut_circle_r
         self.t_list = select_plot_t_step()
 
-        self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
-        self.simulation_data_names_1.sort()  # 実験順にsortする。
+        self.simulation_data_names_1 = return_simulation_data_file_names(exp_name=exp1_name, exp_index=exp1_index)
 
     def __load_common_data(self):
         """loadをparallelにする。google driveで動作しないのでコメントアウト"""
@@ -55,8 +56,7 @@ class Plot_KL:
             p.starmap(func=Plot_KL.plot_image, iterable=arguments)
 
     def start_processing(self, parallel=False):
-        self.__load_common_data()
-
+        self.__load_common_data()  # 共通データをロードする
         if parallel:
             self.__start_parallel_processing()
         else:
