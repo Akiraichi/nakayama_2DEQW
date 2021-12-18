@@ -101,8 +101,7 @@ class Main_KL_div:
 
         # self.simulation_data_names_1 = glob.glob(f"{config_simulation_data_save_path(exp1_name, exp1_index)}/*.jb")
         # self.simulation_data_names_1.sort()  # 実験順にsortする。
-        self.simulation_data_names_2 = glob.glob(f"{config_simulation_data_save_path(exp2_name, exp2_index)}/*.jb")
-        self.simulation_data_names_2.sort()  # 実験順にsortする。
+        self.simulation_data_names_2 = return_simulation_data_file_names(exp_name=exp2_name, exp_index=exp2_index)
 
         # print(f"exp_name_1のデータ数：{len(self.simulation_data_names_1)}")
         print(f"exp_name_2のデータ数：{len(self.simulation_data_names_2)}")
