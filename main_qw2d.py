@@ -23,6 +23,7 @@ class QW:
                 or ConfigSimulation.MaxTimeStep == 200:
             if select_exp_indexes is None:
                 self.selected_conditions, self.exp_name = e1()
+                self.selected_exp_indexes = [0]
             else:
                 self.selected_conditions, self.exp_name = e1(select_exp_indexes)
         elif ConfigSimulation.MaxTimeStep == 2000:
@@ -53,14 +54,10 @@ class QW:
                        plot_t_step=plot_t_step)
 
     def run_kl_div(self, qw_obj, cut_circle_r, parallel):
-        if qw_obj.selected_exp_indexes is None:
-            qw_obj.selected_exp_indexes = [0]
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
 
     def run_kl_div_compare_t(self, qw_obj, cut_circle_r, parallel):
-        if qw_obj.selected_exp_indexes is None:
-            qw_obj.selected_exp_indexes = [0]
         plot_kl(exp1_name=self.exp_name, exp1_index=0, exp2_name=qw_obj.exp_name,
                 exp2_indexes=qw_obj.selected_exp_indexes, cut_circle_r=cut_circle_r, parallel=parallel)
 
@@ -210,7 +207,8 @@ if __name__ == '__main__':
     # print(test)
 
     qw = GroverWalk2D()
-    qw2 = ElectricGroverWalk2DAlongX()
+    qw.run_analyze(cut_circle_r=10,circle_inner_r=10,circle_outer_r=20)
+    # qw2 = ElectricGroverWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
     # qw.run_plot_surface(is_enlarge=False, parallel=True)
     # qw.run_gif_surface(plot_t_step=None)
@@ -276,4 +274,4 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
     #
-    qw.run_kl_div(qw_obj=qw2, cut_circle_r=10, parallel=False)
+    # qw.run_kl_div(qw_obj=qw2, cut_circle_r=10, parallel=False)

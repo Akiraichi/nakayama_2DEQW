@@ -7,17 +7,17 @@ from simulation.simulation_core import calc_probability
 
 
 # 実験環境データの読みこみと展開
-def load_env_date(exp_name, i):
-    # データの取り出し
-    env_data = joblib.load(
-        f"{config_simulation_data_save_path(exp_name, i)}/{config_simulation_data_name(i)}")
-
-    # 読み込んだオブジェクトを展開する
-    T = env_data.T
-    condition = env_data.condition
-    len_x = env_data.len_x
-    len_y = env_data.len_y
-    return T, condition, len_x, len_y
+# def load_env_date(exp_name, i):
+#     # データの取り出し
+#     env_data = joblib.load(
+#         f"{config_simulation_data_save_path(exp_name, i)}/{config_simulation_data_name(i)}")
+#
+#     # 読み込んだオブジェクトを展開する
+#     T = env_data.T
+#     condition = env_data.condition
+#     len_x = env_data.len_x
+#     len_y = env_data.len_y
+#     return T, condition, len_x, len_y
 
 
 def execute_plot_var(exp_name, plot_exp_index_list):

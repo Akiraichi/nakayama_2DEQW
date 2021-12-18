@@ -8,6 +8,7 @@ import joblib
 import glob
 from numba import njit
 from analyze.visualization.plot_kl import get_probability
+from helper import return_simulation_data_file_names
 
 
 def main_analyze(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r, ext):
@@ -111,9 +112,11 @@ class AnalyzerCore:
             self.__load_data()  # データをロード
 
     def __set_data_names(self):
-        self.simulation_data_names = glob.glob(
-            f"{config_simulation_data_save_path(self.exp_name, int(self.exp_index))}/*.jb")
-        self.simulation_data_names.sort()  # 実験順にsortする。
+        self.simulation_data_names = return_simulation_data_file_names(exp_name=self.exp_name,
+                                                                       exp_index=int(self.exp_index))
+        # self.simulation_data_names = glob.glob(
+        #     f"{config_simulation_data_save_path(self.exp_name, int(self.exp_index))}/*.jb")
+        # self.simulation_data_names.sort()  # 実験順にsortする。
         print(f"exp_nameのデータ数：{len(self.simulation_data_names)}")
 
     def __set_plot_option(self):
