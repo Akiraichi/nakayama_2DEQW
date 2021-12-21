@@ -186,9 +186,9 @@ class Marge:
             return df_var
 
         elif self.type == "width":
-            df_X_center_list = []
-            df_Y_center_list = []
-            df_X_outer_list = []
+            df_width_list = []
+            df_left_list = []
+            df_right_list = []
             df_Y_outer_list = []
 
             for i, file in enumerate(csv_files):
@@ -196,21 +196,21 @@ class Marge:
                 index = file[-8:-4]
                 print(index)  # デバッグ
                 if i == 0:
-                    df_X_center_list.append(df.loc[:, ['t', f'X_width_center_{index}']])
-                    df_Y_center_list.append(df.loc[:, ['t', f'Y_width_center_{index}']])
-                    df_X_outer_list.append(df.loc[:, ['t', f'X_width_outer_{index}']])
-                    df_Y_outer_list.append(df.loc[:, ['t', f'Y_width_outer_{index}']])
+                    df_width_list.append(df.loc[:, ['t', f'std_prob_width_{index}']])
+                    df_left_list.append(df.loc[:, ['t', f'std_prob_x_left_{index}']])
+                    df_right_list.append(df.loc[:, ['t', f'std_prob_x_right_{index}']])
+                    # df_Y_outer_list.append(df.loc[:, ['t', f'Y_width_outer_{index}']])
                 else:
-                    df_X_center_list.append(df.loc[:, [f'X_width_center_{index}']])
-                    df_Y_center_list.append(df.loc[:, [f'Y_width_center_{index}']])
-                    df_X_outer_list.append(df.loc[:, [f'X_width_outer_{index}']])
-                    df_Y_outer_list.append(df.loc[:, [f'Y_width_outer_{index}']])
+                    df_width_list.append(df.loc[:, [f'std_prob_width_{index}']])
+                    df_left_list.append(df.loc[:, [f'std_prob_x_left_{index}']])
+                    df_right_list.append(df.loc[:, [f'std_prob_x_right_{index}']])
+                    # df_Y_outer_list.append(df.loc[:, [f'Y_width_outer_{index}']])
 
-            df_cX = pd.concat(df_X_center_list, axis=1)
-            df_cY = pd.concat(df_Y_center_list, axis=1)
-            df_oX = pd.concat(df_X_outer_list, axis=1)
-            df_oY = pd.concat(df_Y_outer_list, axis=1)
-            return df_cX, df_cY, df_oX, df_oY
+            df_width = pd.concat(df_width_list, axis=1)
+            df_left = pd.concat(df_left_list, axis=1)
+            df_right = pd.concat(df_right_list, axis=1)
+            # df_oY = pd.concat(df_Y_outer_list, axis=1)
+            return df_width, df_left, df_right
 
     def plot_t(self, t_list):
         if self.type == "KL":
@@ -227,11 +227,13 @@ class Marge:
             df_var = self.__connect_csv()
             plot_t(df_var, self.path, step_t_list=t_list, file_name=f"var_{t_list}", label="var")
         elif self.type == "width":
-            df_X_center, df_Y_center, df_X_outer, df_Y_outer = self.__connect_csv()
-            plot_t(df_X_center, self.path, step_t_list=t_list, file_name=f"X_center_{t_list}", label="step")
-            plot_t(df_Y_center, self.path, step_t_list=t_list, file_name=f"Y_center_{t_list}", label="step")
-            plot_t(df_X_outer, self.path, step_t_list=t_list, file_name=f"X_outer_{t_list}", label="step")
-            plot_t(df_Y_outer, self.path, step_t_list=t_list, file_name=f"Y_outer_{t_list}", label="step")
+            df_width, df_left, df_right = self.__connect_csv()
+            # df_X_center, df_Y_center, df_X_outer, df_Y_outer = self.__connect_csv()
+            # plot_t(df_X_center, self.path, step_t_list=t_list, file_name=f"X_center_{t_list}", label="step")
+            # plot_t(df_Y_center, self.path, step_t_list=t_list, file_name=f"Y_center_{t_list}", label="step")
+            # plot_t(df_X_outer, self.path, step_t_list=t_list, file_name=f"X_outer_{t_list}", label="step")
+            # plot_t(df_Y_outer, self.path, step_t_list=t_list, file_name=f"Y_outer_{t_list}", label="step")
+            plot_t(df_left, self.path, step_t_list=t_list, file_name=f"left_{t_list}", label="step")
 
     def plot_index(self, indexes, start_t):
         if self.type == "KL":
@@ -252,29 +254,29 @@ class Marge:
             plot_index_prob(df_var, self.path, indexes, start_t=start_t,
                             file_name=f"var_start_t={start_t}_indexes={indexes}", label="var")
         elif self.type == "width":
-            df_X_center, df_Y_center, df_X_outer, df_Y_outer = self.__connect_csv()
-            plot_index_prob(df_X_center, self.path, indexes, start_t=start_t,
-                            file_name=f"X_center_start_t={start_t}_indexes={indexes}", label="step")
-            plot_index_prob(df_Y_center, self.path, indexes, start_t=start_t,
-                            file_name=f"Y_center_start_t={start_t}_indexes={indexes}", label="step")
-            plot_index_prob(df_X_outer, self.path, indexes, start_t=start_t,
-                            file_name=f"X_outer_start_t={start_t}_indexes={indexes}", label="step")
-            plot_index_prob(df_Y_outer, self.path, indexes, start_t=start_t,
-                            file_name=f"Y_outer_start_t={start_t}_indexes={indexes}", label="step")
+            df_width, df_left, df_right = self.__connect_csv()
+            plot_index_prob(df_width, self.path, indexes, start_t=start_t,
+                            file_name=f"width_start_t={start_t}_indexes={indexes}", label="step")
+            plot_index_prob(df_left, self.path, indexes, start_t=start_t,
+                            file_name=f"left_start_t={start_t}_indexes={indexes}", label="step")
+            plot_index_prob(df_right, self.path, indexes, start_t=start_t,
+                            file_name=f"right_start_t={start_t}_indexes={indexes}", label="step")
+            # plot_index_prob(df_Y_outer, self.path, indexes, start_t=start_t,
+            #                 file_name=f"Y_outer_start_t={start_t}_indexes={indexes}", label="step")
 
 
 if __name__ == '__main__':
-    marge = Marge(type="KL")
+    marge = Marge(type="width")
     # t_list = [100, 200, 300, 400, 500, 1000, 2000]
     # t_list = list(range(400, 2100, 200))
     # t_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    t_list = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000]
+    # t_list = [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000]
     # t_list = list(range(400, 2000, 40))
-    marge.plot_t(t_list=t_list)
+    # marge.plot_t(t_list=t_list)
 
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500]
     # indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # indexes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     # indexes = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
-    # indexes = [20, 30, 40]
-    # marge.plot_index(indexes=indexes, start_t=0)
+    indexes = [0]
+    marge.plot_index(indexes=indexes, start_t=0)

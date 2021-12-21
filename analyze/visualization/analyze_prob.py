@@ -95,13 +95,14 @@ class AnalyzerCore:
         self.p_circle_list = []
 
         # varの固有設定
-        self.var_list = []
+        self.var_p_list = []  # 中心付近の確率分布の確率分布
 
         # widthの固有設定
-        self.X_width_center_list = []  # 中心付近の確率分布の確率幅
-        self.Y_width_center_list = []  # 中心付近の確率分布の確率幅
-        self.X_width_outer_list = []  # 円周付近の確率分布の確率幅
-        self.Y_width_outer_list = []  # 円周付近の確率分布の確率幅
+        # self.X_width_center_list = []  # 中心付近の確率分布の確率幅
+        # self.Y_width_center_list = []  # 中心付近の確率分布の確率幅
+        self.std_prob_width_list = []  # 円周付近の確率分布の確率幅の標準偏差
+        self.std_prob_x_left_list = []  # 円周付近の確率分布の確率幅の標準偏差
+        self.std_prob_x_right_list = []  # 円周付近の確率分布の確率幅の標準偏差
 
         # 関数定義された設定
         self.__set_data_names()
@@ -171,15 +172,15 @@ class AnalyzerCore:
                 p1 = get_probability(self.simulation_data_names, t_step)  # 全体の確率分布
             else:
                 p1 = self.p1_list[i]
-            var = get_var(prob=p1, radius=self.cut_circle_r)
-            self.var_list.append(var)
+            var_p_inner = get_var(prob=p1, radius=self.cut_circle_r)
+            self.var_p_list.append(var_p_inner)
 
     def save_var_csv_file(self):
         with open(f"{self.save_var_csv_path}/{self.file_name}.csv", mode='w') as f:
             f.write(
                 f"t,var_{self.exp_index}\n")
-            for i in range(len(self.var_list)):
-                s = f"{self.t_list[i]},{self.var_list[i]}\n"
+            for i in range(len(self.var_p_list)):
+                s = f"{self.t_list[i]},{self.var_p_list[i]}\n"
                 f.write(s)
 
     def analyze_width(self):
@@ -190,20 +191,23 @@ class AnalyzerCore:
             else:
                 p1 = self.p1_list[i]
 
-            X_width_center, Y_width_center = get_width_center(prob=p1, radius=self.cut_circle_r)
-            self.X_width_center_list.append(X_width_center)
-            self.Y_width_center_list.append(Y_width_center)
-
-            X_width_outer, Y_width_outer = get_width_outer(prob=p1)
-            self.X_width_outer_list.append(X_width_outer)
-            self.Y_width_outer_list.append(Y_width_outer)
+            # X_width_center, Y_width_center = get_width_center(prob=p1, radius=self.cut_circle_r)
+            # self.X_width_center_list.append(X_width_center)
+            # self.Y_width_center_list.append(Y_width_center)
+            x_left_list = np.zeros([p1.shape[1]], dtype=np.int64)
+            x_right_list = np.zeros([p1.shape[1]], dtype=np.int64)
+            x_width_list = np.zeros([p1.shape[1]], dtype=np.int64)
+            x_width_list, x_left_list, x_right_list = get_width_outer(p1, x_width_list, x_left_list, x_right_list)
+            self.std_prob_width_list.append(np.std(x_width_list))
+            self.std_prob_x_left_list.append(np.std(x_left_list))
+            self.std_prob_x_right_list.append(np.std(x_right_list))
 
     def save_width_csv_file(self):
         with open(f"{self.save_width_csv_path}/{self.file_name}.csv", mode='w') as f:
             f.write(
-                f"t,X_width_center_{self.exp_index},Y_width_center_{self.exp_index},X_width_outer_{self.exp_index},Y_width_outer_{self.exp_index}\n")
-            for i in range(len(self.X_width_center_list)):
-                s = f"{self.t_list[i]},{self.X_width_center_list[i]},{self.Y_width_center_list[i]},{self.X_width_outer_list[i]},{self.Y_width_outer_list[i]}\n"
+                f"t,std_prob_width_{self.exp_index},std_prob_x_left_{self.exp_index},std_prob_x_right_{self.exp_index}\n")
+            for i in range(len(self.std_prob_width_list)):  # 代表して一つの長さを使う
+                s = f"{self.t_list[i]},{self.std_prob_width_list[i]},{self.std_prob_x_left_list[i]},{self.std_prob_x_right_list[i]}\n"
                 f.write(s)
 
 
@@ -251,48 +255,56 @@ def get_var(prob, radius):
             if (x - T) ** 2 + (y - T) ** 2 < radius ** 2:
                 # 円形内の確率prob[x,y]について分散を求める。
                 in_circle_p.append(prob[x, y])
+
     in_circle_p = np.array(in_circle_p)
-    var = np.var(in_circle_p)  # 分散を求める
-    return var
+    # var_inner = np.var(in_circle_p)  # 分散を求める
+    std_inner_p = np.std(in_circle_p)
+    return std_inner_p
 
 
-@njit('Tuple((i8,i8))(f8[:,:])', cache=True)
-def get_width_outer(prob):
+# @njit('Tuple((i8[:],i8[:],i8[:]))(f8[:,:],i8[:],i8[:],i8[:])', cache=True)
+def get_width_outer(prob, x_width_list, x_left_list, x_right_list):
     """x、y軸それぞれにおいて、確率分布の最大位置と最小位置の差を求める。"""
-    len_x = prob.shape[1]
-    len_y = prob.shape[0]
-    threshold = 0.00001  # 閾値
-    x_max = 0
-    x_min = 0
-    y_max = 0
-    y_min = 0
+    len_x = prob.shape[0]
+    len_y = prob.shape[1]
+    threshold = 0.005  # 閾値
+    # x_max = 0
+    # x_min = 0
+    # y_max = 0
+    # y_min = 0
+    #
+    # # 初期値として見つかった値を一つ代入しておく
+    # for x in range(len_x):
+    #     for y in range(len_y):
+    #         if prob[x, y] > threshold:
+    #             x_max = x
+    #             x_min = x
+    #             y_max = y
+    #             y_min = y
+    #             break
+    #     else:
+    #         continue
+    #     break
 
-    # 初期値として見つかった値を一つ代入しておく
-    for x in range(len_x):
-        for y in range(len_y):
+    for y in range(len_y):
+        flag_left = True
+        # 初期値を設定する
+        x_left = 0
+        x_right = 0
+
+        for x in range(len_x):
             if prob[x, y] > threshold:
-                x_max = x
-                x_min = x
-                y_max = y
-                y_min = y
-                break
-        else:
-            continue
-        break
+                if flag_left:
+                    # 初めての条件判定なので、最も左の値になる
+                    x_left = x
+                    flag_left = False
+                x_right = x
 
-    for x in range(len_x):
-        for y in range(len_y):
-            if prob[x, y] > threshold:
-                if x > x_max:
-                    x_max = x
-                if x < x_min:
-                    x_min = x
-                if y > y_max:
-                    y_max = y
-                if y < y_min:
-                    y_min = y
+        x_left_list[y] = x_left
+        x_right_list[y] = x_right
+        x_width_list[y] = x_right - x_left
 
-    return x_max - x_min, y_max - y_min
+    return x_width_list, x_left_list, x_right_list
 
 
 @njit('Tuple((i8,i8))(f8[:,:],i8)', cache=True)
