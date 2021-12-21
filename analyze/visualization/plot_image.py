@@ -36,7 +36,8 @@ class Plotter:
         self.exp_name = None
         self.plot_exp_index = None
         self.p = None
-        self.t_list = select_plot_t_step()
+        # self.t_list = select_plot_t_step()
+        self.t_list = select_plot_t_step_by_100()
         self.is_enlarge = None
 
     def set_up_conditions(self, exp_name, plot_exp_index, is_enlarge):
@@ -286,6 +287,20 @@ def select_plot_t_step_detail():
         t_list = list(range(0, 2005, 5))
     elif ConfigSimulation.MaxTimeStep == 600:
         t_list = list(range(0, 605, 5))
+    elif ConfigSimulation.MaxTimeStep == 200:
+        t_list = list(range(0, 205, 5))
+    elif ConfigSimulation.MaxTimeStep == 100:
+        t_list = list(range(0, 105, 5))
+    return t_list
+
+
+def select_plot_t_step_by_100():
+    # どのデータ抽出するかを選択する
+    t_list = None
+    if ConfigSimulation.MaxTimeStep == 2000:
+        t_list = list(range(0, 2100, 100))
+    elif ConfigSimulation.MaxTimeStep == 600:
+        t_list = [100, 200, 300, 400, 500, 600]
     elif ConfigSimulation.MaxTimeStep == 200:
         t_list = list(range(0, 205, 5))
     elif ConfigSimulation.MaxTimeStep == 100:
