@@ -36,6 +36,10 @@ def load_data_by_error_handling(file_path):
             print_warning(e)
             import time
             time.sleep(60)
+        except OSError as e:
+            print_warning(e)
+            import time
+            time.sleep(60)
         else:
             break
     return data
