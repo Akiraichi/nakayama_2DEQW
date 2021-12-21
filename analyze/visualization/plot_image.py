@@ -13,11 +13,17 @@ import seaborn as sns
 import pandas as pd
 
 
-def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False, parallel=False):
+def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False, parallel=False,
+               plot_only_ts=None):
     if plot_exp_indexes is None:
         plot_exp_indexes = [0]
+    if plot_only_ts is None:
+        t_list = select_plot_t_step_by_100()  # なければ事前指定のもの。
+    else:
+        t_list = plot_only_ts  # plotしたいtに指定があればそれを採用する
+
     for plot_exp_index in plot_exp_indexes:
-        plotter = Plotter()
+        plotter = Plotter(t_list=t_list)
         plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
         plotter.start_processing(plot_type=plot_type, parallel=parallel)
 
@@ -32,12 +38,12 @@ def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_index
 
 
 class Plotter:
-    def __init__(self):
+    def __init__(self, t_list):
         self.exp_name = None
         self.plot_exp_index = None
         self.p = None
         # self.t_list = select_plot_t_step()
-        self.t_list = select_plot_t_step_by_100()
+        self.t_list = t_list
         self.is_enlarge = None
 
     def set_up_conditions(self, exp_name, plot_exp_index, is_enlarge):
@@ -81,8 +87,10 @@ class Plotter:
             extract_t = int(plot_file[-8:-4])
             plotted_t_list.append(extract_t)
 
-        # 共通しない要素を取得
-        t_list = set(self.t_list) ^ set(plotted_t_list)
+        # # 共通しない要素のうち、まだプロットされていないものを取得
+        t_list = set(self.t_list) - set(plotted_t_list)
+
+
 
         if not t_list:
             print_green_text(f"exp_index={self.plot_exp_index}：既に完了")
