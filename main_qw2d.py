@@ -37,13 +37,16 @@ class QW:
     def run_simulation(self, start_step_t=0):
         start_simulation_2dqw(exp_conditions=self.selected_conditions, start_step_t=start_step_t)
 
-    def run_plot_surface(self, is_enlarge, parallel):
+    def run_plot_surface(self, is_enlarge, parallel, plot_only_ts=None):
         plot_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
-                   is_enlarge=is_enlarge, parallel=parallel)
+                   is_enlarge=is_enlarge, parallel=parallel, plot_only_ts=plot_only_ts)
 
-    def run_plot_heatmap(self, is_enlarge, parallel):
+    def run_plot_heatmap(self, is_enlarge, parallel, plot_only_ts=None):
+        """
+        plot_ony_ts：listの形式でプロットしたいtを指定すること
+        """
         plot_image(exp_name=self.exp_name, plot_type="heatmap", plot_exp_indexes=self.selected_exp_indexes,
-                   is_enlarge=is_enlarge, parallel=parallel)
+                   is_enlarge=is_enlarge, parallel=parallel, plot_only_ts=plot_only_ts)
 
     def run_gif_surface(self, plot_t_step=None):
         make_gif_image(exp_name=self.exp_name, plot_type="surface", plot_exp_indexes=self.selected_exp_indexes,
@@ -205,15 +208,17 @@ if __name__ == '__main__':
     #         test[x, y] = i
     #         i += 1
     # print(test)
-
     qw = GroverWalk2D()
-    qw.run_analyze(cut_circle_r=10,circle_inner_r=10,circle_outer_r=20)
     # qw2 = ElectricGroverWalk2DAlongX()
-    # qw.run_simulation(start_step_t=0)
-    # qw.run_plot_surface(is_enlarge=False, parallel=True)
+    # qw.run_analyze(cut_circle_r=10, circle_inner_r=10, circle_outer_r=20)
+    # qw2 = ElectricGroverWalk2DAlongX()
+    qw.run_simulation(start_step_t=0)
+    # qw2.run_simulation(start_step_t=0)
+    qw.run_plot_surface(is_enlarge=False, parallel=True, plot_only_ts=[1, 2, 3, 4, 5, 6, 7, 78, 8, 9, 99])
     # qw.run_gif_surface(plot_t_step=None)
     # qw.run_plot_heatmap(is_enlarge=False, parallel=True)
     # qw.run_gif_heatmap(plot_t_step=None)
+    # qw.run_plot_width(cut_circle_r=100)
 
     # qw = ElectricHadamardWalk2DAlongX()
     # qw.run_simulation(start_step_t=0)
@@ -274,4 +279,4 @@ if __name__ == '__main__':
     # slow_erase_qw_step_0.run_plot_heatmap()
     # slow_erase_qw_step_0.run_gif_heatmap()
     #
-    # qw.run_kl_div(qw_obj=qw2, cut_circle_r=10, parallel=False)
+    qw.run_kl_div(qw_obj=qw2, cut_circle_r=10, parallel=False)

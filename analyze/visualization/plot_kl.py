@@ -54,6 +54,7 @@ class Plot_KL:
         with Pool(ConfigSimulation.PlotParallelNum) as p:
             # 並列処理開始
             p.starmap(func=Plot_KL.plot_image, iterable=arguments)
+        print_finish("FINISH：KLダイバージェンス")
 
     def start_processing(self, parallel=False):
         self.__load_common_data()  # 共通データをロードする
