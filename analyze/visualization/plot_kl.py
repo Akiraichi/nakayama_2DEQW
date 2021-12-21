@@ -1,7 +1,7 @@
 # calc
 import numpy as np
 
-from helper import return_simulation_data_file_names
+from helper import load_data_by_error_handling, return_simulation_data_file_names
 from simulation.simulation_core import calc_probability
 # plot
 import matplotlib.pyplot as plt
@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 from config.config import *
 # misc
 from analyze.visualization.plot_image import select_plot_t_step
-import joblib
-import glob
+# import joblib
+# import glob
 from numba import njit
 from multiprocessing import Pool
 
@@ -109,7 +109,8 @@ class Main_KL_div:
         self.cut_circle_r = cut_circle_r
 
         # title設定のために一つデータをロードする。
-        condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
+        condition = load_data_by_error_handling(self.simulation_data_names_2[0])["実験条件データ（condition）"]
+        # condition = joblib.load(self.simulation_data_names_2[0])["実験条件データ（condition）"]
         folder_name = f'KL_{self.exp1_name}_{self.exp1_index}-{self.exp2_name}'
         if self.cut_circle_r != 0:  # 中心付近の確率分布をカットする場合は、保存フォルダ名にカットする半径rを加筆する
             folder_name = f'r={self.cut_circle_r}_' + folder_name
@@ -163,7 +164,8 @@ class Main_KL_div:
 
 
 def get_probability(simulation_data_file_names, index):
-    save_data_object = joblib.load(simulation_data_file_names[index])
+    save_data_object = load_data_by_error_handling(simulation_data_file_names[index])
+    # save_data_object = joblib.load(simulation_data_file_names[index])
     condition = save_data_object["実験条件データ（condition）"]
 
     # エラーチェック

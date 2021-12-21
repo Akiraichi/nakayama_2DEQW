@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from config.config import *
-import joblib
+# import joblib
 from multiprocessing import Pool
 import glob
 
-from helper import return_simulation_data_file_names
+from helper import load_data_by_error_handling, return_simulation_data_file_names
 from simulation.simulation_core import calc_probability
 
 import seaborn as sns
@@ -130,7 +130,8 @@ class Main_Plotter:
         self.plot_type = plot_type
         self.is_enlarge = is_enlarge
         # データをロード
-        simulation_data = joblib.load(simulation_data_file_name)
+        simulation_data = load_data_by_error_handling(simulation_data_file_name)
+        # simulation_data = joblib.load(simulation_data_file_name)
         # ロードしたデータを展開
         condition = simulation_data["実験条件データ（condition）"]
         self.T = condition.T
