@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from config.config import *
-# import joblib
 from multiprocessing import Pool
 import glob
 
@@ -13,73 +12,51 @@ import seaborn as sns
 import pandas as pd
 
 
-def plot_image(exp_name, plot_type="surface", plot_exp_indexes=None, is_enlarge=False, parallel=False,
-               plot_only_ts=None):
-    if plot_exp_indexes is None:
-        plot_exp_indexes = [0]
-    if plot_only_ts is None:
-        t_list = select_plot_t_step_by_100()  # なければ事前指定のもの。
-    else:
-        t_list = plot_only_ts  # plotしたいtに指定があればそれを採用する
-
-    for plot_exp_index in plot_exp_indexes:
-        plotter = Plotter(t_list=t_list)
-        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
-        plotter.start_processing(plot_type=plot_type, parallel=parallel)
-
-
-def plot_image_only_t(exp_name, plot_t_step, plot_type="surface", plot_exp_indexes=None, is_enlarge=False):
-    if plot_exp_indexes is None:
-        plot_exp_indexes = [0]
-    for plot_exp_index in plot_exp_indexes:
-        plotter = Plotter()
-        plotter.set_up_conditions(exp_name=exp_name, plot_exp_index=plot_exp_index, is_enlarge=is_enlarge)
-        plotter.plot_only_t(plot_t_step=plot_t_step, plot_type=plot_type, is_enlarge=is_enlarge)
+def plot_image(conditions, save_path_indexes, **params):
+    for i in range(len(conditions)):
+        plotter = Plotter(exp_mame=conditions[i].exp_name, save_path_index=save_path_indexes[i], params=params)
+        plotter.start_processing()
 
 
 class Plotter:
-    def __init__(self, t_list):
-        self.exp_name = None
-        self.plot_exp_index = None
-        self.p = None
-        # self.t_list = select_plot_t_step()
-        self.t_list = t_list
-        self.is_enlarge = None
+    def __init__(self, exp_mame, save_path_index, params):
+        self.__exp_name = exp_mame
 
-    def set_up_conditions(self, exp_name, plot_exp_index, is_enlarge):
-        self.exp_name = exp_name
-        self.plot_exp_index = plot_exp_index
-        self.is_enlarge = is_enlarge
+        self.p = 0  # 何に使うんだっけ？
 
-    def start_processing(self, plot_type, parallel):
-        t_list = self.check_finished(plot_type=plot_type)
-        simulation_data_file_names = return_simulation_data_file_names(exp_name=self.exp_name,
-                                                                       exp_index=self.plot_exp_index)
+        self.__save_path_index = save_path_index
+        self.__t_list = params["plot_only_ts"]
+        self.__is_enlarge = params["is_enlarge"]
+        self.__plot_type = params["plot_type"]
+        self.__parallel = params["parallel"]
 
-        if parallel:
-            self.__start_parallel_processing(plot_type, t_list, simulation_data_file_names)
+        self.__not_plot_t_list = self.check_finished(plot_type=self.__plot_type)
+
+    def start_processing(self):
+        simulation_data_file_names = return_simulation_data_file_names(exp_name=self.__exp_name,
+                                                                       exp_index=self.__save_path_index)
+        if self.__parallel:
+            self.__start_parallel_processing(simulation_data_file_names)
         else:
-            for t in t_list:
-                self.plot_image(simulation_data_file_names[t], plot_type, self.is_enlarge)
+            self.__start_single_processing(simulation_data_file_names)
 
-    def __start_parallel_processing(self, plot_type, t_list, simulation_data_file_names):
-        # 並列処理させるために、各プロセスに渡す引数を生成する
-        # 各並列プログラムにexp_nameのexp_indexに入っているデータファイルの全ての名前を教える
+    def __start_single_processing(self, simulation_data_file_names):
+        for t in self.__not_plot_t_list:
+            self.plot_image(simulation_data_file_names[t], self.__plot_type, self.__is_enlarge)
 
+    def __start_parallel_processing(self, simulation_data_file_names):
         arguments = []
-        for t in t_list:
-            arguments.append([simulation_data_file_names[t], plot_type, self.is_enlarge])
-
+        for t in self.__not_plot_t_list:
+            arguments.append([simulation_data_file_names[t], self.__plot_type, self.__is_enlarge])
         with Pool(ConfigSimulation.PlotParallelNum) as p:
-            # 並列処理開始
             p.starmap(func=Plotter.plot_image, iterable=arguments)
-        print_finish(plot_type)
+        print_finish(self.__plot_type)
 
     def check_finished(self, plot_type):
         """
         plotが完了しているかを確認し、plotできていないファイルのみplotする。
         """
-        path = plot_save_path(self.exp_name, plot_type, self.plot_exp_index)
+        path = plot_save_path(self.__exp_name, plot_type, self.__save_path_index)
 
         plot_files = glob.glob(f"{path}/*")  # すでにプロットされたファイルの一覧
         plotted_t_list = []  # すでにプロットされたtの一覧
@@ -87,32 +64,23 @@ class Plotter:
             extract_t = int(plot_file[-8:-4])
             plotted_t_list.append(extract_t)
 
-        # # 共通しない要素のうち、まだプロットされていないものを取得
-        t_list = set(self.t_list) - set(plotted_t_list)
+        # 共通しない要素のうち、まだプロットされていないものを取得
+        not_plot_t_list = set(self.__t_list) - set(plotted_t_list)
 
-
-
-        if not t_list:
-            print_green_text(f"exp_index={self.plot_exp_index}：既に完了")
+        if not not_plot_t_list:
+            print_green_text(f"exp_index={self.__save_path_index}：既に完了")
         else:
-            print_warning(f"exp_index={self.plot_exp_index}：完了していません")
-        return t_list
+            print_warning(f"exp_index={self.__save_path_index}：完了していません")
+        return not_plot_t_list
 
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge):
-        plotter = Main_Plotter()
+        plotter = MainPlotter()
         plotter.load_data(simulation_data_file_name, plot_type, is_enlarge)
         plotter.plot()
 
-    def plot_only_t(self, plot_t_step, plot_type, is_enlarge):
-        plotter = Main_Plotter()
-        plotter.load_data(
-            f"{config_simulation_data_save_path(self.exp_name, str_t=str(plot_t_step).zfill(4), index=self.plot_exp_index)}{str(plot_t_step).zfill(4)}.jb",
-            plot_type, is_enlarge)
-        plotter.plot()
 
-
-class Main_Plotter:
+class MainPlotter:
     def __init__(self):
         self.plot_type = None
         self.simulation_data_file_name = None
