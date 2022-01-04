@@ -1,5 +1,5 @@
 import glob
-import time
+import sympy
 
 import joblib
 import zlib
@@ -43,3 +43,19 @@ def load_data_by_error_handling(file_path):
         else:
             break
     return data
+
+
+def return_phi(num):
+    """
+
+    Args:
+        num: xに代入する数値
+
+    Returns: xにnumを代入した結果。phi = num*π/240
+
+    """
+    x = sympy.Symbol('x')
+    phi = x * sympy.pi / 240
+    phi = phi.subs(x, num)
+    phi = float(phi.evalf())
+    return phi
