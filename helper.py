@@ -4,6 +4,7 @@ import sympy
 import joblib
 import zlib
 from config.config import ConfigSimulation, config_simulation_data_save_path, print_warning
+from simulation.simulation_core import calc_probability
 
 
 def return_simulation_data_file_names(exp_name, exp_index):
@@ -59,3 +60,27 @@ def return_phi(num):
     phi = phi.subs(x, num)
     phi = float(phi.evalf())
     return phi
+
+
+def save_jb_file(data_dict, folder_path, file_path):
+    save_path = f"{folder_path}/{file_path}"
+    joblib.dump(data_dict, save_path, compress=3)
+
+
+def get_probability(simulation_data_file_names, index):
+    save_data_object = load_data_by_error_handling(simulation_data_file_names[index])
+    # save_data_object = joblib.load(simulation_data_file_names[index])
+    condition = save_data_object["実験条件データ（condition）"]
+
+    # エラーチェック
+    if index != int(save_data_object["このシミュレーションデータが何ステップ目か（t）"]):
+        print_warning("実験データをチェックしてください")
+
+    T = condition.T
+    len_x = 2 * T + 1
+    len_y = 2 * T + 1
+    PSY = save_data_object["シミュレーションデータ"]
+
+    # probability[x,y]として(x,y)座標の確率を求められる。
+    probability = calc_probability(PSY, len_x, len_y)
+    return probability
