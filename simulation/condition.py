@@ -1,10 +1,12 @@
 import numpy as np
 from config.config import ConfigSimulation, print_warning
+import sympy
 
 
 class Condition:
-    def __init__(self, **kwargs):
-        self.__data = kwargs
+    def __init__(self, **params):
+        self.__params = params
+        print(f"t = {self.erase_t}")  # erase_tの中身を確認するため
 
     @classmethod
     def prepare(cls, pattern, options=None):
@@ -32,55 +34,55 @@ class Condition:
 
     @property
     def T(self):
-        return self.__data["T"]
+        return self.__params["T"]
 
     @property
     def P(self):
-        return self.__data["P"]
+        return self.__params["P"]
 
     @property
     def Q(self):
-        return self.__data["Q"]
+        return self.__params["Q"]
 
     @property
     def R(self):
-        return self.__data["R"]
+        return self.__params["R"]
 
     @property
     def S(self):
-        return self.__data["S"]
+        return self.__params["S"]
 
     @property
     def PSY_init(self):
-        return self.__data["PSY_init"]
+        return self.__params["PSY_init"]
 
     @property
     def algorithm(self):
-        return self.__data["algorithm"]
+        return self.__params["algorithm"]
 
     @property
     def phi(self):
-        return self.__data["phi"]
+        return self.__params["phi"]
 
     @property
     def phi_latex(self):
-        return self.__data["phi_latex"]
+        return sympy.latex(self.__params["phi"])
 
     @property
     def exp_name(self):
-        return self.__data["exp_name"]
+        return self.__params["exp_name"]
 
     @property
     def exp_index(self):
-        return self.__data["exp_index"]
+        return self.__params["exp_index"]
 
     @property
     def erase_t(self):
-        return self.__data["erase_t"]
+        return self.__params["erase_t"]
 
     @property
     def erase_time_step(self):
-        return self.__data["erase_time_step"]
+        return self.__params["erase_time_step"]
 
 
 class ConditionType:
@@ -91,10 +93,8 @@ class ConditionType:
 
 DefaultBaseProps = {
     "T": ConfigSimulation.MaxTimeStep,
-    "PSY_init": None,
     "algorithm": None,
     "phi": None,
-    "phi_latex": None,
     "exp_name": None,
     "exp_index": None,
     # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
@@ -128,7 +128,8 @@ DefaultGroverProps = {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, 1 / 2, 1 / 2, -1 / 2]
-    ], dtype=np.complex128)
+    ], dtype=np.complex128),
+    "PSY_init": 1 / 2 * np.array([1, 1, -1, -1])
 }
 
 DefaultHadamardProps = {
@@ -156,7 +157,8 @@ DefaultHadamardProps = {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, 1 / 2, -1 / 2, -1 / 2]
-    ], dtype=np.complex128)
+    ], dtype=np.complex128),
+    "PSY_init": 1 / 2 * np.array([1, -1, 1j, 1j])
 }
 
 DefaultDFTProps = {
@@ -184,7 +186,8 @@ DefaultDFTProps = {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, 1j / 2, -1 / 2, -1j / 2]
-    ], dtype=np.complex128)
+    ], dtype=np.complex128),
+    "PSY_init": 1 / 2 * np.array([1, -1, 1j, 1j])
 }
 
 if __name__ == '__main__':
