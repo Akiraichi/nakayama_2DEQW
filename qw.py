@@ -16,6 +16,10 @@ class QW:
         simulation = SimulationQWAgent(conditions=self.__conditions, start_step_t=start_step_t)
         simulation.start_parallel_processing()
 
+    @property
+    def conditions(self):
+        return self.__conditions
+
 
 class GroverWalk2D(QW):
     def __init__(self):
