@@ -1,6 +1,6 @@
 # calc
 import numpy as np
-from helper import get_probability, return_simulation_data_file_names, save_jb_file
+from helper import get_probability, load_data_by_error_handling, return_simulation_data_file_names, save_jb_file
 
 # config
 from config.config import *
@@ -9,6 +9,44 @@ from analyze.visualization.plot_image import select_plot_t_step
 # import glob
 from numba import njit
 from multiprocessing import Pool
+
+
+class AnalyzeData:
+    def __init__(self, **data):
+        self.__KL_div = data["KL_div"]
+        self.__L1_norm = data["L1_norm"]
+        self.__L2_norm = data["L2_norm"]
+        self.__correlation_coefficient = data["correlation_coefficient"]
+        self.__t = data["t"]
+
+    def save(self, folder_path, file_name):
+        """現在のインスタンスを保存する"""
+        save_jb_file(self, folder_path, file_name)
+
+    @staticmethod
+    def load(folder_path, file_name):
+        """保存したAnalyzeDataインスタンスを返却する"""
+        return load_data_by_error_handling(f"{folder_path}/{file_name}")
+
+    @property
+    def KL_div(self):
+        return self.__KL_div
+
+    @property
+    def L1_norm(self):
+        return self.__L1_norm
+
+    @property
+    def L2_norm(self):
+        return self.__L2_norm
+
+    @property
+    def correlation_coefficient(self):
+        return self.__correlation_coefficient
+
+    @property
+    def t(self):
+        return self.__t
 
 
 class Analyzer:
@@ -67,7 +105,6 @@ class AnalyzerCore:
         self.__exp2_name = exp2_name
         self.__exp1_index = exp1_index
         self.__exp2_index = exp2_index
-        # self.__str_exp2_index = str(exp2_index).zfill(4)
         self.__p1_list = p1_list
         # self.__options = options
         self.__enable_KL_div = options["KL_div"]
@@ -80,33 +117,6 @@ class AnalyzerCore:
         self.__simulation_data_names_2 = return_simulation_data_file_names(exp_name=self.__exp2_name,
                                                                            exp_index=self.__exp2_index)
         print(f"exp_name_2のデータ数：{len(self.__simulation_data_names_2)}")
-
-        self.__save_setting()
-
-    def __save_setting(self):
-        """保存先の設定"""
-        self.__save_path = AnalyzeSavePathSetting.prepare(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                                          exp2_name=self.__exp2_name)
-        self.__save_name = AnalyzeSaveFileNameSetting.prepare(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                                              exp2_name=self.__exp2_name, exp2_index=self.__exp2_index)
-
-    #     folder_name = f'{self.__exp1_name}_{self.__exp1_index}-{self.__exp2_name}'
-    #
-    #     # 保存先の設定
-    #     self.__DefaultSavePathSetting = {
-    #         "KL_div": config_KL_div_save_path(folder_name=folder_name),
-    #         "L1_norm": config_L1_norm_save_path(folder_name=folder_name),
-    #         "L2_norm": config_L2_norm_save_path(folder_name=folder_name),
-    #         "correlation_coefficient": config_correlation_coefficient_save_path(folder_name=folder_name)
-    #     }
-    #     # ファイル名の設定
-    #     file_name = folder_name + f"_{self.__str_exp2_index}"
-    #     self.__DefaultSaveFileName = {
-    #         "KL_div": f"KL_{file_name}.jb",
-    #         "L1_norm": f"L1_{file_name}.jb",
-    #         "L2_norm": f"L2_{file_name}.jb",
-    #         "correlation_coefficient": f"correlation_coefficient_{file_name}.jb"
-    #     }
 
     def do(self):
         KL_div_list = []
@@ -158,34 +168,12 @@ class AnalyzerCore:
     #     print_finish("KL_div")
 
     def __save(self, KL_div_list, L1_norm_list, L2_norm_list, correlation_coefficient_list):
-        if self.__enable_KL_div:
-            data_dict = {
-                "KLdiv_list": KL_div_list,  # t=tの時のKLダイバージェンスの値
-                "t": self.__t_list  # 時間ステップ
-            }
-            save_jb_file(data_dict, self.__save_path.KL_div, self.__save_name.KL_div)
+        setting = AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                 exp2_name=self.__exp2_name, exp2_index=self.__exp2_index)
 
-            if self.__enable_L1_norm:
-                data_dict = {
-                    "KLdiv_list": L1_norm_list,  # t=tの時のL1ノルムの値
-                    "t": self.__t_list  # 時間ステップ
-                }
-                save_jb_file(data_dict, self.__save_path.L1_norm, self.__save_name.L1_norm)
-
-            if self.__enable_L2_norm:
-                data_dict = {
-                    "KLdiv_list": L2_norm_list,  # t=tの時のL2ノルムの値
-                    "t": self.__t_list  # 時間ステップ
-                }
-                save_jb_file(data_dict, self.__save_path.L2_norm, self.__save_name.L2_norm)
-
-            if self.__enable_correlation_coefficient:
-                data_dict = {
-                    "correlation_coefficient": correlation_coefficient_list,  # t=tの時の相関係数の値
-                    "t": self.__t_list  # 時間ステップ
-                }
-                save_jb_file(data_dict, self.__save_path.correlation_coefficient,
-                             self.__save_name.correlation_coefficient)
+        analyze_data = AnalyzeData(KL_div=KL_div_list, L1_norm=L1_norm_list, L2_norm=L2_norm_list,
+                                   correlation_coefficient=correlation_coefficient_list, t=self.__t_list)
+        analyze_data.save(setting.folder_path, setting.file_name)
 
 
 @njit('Tuple((f8,f8,f8,f8))(f8[:,:],f8[:,:],b1,b1,b1,b1)', cache=True)
