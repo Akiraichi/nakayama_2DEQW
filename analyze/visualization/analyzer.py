@@ -251,7 +251,6 @@ def calc_correlation_coefficient(p1, p2, enable_correlation_coefficient):
     # 相関係数を求める場合は以下を実行
     correlation_coefficient = 0
     if enable_correlation_coefficient:
-        """相関係数"""
         data_1 = list(itertools.chain.from_iterable(p1))
         data_2 = list(itertools.chain.from_iterable(p2))
 
