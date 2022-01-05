@@ -7,7 +7,7 @@ from analyze.visualization.make_gif import output_gif_image
 DefaultPlotSetting = {
     "is_enlarge": False,  # Trueにした場合、最大時間ステップまでの範囲でプロットする
     "parallel": True,  # Trueにした場合、並列処理を行う
-    "plot_only_ts": select_plot_t_step_by_100(),  # プロットしたいtをlistの形式で指定する
+    "plot_t_list": select_plot_t_step_by_100(),  # プロットしたいtをlistの形式で指定する
     "plot_type": None,
 }
 

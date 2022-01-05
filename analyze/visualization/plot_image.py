@@ -25,7 +25,7 @@ class Plotter:
         self.p = 0  # 何に使うんだっけ？
 
         self.__save_path_index = save_path_index
-        self.__t_list = params["plot_only_ts"]
+        self.__t_list = params["plot_t_list"]
         self.__is_enlarge = params["is_enlarge"]
         self.__plot_type = params["plot_type"]
         self.__parallel = params["parallel"]
