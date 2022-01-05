@@ -17,7 +17,7 @@
 #     df = df.set_axis(column_list, axis='columns')  # 列名を一括して書き換える
 #     return df
 #
-# 
+#
 # def plot_t(df, path, step_t_list, file_name, label):
 #     """
 #     tステップで比較したい時のプロット
