@@ -1,14 +1,13 @@
 from conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
 from conditions_factories.conditions_single_factory import ConditionsSingleFactory
-from qw import EraseElectricGroverWalk2DAlongX, GroverWalk2D
+from qw import *
 from simulation_result_analyzer_and_plotter import SimulationResultAnalyzer
 from simulation_result_plotter import SimulationResultPlotter
 
 if __name__ == '__main__':
     """シミュレーション"""
-    qw = GroverWalk2D()
-    # qw = EraseElectricGroverWalk2DAlongX(erase_t_list=[10, 50, 100])
-    #
+    # qw = GroverWalk2D()
+    qw = EraseElectricHadamardWalk2DAlongX(erase_t_list=[10, 50, 100])
     qw.simulate(start_step_t=0)
 
     """データの可視化"""
