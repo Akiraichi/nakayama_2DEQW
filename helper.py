@@ -62,8 +62,8 @@ def return_phi(num):
     return phi
 
 
-def save_jb_file(data_dict, folder_path, file_path):
-    save_path = f"{folder_path}/{file_path}"
+def save_jb_file(data_dict, folder_path, file_name):
+    save_path = f"{folder_path}/{file_name}"
     joblib.dump(data_dict, save_path, compress=3)
 
 
