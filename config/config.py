@@ -86,20 +86,38 @@ def plot_save_path(exp_name, plot_type, index=None):
     return path
 
 
-# KLダイバージェンスの保存場所
-def config_KL_div_save_path(folder_name, ext):
-    # 実験データの保存先のフォルダーがなければ作成する
-    if ext == "png":
-        path = f"result/KL_div/{folder_name}/png"
-    elif ext == "csv":
-        path = f"result/KL_div/{folder_name}/csv"
-    elif ext == "csv_in_circle":
-        path = f"result/KL_div/{folder_name}/csv_in_circle"
-    else:
-        print_warning("拡張子を間違っています")
-        path = None
-    os.makedirs(path, exist_ok=True)
-    return path
+class AnalyzeSetting:
+    def __init__(self, exp1_name, exp1_index, exp2_name, exp2_index):
+        self.__exp1_name = exp1_name
+        self.__exp2_name = exp2_name
+        self.__exp1_index = exp1_index
+        self.__exp2_index = exp2_index
+
+        self.__setting_save_folder_path()
+        self.__setting_save_file_name()
+
+    def __setting_save_folder_path(self):
+        # 保存場所の設定
+        self.__folder_name = f'{self.__exp1_name}_{self.__exp1_index}-{self.__exp2_name}'
+        self.__folder_path = f"result/analyze/{self.__folder_name}"  # AnalyzeDataの保存場所
+        os.makedirs(self.__folder_path, exist_ok=True)
+
+    def __setting_save_file_name(self):
+        # 保存ファイル名の設定
+        str_exp2_index = str(self.__exp2_index).zfill(4)
+        self.__file_name = f"AnalyzeData_{self.__folder_name}_{str_exp2_index}.jb"
+
+    @property
+    def folder_name(self):
+        return self.__folder_name
+
+    @property
+    def folder_path(self):
+        return self.__folder_path
+
+    @property
+    def file_name(self):
+        return self.__file_name
 
 
 # 確率の保存場所
