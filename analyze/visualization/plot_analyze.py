@@ -39,13 +39,13 @@ class AnalyzePlotter:
             y_label = "KL divergence"
             self.__plot_core(ext=y_label, y_label=y_label)
         if self.__analyze_data_list[0].L1_norm:
-            y_label = "L1_norm"
+            y_label = "L1 norm"
             self.__plot_core(ext=y_label, y_label=y_label)
         if self.__analyze_data_list[0].L2_norm:
-            y_label = "L2_norm"
+            y_label = "L2 norm"
             self.__plot_core(ext=y_label, y_label=y_label)
         if self.__analyze_data_list[0].correlation_coefficient:
-            y_label = "correlation_coefficient"
+            y_label = "correlation coefficient"
             self.__plot_core(ext=y_label, y_label=y_label)
 
     def __plot_core(self, ext, y_label):
