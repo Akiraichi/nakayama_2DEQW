@@ -7,7 +7,7 @@ from analyze.visualization.plot_image import select_plot_t_step
 import joblib
 import glob
 from numba import njit
-from analyze.visualization.plot_kl import get_probability
+from analyze.visualization.analyzer import get_probability
 from helper import return_simulation_data_file_names
 
 

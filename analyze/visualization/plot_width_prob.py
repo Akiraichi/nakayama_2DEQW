@@ -1,5 +1,5 @@
 from analyze.visualization.plot_image import select_plot_t_step, select_plot_t_step_detail
-from analyze.visualization.plot_kl import do_plot_graph
+from analyze.visualization.analyzer import do_plot_graph
 from config.config import *
 import joblib
 import glob
