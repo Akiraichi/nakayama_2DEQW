@@ -75,8 +75,12 @@ def get_probability(simulation_data_file_names, index):
     # エラーチェック
     if index != int(save_data_object["このシミュレーションデータが何ステップ目か（t）"]):
         print_warning("実験データをチェックしてください")
+    # 新形式にデータが対応していないから。
+    try:
+        T = condition.T
+    except AttributeError as e:
+        T = 600  # クラウドであるデータは全て600のため、ハードで600にする。
 
-    T = condition.T
     len_x = 2 * T + 1
     len_y = 2 * T + 1
     PSY = save_data_object["シミュレーションデータ"]

@@ -2,7 +2,7 @@ import sys
 
 from conditions_factories.conditions_base_factory import ConditionsBaseFactory
 from helper import return_phi
-from simulation.condition import Condition, ConditionType
+from simulation.condition import ConditionNew, ConditionType
 
 
 class ConditionsEraseTFactory(ConditionsBaseFactory):
@@ -19,7 +19,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
                                                                            "algorithm": 100,
                                                                            "exp_index": erase_t,
                                                                            "erase_t": erase_t,
@@ -33,7 +33,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
                                                                            "algorithm": 110,
                                                                            "exp_index": erase_t,
                                                                            "erase_t": erase_t,
@@ -47,7 +47,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
                                                                            "algorithm": 100,
                                                                            "exp_index": erase_t,
                                                                            "erase_t": erase_t,
@@ -61,7 +61,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
                                                                            "algorithm": 110,
                                                                            "exp_index": erase_t,
                                                                            "erase_t": erase_t,
@@ -75,7 +75,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
                                                                          "algorithm": 100,
                                                                          "exp_index": erase_t,
                                                                          "erase_t": erase_t,
@@ -89,7 +89,7 @@ class ConditionsEraseTFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         for erase_t in erase_t_list:
-            c = Condition.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
+            c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
                                                                            "algorithm": 110,
                                                                            "exp_index": erase_t,
                                                                            "erase_t": erase_t,

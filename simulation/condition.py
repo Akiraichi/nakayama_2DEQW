@@ -3,7 +3,7 @@ from config.config import ConfigSimulation, print_warning
 import sympy
 
 
-class Condition:
+class ConditionNew:
     def __init__(self, **params):
         self.__params = params
         print(f"t = {self.erase_t}")  # erase_tの中身を確認するため
@@ -191,5 +191,5 @@ DefaultDFTProps = {
 }
 
 if __name__ == '__main__':
-    c = Condition.prepare(pattern=ConditionType.Grover, options={"phi": 49})
+    c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"phi": 49})
     print(type(c))

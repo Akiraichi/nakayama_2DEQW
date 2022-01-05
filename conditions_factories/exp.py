@@ -1,4 +1,4 @@
-from simulation.condition import Condition, ConditionType
+from simulation.condition import ConditionNew, ConditionType
 # from simulation.condition import set_grover_condition, set_hadamard_condition, set_DFT_condition
 import numpy as np
 import sympy
