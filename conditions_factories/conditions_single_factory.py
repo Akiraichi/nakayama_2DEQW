@@ -18,9 +18,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=0)
         c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
-                                                                     "algorithm": 2,
-                                                                     "exp_index": 0,
-                                                                     "phi": phi})
+                                                                        "algorithm": 2,
+                                                                        "exp_index": 0,
+                                                                        "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -31,9 +31,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 3,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 3,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -44,9 +44,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 5,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 5,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -57,9 +57,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=0)
         c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
-                                                                     "algorithm": 2,
-                                                                     "exp_index": 0,
-                                                                     "phi": phi})
+                                                                        "algorithm": 2,
+                                                                        "exp_index": 0,
+                                                                        "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -70,9 +70,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 3,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 3,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -83,9 +83,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 5,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 5,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -96,9 +96,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=0)
         c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
-                                                                     "algorithm": 2,
-                                                                     "exp_index": 0,
-                                                                     "phi": phi})
+                                                                        "algorithm": 2,
+                                                                        "exp_index": 0,
+                                                                        "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -109,9 +109,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 3,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 3,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
@@ -122,9 +122,9 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Hadamard, options={"exp_name": exp_name,
-                                                                       "algorithm": 5,
-                                                                       "exp_index": 0,
-                                                                       "phi": phi})
+                                                                          "algorithm": 5,
+                                                                          "exp_index": 0,
+                                                                          "phi": phi})
         conditions.append(c)
 
         return conditions
