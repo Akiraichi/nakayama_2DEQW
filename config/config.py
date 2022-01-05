@@ -98,7 +98,7 @@ class AnalyzeSetting:
 
     def __setting_save_folder_path(self):
         # 保存場所の設定
-        self.__folder_name = f'{self.__exp1_name}_{self.__exp1_index}-{self.__exp2_name}'
+        self.__folder_name = f'{self.__exp1_name}_{self.__exp1_index}_{self.__exp2_name}'
         self.__folder_path = f"result/analyze/{self.__folder_name}"  # AnalyzeDataの保存場所
         os.makedirs(self.__folder_path, exist_ok=True)
 
