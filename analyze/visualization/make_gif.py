@@ -4,7 +4,7 @@ import os
 from PIL import Image
 
 
-def make_gif_image(exp_name, plot_type="surface", plot_exp_indexes=None, plot_t_step=None, duration=50):
+def output_gif_image(exp_name, plot_type, plot_exp_indexes, plot_t_step, duration=50):
     """
     plot_t_stepが指定された場合、全てのplot_exp_indexesのtステップのみプロットしgifにまとめる
     """
