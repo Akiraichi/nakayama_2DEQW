@@ -7,7 +7,7 @@ DefaultAnalyzeSetting = {
     "KL_div": True,  # KLダイバージェンスを求めるかどうか
     "L1_norm": True,  # L1ノルムを求めるかどうか（誤差の絶対値の和）
     "L2_norm": True,  # L2ノルムを求めるかどうか（二乗誤差の和）
-    "correlation_coefficient": False  # 相関係数を求めるかどうか
+    "correlation_coefficient": True  # 相関係数を求めるかどうか
 }
 
 
@@ -43,9 +43,9 @@ if __name__ == '__main__':
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
                                         analyze_indexes=indexes,
-                                        options={"parallel": True})
+                                        options={"parallel": False})
     # analyzer.analyze()
-    t_list = [10, 20, 50, 100]
-    analyzer.plot_x_axis_is_index(plot_t_list=t_list)
-    # plot_indexes = [50, 100]
-    # analyzer.plot_x_axis_is_t(plot_indexes=plot_indexes, start_t=50)
+    # t_list = [10, 20, 50, 100]
+    # analyzer.plot_x_axis_is_index(plot_t_list=t_list)
+    plot_indexes = [50, 100]
+    analyzer.plot_x_axis_is_t(plot_indexes=plot_indexes, start_t=0)
