@@ -12,10 +12,12 @@ DefaultAnalyzeSetting = {
 
 
 class SimulationResultAnalyzer:
-    def __init__(self, qw1, qw2, analyze_indexes, options):
+    def __init__(self, qw1, qw2, analyze_indexes, options=None):
         self.__qw1 = qw1
         self.__qw2 = qw2
         self.__analyze_indexes = analyze_indexes
+        if options is None:
+            options = {}
         self.__options = {**DefaultAnalyzeSetting, **options}
         # パラメータをチェック
         self.__check_params()
