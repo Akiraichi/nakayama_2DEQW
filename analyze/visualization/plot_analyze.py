@@ -1,4 +1,3 @@
-# config
 import pandas as pd
 import matplotlib.pyplot as plt
 from analyze.visualization.analyzer import AnalyzeData
