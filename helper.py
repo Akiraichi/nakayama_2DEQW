@@ -25,6 +25,7 @@ def return_simulation_data_file_names(exp_name, exp_index):
         if count == 3:
             # そもそもデータがない可能性がある
             print_warning("データがありません！")
+            print(f"データへのパス：{config_simulation_data_save_path(exp_name=exp_name, str_t=None, index=exp_index)}")
             raise OSError
     return simulation_data_file_names
 
@@ -75,6 +76,7 @@ def get_probability(simulation_data_file_names, index):
     # エラーチェック
     if index != int(save_data_object["このシミュレーションデータが何ステップ目か（t）"]):
         print_warning("実験データをチェックしてください")
+        print(f"実験データのパス：{simulation_data_file_names[index]}")
     T = condition.T
 
     len_x = 2 * T + 1
