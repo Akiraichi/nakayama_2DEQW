@@ -44,8 +44,8 @@ if __name__ == '__main__':
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
                                         analyze_indexes=indexes,
                                         options={"parallel": False})
-    # analyzer.analyze()
+    analyzer.analyze()
     # t_list = [10, 20, 50, 100]
     # analyzer.plot_x_axis_is_index(plot_t_list=t_list)
-    plot_indexes = [50, 100]
-    analyzer.plot_x_axis_is_t(plot_indexes=plot_indexes, start_t=0)
+    # plot_indexes = [50, 100]
+    # analyzer.plot_x_axis_is_t(plot_indexes=plot_indexes, start_t=0)
