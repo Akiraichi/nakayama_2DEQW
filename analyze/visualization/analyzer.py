@@ -1,4 +1,6 @@
 # calc
+import itertools
+
 import numpy as np
 from helper import get_probability, load_data_by_error_handling, return_simulation_data_file_names, save_jb_file
 
@@ -85,16 +87,16 @@ class Analyzer:
 
         with Pool(ConfigSimulation.PlotParallelNum) as p:
             # 並列処理開始
-            p.starmap(func=Analyzer.plot_image, iterable=arguments)
+            p.starmap(func=Analyzer.do, iterable=arguments)
 
     def __start_single_processing(self):
         for i, exp2_index in enumerate(self.__exp2_indexes):
             print(i, "番目の処理")
-            Analyzer.plot_image(self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list,
-                                self.__options)
+            Analyzer.do(self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list,
+                        self.__options)
 
     @staticmethod
-    def plot_image(exp1_name, exp1_index, exp2_name, exp2_index, p1_list, options):
+    def do(exp1_name, exp1_index, exp2_name, exp2_index, p1_list, options):
         analyze_core = AnalyzerCore(exp1_name, exp1_index, exp2_name, exp2_index, p1_list, options)
         analyze_core.do()
 
@@ -128,11 +130,12 @@ class AnalyzerCore:
             # t=t_stepのシミュレーションデータをロード
             p1 = self.__p1_list[i]
             p2 = get_probability(self.__simulation_data_names_2, t_step)
-            KL_div, L1_norm, L2_norm, correlation_coefficient = calc_similarity_of_prob(p1=p1, p2=p2,
-                                                                                        enable_KL_div=self.__enable_KL_div,
-                                                                                        enable_L1_norm=self.__enable_L1_norm,
-                                                                                        enable_L2_norm=self.__enable_L2_norm,
-                                                                                        enable_correlation_coefficient=self.__enable_correlation_coefficient)
+            KL_div, L1_norm, L2_norm = calc_KL_and_L1_and_L2(p1=p1, p2=p2, enable_KL_div=self.__enable_KL_div,
+                                                             enable_L1_norm=self.__enable_L1_norm,
+                                                             enable_L2_norm=self.__enable_L2_norm)
+            correlation_coefficient = calc_correlation_coefficient(p1=p1, p2=p2,
+                                                                   enable_correlation_coefficient=self.__enable_correlation_coefficient)
+
             if self.__enable_KL_div:
                 KL_div_list.append(KL_div)
             if self.__enable_L1_norm:
@@ -147,25 +150,25 @@ class AnalyzerCore:
                     correlation_coefficient_list=correlation_coefficient_list)
         print_finish(self.__exp2_index)
 
-    # def __calc_KL_div(self, p1, p2):
-    #     KL_div_list = []
-    #     # __low_KL_div_lists = []
-    #     for i, t_step in enumerate(self.__t_list):
-    #         # その時のp2と全てのp1_listのp1とのKLダイバージェンスを求め、KLダイバージェンスが低い順にリストを返す
-    #         # low_kl_div_list = find_near_KL(p1_list=p1_list, p2=p2)
-    #         # low_kl_div_lists.append(low_kl_div_list)
-    #
-    #         # KL_div = calc_KL_div(p1=p1, p2=p2)
-    #         # KL_div_list.append(KL_div)
-    #         # print(self.__exp2_index, f"t={t_step}")
-    #
-    #     data_dict = {
-    #         "KLdiv_list": KL_div_list,  # t=tの時のKLダイバージェンスの値
-    #         "t": self.__t_list  # 時間ステップ
-    #     }
-    #     save_jb_file(data_dict, self.__DefaultSavePathSetting["KL_div"], self.__DefaultSaveFileName["KL_div"])
-    #     # self.save_file_low_list(low_kl_div_lists, self.save_path_csv, f"{self.file_name}_low.jb")
-    #     print_finish("KL_div")
+        # def __calc_KL_div(self, p1, p2):
+        #     KL_div_list = []
+        #     # __low_KL_div_lists = []
+        #     for i, t_step in enumerate(self.__t_list):
+        #         # その時のp2と全てのp1_listのp1とのKLダイバージェンスを求め、KLダイバージェンスが低い順にリストを返す
+        #         # low_kl_div_list = find_near_KL(p1_list=p1_list, p2=p2)
+        #         # low_kl_div_lists.append(low_kl_div_list)
+        #
+        #         # KL_div = calc_KL_div(p1=p1, p2=p2)
+        #         # KL_div_list.append(KL_div)
+        #         # print(self.__exp2_index, f"t={t_step}")
+        #
+        #     data_dict = {
+        #         "KLdiv_list": KL_div_list,  # t=tの時のKLダイバージェンスの値
+        #         "t": self.__t_list  # 時間ステップ
+        #     }
+        #     save_jb_file(data_dict, self.__DefaultSavePathSetting["KL_div"], self.__DefaultSaveFileName["KL_div"])
+        #     # self.save_file_low_list(low_kl_div_lists, self.save_path_csv, f"{self.file_name}_low.jb")
+        #     print_finish("KL_div")
 
     def __save(self, KL_div_list, L1_norm_list, L2_norm_list, correlation_coefficient_list):
         setting = AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
@@ -176,8 +179,8 @@ class AnalyzerCore:
         analyze_data.save(setting.folder_path, setting.file_name)
 
 
-@njit('Tuple((f8,f8,f8,f8))(f8[:,:],f8[:,:],b1,b1,b1,b1)', cache=True)
-def calc_similarity_of_prob(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm, enable_correlation_coefficient):
+@njit('Tuple((f8,f8,f8))(f8[:,:],f8[:,:],b1,b1,b1)', cache=True)
+def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm):
     """
         概要
             量子ウォークの確率分布のKLダイバージェンスを求める。ただし中心が原点で直径が指定した値である円形領域では、KLダイバージェンスの値を0とする（領域内を無視する）
@@ -191,7 +194,6 @@ def calc_similarity_of_prob(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_nor
     KL_div = 0
     L1_norm = 0
     L2_norm = 0
-    correlation_coefficient = 0
     # 便利な変数を定義
     len_x = p1.shape[1]
     len_y = p1.shape[0]
@@ -216,13 +218,21 @@ def calc_similarity_of_prob(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_nor
             if enable_L2_norm:
                 """二乗誤差の和"""
                 L2_norm += (p1[x, y] - p2[x, y]) ** 2
+    return KL_div, L1_norm, L2_norm
 
-            # 相関係数を求める場合は以下を実行
-            if enable_correlation_coefficient:
-                """相関係数"""
-                pass
 
-    return KL_div, L1_norm, L2_norm, correlation_coefficient
+def calc_correlation_coefficient(p1, p2, enable_correlation_coefficient):
+    # 相関係数を求める場合は以下を実行
+    correlation_coefficient = 0
+    if enable_correlation_coefficient:
+        """相関係数"""
+        data_1 = list(itertools.chain.from_iterable(p1))
+        data_2 = list(itertools.chain.from_iterable(p2))
+
+        # 相関行列を計算
+        correlation_coefficient = np.corrcoef(data_1, data_2)
+
+    return correlation_coefficient[0, 1]
 
 # def find_near_KL(p1_list, p2):
 #     """
