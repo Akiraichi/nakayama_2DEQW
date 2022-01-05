@@ -1,4 +1,5 @@
 # calc
+import glob
 import itertools
 
 import numpy as np
@@ -56,10 +57,13 @@ class Analyzer:
         self.__exp1_name = qw1.conditions[0].exp_name
         self.__exp2_name = qw2.conditions[0].exp_name
         self.__exp1_index = 0
-        self.__exp2_indexes = analyze_indexes
+
+        self.__not_analyzed_indexes = self.check_finished(
+            folder_path=AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                       exp2_name=self.__exp2_name, exp2_index=analyze_indexes[0]).folder_path,
+            index_list=analyze_indexes)
         self.__options = options
         self.__parallel = self.__options["parallel"]
-
         self.__t_list = select_plot_t_step()  # 解析を実行する時間ステップ
         self.simulation_data_names_1 = return_simulation_data_file_names(exp_name=self.__exp1_name,
                                                                          exp_index=self.__exp1_index)
@@ -81,7 +85,7 @@ class Analyzer:
 
     def __start_parallel_processing(self):
         arguments = []
-        for exp2_index in self.__exp2_indexes:
+        for exp2_index in self.__not_analyzed_indexes:
             arguments.append(
                 [self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list, self.__options])
 
@@ -90,10 +94,32 @@ class Analyzer:
             p.starmap(func=Analyzer.do, iterable=arguments)
 
     def __start_single_processing(self):
-        for i, exp2_index in enumerate(self.__exp2_indexes):
+        for i, exp2_index in enumerate(self.__not_analyzed_indexes):
             print(i, "番目の処理")
             Analyzer.do(self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list,
                         self.__options)
+
+    @staticmethod
+    def check_finished(folder_path, index_list):
+        """
+        処理が完了しているかを確認し、処理できていないファイルのみ処理する。
+        """
+        generated_files = glob.glob(f"{folder_path}/*.jb")  # すでに生成されたファイルの一覧
+        generated_index_list = []  # すでに生成されたtの一覧
+        for generated_file in generated_files:
+            extract_index = int(generated_file[-7:-3])
+            generated_index_list.append(extract_index)
+
+        # 共通しない要素のうち、まだプロットされていないものを取得
+        not_generated_index_list = set(index_list) - set(generated_index_list)
+
+        if not not_generated_index_list:
+            for generated_index in generated_index_list:
+                print_green_text(f"index={generated_index}：既に完了")
+        else:
+            for not_generated_index in not_generated_index_list:
+                print_warning(f"index={not_generated_index}：完了していません")
+        return not_generated_index_list
 
     @staticmethod
     def do(exp1_name, exp1_index, exp2_name, exp2_index, p1_list, options):
