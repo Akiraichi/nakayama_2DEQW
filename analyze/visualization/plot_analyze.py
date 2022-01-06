@@ -86,19 +86,19 @@ class AnalyzePlotter:
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.KL_div}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "L1_norm":
+        elif ext == "L1 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.L1_norm}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "L2_norm":
+        elif ext == "L2 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.L2_norm}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "correlation_coefficient":
+        elif ext == "correlation coefficient":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.correlation_coefficient}}
