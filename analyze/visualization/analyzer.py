@@ -238,12 +238,12 @@ def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm)
             # L1ノルムを求める場合は以下を実行
             if enable_L1_norm:
                 """誤差の絶対値の和"""
-                L1_norm += np.abs(p1[x, y] - p2[x, y])
-
+                # 小さすぎる値でも処理できるようにしておく
+                L1_norm += np.abs(p1[x, y] * 10E+6 - p2[x, y] * 10E+6) / 10E+6
             # L2ノルムを求める場合は以下を実行
             if enable_L2_norm:
                 """二乗誤差の和"""
-                L2_norm += (p1[x, y] - p2[x, y]) ** 2
+                L2_norm += (p1[x, y]*10E+6 - p2[x, y]*10E+6) ** 2 / 10E+12
     return KL_div, L1_norm, L2_norm
 
 
