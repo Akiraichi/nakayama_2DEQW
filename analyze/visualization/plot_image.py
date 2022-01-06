@@ -20,15 +20,14 @@ def plot_image(conditions, save_path_indexes, **params):
 
 class Plotter:
     def __init__(self, exp_mame, save_path_index, params):
-        self.__exp_name = exp_mame
-
         self.p = 0  # 何に使うんだっけ？
-
-        self.__save_path_index = save_path_index
         self.__t_list = params["plot_t_list"]
+        self.__parallel = params["parallel"]
+
+        self.__exp_name = exp_mame
+        self.__save_path_index = save_path_index
         self.__is_enlarge = params["is_enlarge"]
         self.__plot_type = params["plot_type"]
-        self.__parallel = params["parallel"]
 
         self.__not_plot_t_list = self.check_finished(plot_type=self.__plot_type)
 
@@ -42,12 +41,14 @@ class Plotter:
 
     def __start_single_processing(self, simulation_data_file_names):
         for t in self.__not_plot_t_list:
-            self.plot_image(simulation_data_file_names[t], self.__plot_type, self.__is_enlarge)
+            self.plot_image(simulation_data_file_names[t], self.__plot_type, self.__is_enlarge, self.__exp_name,
+                            self.__save_path_index)
 
     def __start_parallel_processing(self, simulation_data_file_names):
         arguments = []
         for t in self.__not_plot_t_list:
-            arguments.append([simulation_data_file_names[t], self.__plot_type, self.__is_enlarge])
+            arguments.append([simulation_data_file_names[t], self.__plot_type, self.__is_enlarge, self.__exp_name,
+                              self.__save_path_index])
         with Pool(ConfigSimulation.PlotParallelNum) as p:
             p.starmap(func=Plotter.plot_image, iterable=arguments)
         print_finish(self.__plot_type)
@@ -74,64 +75,34 @@ class Plotter:
         return not_plot_t_list
 
     @staticmethod
-    def plot_image(simulation_data_file_name, plot_type, is_enlarge):
-        plotter = MainPlotter()
-        plotter.load_data(simulation_data_file_name, plot_type, is_enlarge)
+    def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index):
+        plotter = MainPlotter(simulation_data_file_name=simulation_data_file_name, exp_name=exp_name,
+                              exp_index=exp_index, plot_type=plot_type, is_enlarge=is_enlarge)
         plotter.plot()
 
 
 class MainPlotter:
-    def __init__(self):
-        self.plot_type = None
-        self.simulation_data_file_name = None
-        self.simulation_data = None
-        self.T = None
-        self.len_x = None
-        self.len_y = None
-        self.t = None
-        self.PSY = None
-        self.erase_t = None
-        self.exp_name = None
-        self.exp_index = None
-
-        # plot処理で共通に使うもの
-        self.phi_latex = None
-        self.t_index = None
-        self.title = None
-        self.mesh_z = None
-        self.file_name = None
-        self.plot_save_path = None
-        self.is_enlarge = None
-
-    def load_data(self, simulation_data_file_name, plot_type, is_enlarge):
-        self.plot_type = plot_type
-        self.is_enlarge = is_enlarge
-        # データをロード
+    def __init__(self, simulation_data_file_name, exp_name, exp_index, plot_type, is_enlarge):
+        self.__plot_type = plot_type
         simulation_data = load_data_by_error_handling(simulation_data_file_name)
-        # simulation_data = joblib.load(simulation_data_file_name)
-        # ロードしたデータを展開
         condition = simulation_data["実験条件データ（condition）"]
-        self.T = condition.T
-        self.len_x = 2 * self.T + 1
-        self.len_y = 2 * self.T + 1
-        self.t = simulation_data["このシミュレーションデータが何ステップ目か（t）"]
-        self.PSY = simulation_data["シミュレーションデータ"]
-        self.erase_t = condition.erase_t
-        self.exp_name = condition.exp_name
-        self.exp_index = condition.exp_index
+        self.__T = condition.T
 
-        # plot処理で共通に使うもの
-        self.phi_latex = condition.phi_latex
-        self.t_index = str(self.t).zfill(4)
-        self.title = f"$t={self.t}$," + "$t_{erase}$" + f"={self.erase_t}"
-        self.mesh_z = calc_probability(self.PSY, self.len_x, self.len_y)
-        self.file_name = f"{self.t_index}.png"
-        self.plot_save_path = plot_save_path(self.exp_name, self.plot_type, self.exp_index)
+        self.__t = simulation_data["このシミュレーションデータが何ステップ目か（t）"]
+        self.__title = f"$t={self.__t}$," + "$t_{erase}$" + f"={condition.erase_t}"
+        self.__t_index = str(self.__t).zfill(4)
+        len_x = 2 * self.__T + 1
+        len_y = 2 * self.__T + 1
+        PSY = simulation_data["シミュレーションデータ"]
+        self.__mesh_z = calc_probability(PSY, len_x, len_y)
+        self.__file_name = f"{self.__t_index}"
+        self.__plot_save_path = plot_save_path(exp_name, self.__plot_type, exp_index)  #
+        self.__is_enlarge = is_enlarge
 
     def plot(self):
-        if self.plot_type == "surface":
+        if self.__plot_type == "surface":
             self.__plot_surface()
-        elif self.plot_type == "heatmap":
+        elif self.__plot_type == "heatmap":
             self.__plot_heatmap()
         else:
             print_warning("正しいplot_typeを選んでください")
@@ -140,34 +111,34 @@ class MainPlotter:
     def __plot_surface(self):
         # t=0つまりプロット点が1点の時の3dplotにはバグがある。そのためパスする
         # https://stackoverflow.com/questions/65131880/matplotlib-projection-3d-levels-issue
-        if self.is_enlarge and int(self.t) != 0:
+        if self.__is_enlarge and int(self.__t) != 0:
             # 最大でもself.tしか量子ウォーカーは進めないので、-self.t~self.tまでの切り取る
-            max_x = self.T - int(self.t)
-            max_y = self.T - int(self.t)
+            max_x = self.__T - int(self.__t)
+            max_y = self.__T - int(self.__t)
             if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
-                self.mesh_z = self.mesh_z[max_y:-max_y, max_x:-max_x]
+                self.__mesh_z = self.__mesh_z[max_y:-max_y, max_x:-max_x]
             # 格子点を作成
-            t_int = int(self.t)
+            t_int = int(self.__t)
             mesh_x, mesh_y = np.meshgrid(np.linspace(-t_int, t_int, 2 * t_int + 1),
                                          np.linspace(-t_int, t_int, 2 * t_int + 1))
 
         else:
             # 格子点を作成
-            mesh_x, mesh_y = np.meshgrid(np.linspace(-self.T, self.T, 2 * self.T + 1),
-                                         np.linspace(-self.T, self.T, 2 * self.T + 1))
-        do_plot_surface(mesh_x, mesh_y, self.mesh_z, self.plot_save_path, self.file_name, self.title)
-        print(f"t={self.t_index}：可視化と保存：完了")
+            mesh_x, mesh_y = np.meshgrid(np.linspace(-self.__T, self.__T, 2 * self.__T + 1),
+                                         np.linspace(-self.__T, self.__T, 2 * self.__T + 1))
+        do_plot_surface(mesh_x, mesh_y, self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title)
+        print(f"t={self.__t_index}：可視化と保存：完了")
 
     def __plot_heatmap(self):
         # 最大でもself.tしか量子ウォーカーは進めないので、-self.t~self.tまでの切り取る
-        if self.is_enlarge:
-            max_x = self.T - int(self.t)
-            max_y = self.T - int(self.t)
+        if self.__is_enlarge:
+            max_x = self.__T - int(self.__t)
+            max_y = self.__T - int(self.__t)
             if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
-                self.mesh_z = self.mesh_z[max_y:-max_y, max_x:-max_x]
+                self.__mesh_z = self.__mesh_z[max_y:-max_y, max_x:-max_x]
 
-        do_plot_heatmap(self.mesh_z, self.plot_save_path, self.file_name, self.title, self.is_enlarge)
-        print(f"t={self.t_index}：可視化と保存：完了")
+        do_plot_heatmap(self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title, self.__is_enlarge)
+        print(f"t={self.__t_index}：可視化と保存：完了")
 
 
 def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
@@ -217,10 +188,7 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
     ax.set_title(title, size=24)
-    # plt.show()
-    print(f"{path}/{file_name}")
-    # plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
-    fig.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
