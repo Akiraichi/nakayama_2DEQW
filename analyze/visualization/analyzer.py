@@ -243,6 +243,7 @@ def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm)
             # L2ノルムを求める場合は以下を実行
             if enable_L2_norm:
                 """二乗誤差の和"""
+                # 小さすぎる値でも処理できるようにしておく
                 L2_norm += ((p1[x, y]*10E+6 - p2[x, y]*10E+6) ** 2) / 10E+12
     return KL_div, L1_norm, L2_norm
 
