@@ -239,12 +239,20 @@ def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm)
             if enable_L1_norm:
                 """誤差の絶対値の和"""
                 # 小さすぎる値でも処理できるようにしておく
-                L1_norm += np.abs(p1[x, y] * 10E+6 - p2[x, y] * 10E+6) / 10E+6
+                # 確率が1以上になるまで10を何度かければいいのか、その回数をcountに代入する。
+                count = 1
+                while (p1[x, y] * count) > 1.0:
+                    count += 1
+                L1_norm += np.abs(p1[x, y] * (10 ** count) - p2[x, y] * (10 ** count)) / (10 ** count)
             # L2ノルムを求める場合は以下を実行
             if enable_L2_norm:
                 """二乗誤差の和"""
                 # 小さすぎる値でも処理できるようにしておく
-                L2_norm += ((p1[x, y]*10E+6 - p2[x, y]*10E+6) ** 2) / 10E+12
+                # 確率が1以上になるまで10を何度かければいいのか、その回数をcountに代入する。
+                count = 1
+                while (p1[x, y] * count) > 1.0:
+                    count += 1
+                L2_norm += ((p1[x, y] * (10 ** count) - p2[x, y] * (10 ** count)) ** 2) / (10 ** (count * 2))
     return KL_div, L1_norm, L2_norm
 
 
