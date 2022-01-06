@@ -36,28 +36,28 @@ class AnalyzePlotter:
     def plot(self):
         if self.__analyze_data_list[0].KL_div:
             y_label = "KL divergence"
-            self.__plot_core(ext=y_label, y_label=y_label)
+            self.__plot_core(model=y_label, y_label=y_label)
         if self.__analyze_data_list[0].L1_norm:
             y_label = "L1 norm"
-            self.__plot_core(ext=y_label, y_label=y_label)
+            self.__plot_core(model=y_label, y_label=y_label)
         if self.__analyze_data_list[0].L2_norm:
             y_label = "L2 norm"
-            self.__plot_core(ext=y_label, y_label=y_label)
+            self.__plot_core(model=y_label, y_label=y_label)
         if self.__analyze_data_list[0].correlation_coefficient:
             y_label = "correlation coefficient"
-            self.__plot_core(ext=y_label, y_label=y_label)
+            self.__plot_core(model=y_label, y_label=y_label)
 
-    def __plot_core(self, ext, y_label):
+    def __plot_core(self, model, y_label):
         # dataをまとめた後、dfに変換してplot関数へ渡す
-        df = self.__marge_data_and_convert_to_df(self.__analyze_data_list, self.__exp2_indexes, ext=ext)
+        df = self.__marge_data_and_convert_to_df(self.__analyze_data_list, self.__exp2_indexes, model=model)
         # x_axisに指定されたモードに応じてプロット方法を変える
         if self.__x_axis == "index":
             plot_x_axis_is_index(df=df,
                                  **{**self.__DefaultPlotSetting_x_axis_is_index,
-                                    **{"y_label": y_label, "file_name": self.__get_file_name(ext=ext)}})
+                                    **{"y_label": y_label, "file_name": self.__get_file_name(ext=model)}})
         elif self.__x_axis == "t":
             plot_x_axis_is_t(df=df, **{**self.__DefaultPlotSetting_x_axis_is_t,
-                                       **{"y_label": y_label, "file_name": self.__get_file_name(ext=ext)}})
+                                       **{"y_label": y_label, "file_name": self.__get_file_name(ext=model)}})
         else:
             print_warning("axisパラメータに不正値が入力されています")
             raise OSError
@@ -78,27 +78,27 @@ class AnalyzePlotter:
         return analyze_data_list
 
     @staticmethod
-    def __marge_data_and_convert_to_df(analyze_data_list, exp2_indexes, ext):
+    def __marge_data_and_convert_to_df(analyze_data_list, exp2_indexes, model):
         """複数のデータをまとめて一つのdfにする"""
-        if ext == "KL divergence":
+        if model == "KL divergence":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.KL_div}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "L1 norm":
+        elif model == "L1 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.L1_norm}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "L2 norm":
+        elif model == "L2 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.L2_norm}}
             return pd.DataFrame(data_dict)
 
-        elif ext == "correlation coefficient":
+        elif model == "correlation coefficient":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.correlation_coefficient}}
