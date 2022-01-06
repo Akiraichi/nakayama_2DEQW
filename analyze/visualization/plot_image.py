@@ -217,8 +217,10 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
     ax.set_title(title, size=24)
-    plt.show()
-    plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    # plt.show()
+    print(f"{path}/{file_name}")
+    # plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    fig.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
