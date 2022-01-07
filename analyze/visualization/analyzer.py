@@ -53,14 +53,16 @@ class AnalyzeData:
 
 
 class Analyzer:
-    def __init__(self, qw1, qw2, analyze_indexes, options):
+    def __init__(self, qw1, qw2, analyze_indexes, options, mode):
         self.__exp1_name = qw1.conditions[0].exp_name
         self.__exp2_name = qw2.conditions[0].exp_name
         self.__exp1_index = 0
+        self.__mode = mode
 
         self.__not_analyzed_indexes = self.check_finished(
             folder_path=AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                       exp2_name=self.__exp2_name, exp2_index=analyze_indexes[0]).folder_path,
+                                       exp2_name=self.__exp2_name, exp2_index=analyze_indexes[0],
+                                       mode=self.__mode).folder_path,
             index_list=analyze_indexes)
         self.__options = options
         self.__parallel = self.__options["parallel"]
@@ -98,6 +100,52 @@ class Analyzer:
             print(i, "番目の処理")
             Analyzer.do(self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list,
                         self.__options)
+
+    def optimize_t(self, analyze_t):
+        for i, exp2_index in enumerate(self.__not_analyzed_indexes):
+            print(i, "番目の処理")
+            self.__optimize_t_core(exp2_index=exp2_index, analyze_t=analyze_t)
+
+    def __optimize_t_core(self, exp2_index, analyze_t):
+        optimize_correlation_coefficient_list = []
+        optimize_KL_div_list = []
+        optimize_L1_norm_list = []
+        optimize_L2_norm_list = []
+
+        # STEP1：analyze_tステップ目のp2のデータをロードする。
+        simulation_data_names_2 = return_simulation_data_file_names(exp_name=self.__exp2_name, exp_index=exp2_index)
+        p2 = get_probability(simulation_data_names_2, analyze_t)
+
+        # STEP2：最適な時間ステップを求める
+        for p1, t in zip(self.__p1_list, self.__t_list):
+            KL_div, L1_norm, L2_norm = calc_KL_and_L1_and_L2(p1, p2, self.__options["KL_div"],
+                                                             self.__options["L1_norm"], self.__options["L2_norm"])
+            correlation_coefficient = calc_correlation_coefficient(p1=p1, p2=p2,
+                                                                   enable_correlation_coefficient=self.__options[
+                                                                       "correlation_coefficient"])
+            optimize_KL_div_list.append([t, KL_div])
+            optimize_L1_norm_list.append([t, L1_norm])
+            optimize_L2_norm_list.append([t, L2_norm])
+            optimize_correlation_coefficient_list.append([t, correlation_coefficient])
+
+        # STEP3：確率分布の類似性が高い順に並べ替える
+        optimize_correlation_coefficient_list = sorted(optimize_correlation_coefficient_list, key=lambda x: x[1],
+                                                       reverse=True)
+        optimize_KL_div_list = sorted(optimize_KL_div_list, key=lambda x: x[1])
+        optimize_L1_norm_list = sorted(optimize_L1_norm_list, key=lambda x: x[1])
+        optimize_L2_norm_list = sorted(optimize_L2_norm_list, key=lambda x: x[1])
+
+        # STEP4：保存する
+        setting = AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                 exp2_name=self.__exp2_name, exp2_index=exp2_index,
+                                 mode=self.__mode, analyze_t=analyze_t)
+        data_dict = {
+            "KL_div": optimize_KL_div_list,
+            "L1_norm": optimize_L1_norm_list,
+            "L2_norm": optimize_L2_norm_list,
+            "correlation_coefficient": optimize_correlation_coefficient_list
+        }
+        save_jb_file(data_dict, setting.folder_path, setting.file_name)
 
     @staticmethod
     def check_finished(folder_path, index_list):
@@ -238,7 +286,8 @@ def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm)
             # L1ノルムを求める場合は以下を実行
             if enable_L1_norm:
                 """誤差の絶対値の和"""
-                # 小さすぎる値でも処理できるようにしておく
+                # 以下の処理について：実行しなくても誤差は生じないようなのでコメントアウトしても良い
+                # 小さすぎる値でも処理できるようにしておく。
                 # 確率が1以上になるまで10を何度かければいいのか、その回数をcountに代入する。
                 count = 1
                 while (p1[x, y] * count) > 1.0:
@@ -247,6 +296,7 @@ def calc_KL_and_L1_and_L2(p1, p2, enable_KL_div, enable_L1_norm, enable_L2_norm)
             # L2ノルムを求める場合は以下を実行
             if enable_L2_norm:
                 """二乗誤差の和"""
+                # 以下の処理について：実行しなくても誤差は生じないようなのでコメントアウトしても良い
                 # 小さすぎる値でも処理できるようにしておく
                 # 確率が1以上になるまで10を何度かければいいのか、その回数をcountに代入する。
                 count = 1

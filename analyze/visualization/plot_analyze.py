@@ -2,6 +2,47 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from analyze.visualization.analyzer import AnalyzeData
 from config.config import *
+from helper import load_data_by_error_handling
+
+
+class OptimizePlotter:
+    def __init__(self, qw1, qw2, analyze_indexes, analyze_t):
+        self.__exp1_name = qw1.conditions[0].exp_name
+        self.__exp2_name = qw2.conditions[0].exp_name
+        self.__exp1_index = 0
+        self.__exp2_indexes = analyze_indexes
+        self.__analyze_t = analyze_t
+
+        # データをロードする
+        self.__optimized_data_dict_list = []
+        self.__load_data()
+
+    def __load_data(self):
+        for exp2_index in self.__exp2_indexes:
+            setting = AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                     exp2_name=self.__exp2_name, exp2_index=exp2_index,
+                                     mode="optimize", analyze_t=self.__analyze_t)
+            optimized_data_dict = load_data_by_error_handling(f"{setting.folder_path}/{setting.file_name}")
+            self.__optimized_data_dict_list.append(optimized_data_dict)
+
+    def print_optimized_result(self):
+        for i, exp2_index in enumerate(self.__exp2_indexes):
+            optimize_KL_div_list = self.__optimized_data_dict_list[i]["KL_div"]
+            optimize_L1_norm_list = self.__optimized_data_dict_list[i]["L1_norm"]
+            optimize_L2_norm_list = self.__optimized_data_dict_list[i]["L2_norm"]
+            optimize_correlation_coefficient_list = self.__optimized_data_dict_list[i]["correlation_coefficient"]
+            print(f"KL_div：")
+            for optimize_KL_div in optimize_KL_div_list[:3]:
+                print(optimize_KL_div)
+            print(f"L1_norm：")
+            for optimize_L1_norm in optimize_L1_norm_list[:3]:
+                print(optimize_L1_norm)
+            print(f"L2_norm：")
+            for optimize_L2_norm in optimize_L2_norm_list[:3]:
+                print(optimize_L2_norm)
+            print(f"correlation_coefficient：")
+            for optimize_correlation_coefficient in optimize_correlation_coefficient_list[:3]:
+                print(optimize_correlation_coefficient)
 
 
 class AnalyzePlotter:
@@ -18,7 +59,8 @@ class AnalyzePlotter:
             "x_label": "t",
             "y_label": None,
             "folder_path": AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                          exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0]).folder_path,
+                                          exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0],
+                                          mode="analyze").folder_path,
             "file_name": None,
             "legend_label": "t_{erase}",
             "start_t": start_t
@@ -28,7 +70,8 @@ class AnalyzePlotter:
             "x_label": "t_{erase}",
             "y_label": None,
             "folder_path": AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                          exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0]).folder_path,
+                                          exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0],
+                                          mode="analyze").folder_path,
             "file_name": None,
             "legend_label": "t"
         }
@@ -72,7 +115,7 @@ class AnalyzePlotter:
         analyze_data_list = []
         for exp2_index in self.__exp2_indexes:
             setting = AnalyzeSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                     exp2_name=self.__exp2_name, exp2_index=exp2_index)
+                                     exp2_name=self.__exp2_name, exp2_index=exp2_index, mode="analyze")
             analyze_data = AnalyzeData.load(folder_path=setting.folder_path, file_name=setting.file_name)
             analyze_data_list.append(analyze_data)
         return analyze_data_list

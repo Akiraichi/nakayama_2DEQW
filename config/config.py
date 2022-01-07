@@ -87,11 +87,13 @@ def plot_save_path(exp_name, plot_type, index=None):
 
 
 class AnalyzeSetting:
-    def __init__(self, exp1_name, exp1_index, exp2_name, exp2_index):
+    def __init__(self, exp1_name, exp1_index, exp2_name, exp2_index, mode, analyze_t=None):
         self.__exp1_name = exp1_name
         self.__exp2_name = exp2_name
         self.__exp1_index = exp1_index
         self.__exp2_index = exp2_index
+        self.__mode = mode
+        self.__analyze_t = analyze_t
 
         self.__setting_save_folder_path()
         self.__setting_save_file_name()
@@ -99,13 +101,22 @@ class AnalyzeSetting:
     def __setting_save_folder_path(self):
         # 保存場所の設定
         self.__folder_name = f'{self.__exp1_name}_{self.__exp1_index}_{self.__exp2_name}'
-        self.__folder_path = f"result/analyze/{self.__folder_name}"  # AnalyzeDataの保存場所
+        if self.__mode == "analyze":
+            self.__folder_path = f"result/analyze/{self.__folder_name}"  # AnalyzeDataの保存場所
+        elif self.__mode == "optimize":
+            self.__folder_path = f"result/analyze/optimize/{self.__folder_name}"  # AnalyzeDataの保存場所
+        else:
+            print_warning("modeの設定にミスがあります")
+            raise OSError
         os.makedirs(self.__folder_path, exist_ok=True)
 
     def __setting_save_file_name(self):
         # 保存ファイル名の設定
         str_exp2_index = str(self.__exp2_index).zfill(4)
-        self.__file_name = f"AnalyzeData_{self.__folder_name}_{str_exp2_index}.jb"
+        if self.__mode == "analyze":
+            self.__file_name = f"AnalyzeData_{self.__folder_name}_{str_exp2_index}.jb"
+        elif self.__mode == "optimize":
+            self.__file_name = f"OptimizeData_{self.__folder_name}_{self.__analyze_t}_{str_exp2_index}.jb"
 
     @property
     def folder_name(self):

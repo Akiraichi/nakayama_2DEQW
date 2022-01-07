@@ -1,5 +1,5 @@
 from analyze.visualization.analyzer import Analyzer
-from analyze.visualization.plot_analyze import AnalyzePlotter
+from analyze.visualization.plot_analyze import AnalyzePlotter, OptimizePlotter
 from qw import *
 
 DefaultAnalyzeSetting = {
@@ -27,7 +27,7 @@ class SimulationResultAnalyzer:
             self.__options = {}
 
     def analyze(self):
-        analyzer_ = Analyzer(self.__qw1, self.__qw2, self.__analyze_indexes, self.__options)
+        analyzer_ = Analyzer(self.__qw1, self.__qw2, self.__analyze_indexes, self.__options, mode="analyze")
         analyzer_.start_processing()
 
     def plot_x_axis_is_index(self, plot_t_list):
@@ -39,15 +39,34 @@ class SimulationResultAnalyzer:
                                  start_t=start_t)
         plotter.plot()
 
+    def analyze_for_optimization_t(self, analyze_t):
+        """
+        self.__qw1とself.__qw2の確率分布の類似性について、self.__analyze_indexesに指定された実験全てにおいて、analyze_tステップ目の
+        qw2の確率分布と最も確率分布の近いqw1の時間ステップtを求める。
+        Args:
+            analyze_t: 調べる際の時間ステップ
+
+        Returns:
+
+        """
+        analyzer_ = Analyzer(self.__qw1, self.__qw2, self.__analyze_indexes, self.__options, mode="optimize")
+        analyzer_.optimize_t(analyze_t=analyze_t)
+
+    def plot_optimize_t(self, analyze_t):
+        plotter = OptimizePlotter(self.__qw1, self.__qw2, self.__analyze_indexes, analyze_t)
+        plotter.print_optimized_result()
+
 
 if __name__ == '__main__':
-    indexes = [10, 50, 100]
+    indexes = [50]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
                                         analyze_indexes=indexes,
                                         options={"parallel": False})
-    analyzer.analyze()
-    # t_list = [10, 20, 50, 100]
+    # analyzer.analyze()
+    # analyzer.analyze_for_optimization_t(analyze_t=200)
+    analyzer.plot_optimize_t(analyze_t=200)
+    # t_list = [200, 300, 400, 500, 600]
     # analyzer.plot_x_axis_is_index(plot_t_list=t_list)
-    # plot_indexes = [50, 100]
+    # plot_indexes = [0]
     # analyzer.plot_x_axis_is_t(plot_indexes=plot_indexes, start_t=0)
