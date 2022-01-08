@@ -1,5 +1,6 @@
 import numpy as np
-from config.config import ConfigSimulation, print_warning
+from config.config_simulation import ConfigSimulationSetting
+from helper import print_warning
 import sympy
 
 
@@ -112,7 +113,7 @@ class ConditionType:
 
 
 DefaultBaseProps = {
-    "T": ConfigSimulation.MaxTimeStep,
+    "T": ConfigSimulationSetting.MaxTimeStep,
     "algorithm": None,
     "phi": None,
     "exp_name": None,
