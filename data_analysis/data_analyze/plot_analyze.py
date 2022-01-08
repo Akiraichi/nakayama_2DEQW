@@ -9,12 +9,13 @@ from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSet
 
 
 class OptimizePlotter:
-    def __init__(self, qw1, qw2, analyze_indexes, analyze_t):
-        self.__exp1_name = qw1.conditions[0].exp_name
-        self.__exp2_name = qw2.conditions[0].exp_name
-        self.__exp1_index = 0
+    def __init__(self, exp1_name, exp2_name, exp1_index, analyze_indexes, setting: DefaultOptimizePlotSetting):
+        self.__exp1_name = exp1_name
+        self.__exp2_name = exp2_name
+        self.__exp1_index = exp1_index
         self.__exp2_indexes = analyze_indexes
-        self.__analyze_t = analyze_t
+        self.__analyze_t = setting.analyze_t
+        self.__setting = setting
         self.__all_optimize_data = self.__load_all_optimize_data()
 
     def __load_all_optimize_data(self):
@@ -31,9 +32,9 @@ class OptimizePlotter:
             self.__print_single_optimize_result(optimize_data)
 
     @staticmethod
-    def __print_single_optimize_result(optimize_data, count=3):
+    def __print_single_optimize_result(optimize_data:OptimizeData, count=3):
         print(f"KL_div：")
-        for optimize_KL_div in optimize_data.KL_div[:count]:
+        for optimize_KL_div in optimize_data.KL_divergence[:count]:
             print(optimize_KL_div)
         print(f"L1_norm：")
         for optimize_L1_norm in optimize_data.L1_norm[:count]:
@@ -53,18 +54,10 @@ class OptimizePlotter:
             self.__plot_correlation_coefficient_x_axis_is_rank(optimize_data)
 
     def __plot_KL_div_x_axis_is_rank(self, optimize_data: OptimizeData):
-        y_axis_data_list = optimize_data.KL_divergence
-        title = f"{self.__analyze_t}step KL divergence"
-        x_axis_data_list = list(range(1, len(y_axis_data_list)))
-        plot_setting = DefaultOptimizePlotSetting.x_axis_is_rank_prepare(exp1_name=self.__exp1_name,
-                                                                         exp1_index=self.__exp1_index,
-                                                                         exp2_name=self.__exp2_name,
-                                                                         analyze_t=self.__analyze_t,
-                                                                         x_axis_data_list=x_axis_data_list,
-                                                                         y_axis_data_list=y_axis_data_list,
-                                                                         title=title)
-
-        helper.plot_multi_scatter(plot_setting)
+        self.__setting.y_axis_data_list = optimize_data.KL_divergence
+        self.__setting.x_axis_data_list = list(range(1, len(self.__setting.y_axis_data_list)))
+        self.__setting.title = f"{self.__analyze_t}step KL divergence"
+        helper.plot_multi_scatter()
 
     def __plot_L1_norm_x_axis_is_rank(self, optimize_data: OptimizeData):
         y_axis_data_list = optimize_data.L1_norm
