@@ -1,6 +1,6 @@
 import numpy as np
 from numba import njit, jit
-from config.config import print_warning, print_green_text, ConfigSimulation
+import helper
 
 
 # 1/0での挙動が想定外である。
@@ -210,7 +210,7 @@ def calc_probability(PSY, len_x, len_y):
     probability = np.zeros([len_x, len_y])
     probability, p_sum, err = calculate_dict(len_x, len_y, probability, PSY)
     if err:
-        print_warning(f"確率に問題がある可能性があります：{p_sum}")
+        helper.print_warning(f"確率に問題がある可能性があります：{p_sum}")
     # 転置した値を返却する。[x,y]で数学でx、yとするとx軸がxの値、y軸がyの値となる。
     # しかし、[x,y]では、x行y列となるので、ちょうどxとyが逆である。
     # それだと利便上問題があるので、転置して返却する。
