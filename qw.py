@@ -48,42 +48,6 @@ class EraseElectricGroverWalk2DAlongXY(QW):
             conditions=ConditionsEraseTFactory.EraseT_006_EraseElectricGroverWalk2DAlongXY(erase_t_list=erase_t_list))
 
 
-# class SlowEraseEQW(QW):
-#     """
-#     ゆっくり電場を消す電場量子ウォーク
-#     pi/60
-#     電場をどのくらいゆっくり消すかによって、実験を変えるのか、電場をどのくらいゆっくり消すかは固定にさせて、
-#     色々なパラメータで実験するのかを検討
-#     """
-#
-#     def __init__(self, select_exp_indexes):
-#         super().__init__(e1=exp_023, e2=exp_024, select_exp_indexes=select_exp_indexes)
-#
-#
-# class SlowEraseEQW_erase_t_0(QW):
-#     """
-#     ゆっくり電場を消す電場量子ウォーク
-#     pi/60
-#     電場をどのくらいゆっくり消すか、電場を消す時間ステップ数を変更して実験する
-#     t=0で電場を消し始める
-#     """
-#
-#     def __init__(self, erase_time_steps):
-#         super().__init__(e1=exp_025, e2=exp_026, select_exp_indexes=erase_time_steps)
-#
-#
-# class SlowEraseEQW_erase_t_200(QW):
-#     """
-#     ゆっくり電場を消す電場量子ウォーク
-#     pi/60
-#     電場をどのくらいゆっくり消すか、電場を消す時間ステップ数を変更して実験する
-#     t=200で電場を消し始める
-#     """
-#
-#     def __init__(self, erase_time_steps):
-#         super().__init__(e1=exp_027, e2=exp_028, select_exp_indexes=erase_time_steps)
-
-
 class HadamardWalk2D(QW):
     def __init__(self):
         super().__init__(conditions=ConditionsSingleFactory.single_001_HadamardWalk2D())
