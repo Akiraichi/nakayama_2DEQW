@@ -1,5 +1,5 @@
 from data_analysis.data_analyze.analyze_algorithm import calc_KL_and_L1_and_L2, calc_correlation_coefficient
-from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultOptimizeSetting, \
+from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
     OptimizeNameSetting
 import helper
 from multiprocessing import Pool
@@ -26,17 +26,18 @@ class OptimizeData:
     correlation_coefficient: list
 
 
-class Optimizer:
-    def __init__(self, qw1, qw2, analyze_indexes, analyze_t, setting: DefaultOptimizeSetting):
-        self.__exp1_name = qw1.conditions[0].exp_name
-        self.__exp2_name = qw2.conditions[0].exp_name
-        self.__exp1_index = 0
+class AnalyzeOptimizer:
+    def __init__(self, exp1_name, exp2_name, exp1_index, analyze_indexes, setting: DefaultAnalyzeOptimizeSetting):
+        self.__exp1_name = exp1_name
+        self.__exp2_name = exp2_name
+        self.__exp1_index = exp1_index
+        self.__setting = setting
+        self.__analyze_t = self.__setting.analyze_t
         self.__not_analyzed_indexes = helper.check_finished_file(
             folder_path=OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                            exp2_name=self.__exp2_name, analyze_t=analyze_t).path_to_file,
+                                            exp2_name=self.__exp2_name, analyze_t=self.__analyze_t).path_to_file,
             will_generate_index_list=analyze_indexes, extension="jb")
-        self.__analyze_t = analyze_t
-        self.__setting = setting
+
         self.simulation_data_names_1 = helper.return_simulation_data_file_names(exp_name=self.__exp1_name,
                                                                                 exp_index=self.__exp1_index)
         self.__p1_list = []  # qw1のシミュレーション結果より求めた確率分布のリスト
