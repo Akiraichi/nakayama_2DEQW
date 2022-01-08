@@ -1,14 +1,10 @@
-from config.config import *
+from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
+from helper import print_finish, print_green_text, print_warning
 from simulation.simulation_core import calculate_QW2D
 from multiprocessing import Pool
 import glob
 import numpy as np
 import joblib
-
-
-# def start_simulation_2dqw(conditions, start_step_t):
-#     simulation = SimulationQWAgent(cocnditions, start_step_t)
-#     simulation.start_parallel_processing()
 
 
 class SimulationQWAgent:
@@ -25,7 +21,7 @@ class SimulationQWAgent:
         arguments = []
         for condition in self.__conditions:
             arguments.append([condition, self.__start_step_t])
-        with Pool(ConfigSimulation.SimulationParallelNum) as p:
+        with Pool(ConfigSimulationSetting.SimulationParallelNum) as p:
             p.starmap(func=SimulationQWAgent.main_simulation, iterable=arguments)
         print_finish("execute_simulation")
 
@@ -142,45 +138,3 @@ class SimulationQWAgent:
                                          erase_time_step=erase_time_step)
                 # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
                 SimulationQWAgent.save(psy=PSY_now, t=t, condition=condition)
-
-# self.start_step_t = None
-# self.erase_time_step = None
-#
-# self.condition = None
-# self.exp_index = None
-# self.exp_name = None
-# self.T = None
-#
-# self.P = None
-# self.Q = None
-# self.R = None
-# self.S = None
-# self.PSY_init = None
-# self.Algorithm = None
-# self.phi = None
-# self.erase_t = None
-# self.init_vector = None
-#
-# self.init_PSY_now = None
-# self.start_t = None
-
-# def set_up_condition(self, condition, start_step_t):
-#     self.start_step_t = start_step_t
-#
-#     # 展開する
-#     self.condition = condition
-#     self.exp_index = condition.exp_index
-#     self.exp_name = condition.exp_name
-#     self.T = condition.T
-#
-#     # 以下、展開するもののうち、アルゴリズムで使用する変数群
-#     self.P = condition.P
-#     self.Q = condition.Q
-#     self.R = condition.R
-#     self.S = condition.S
-#     self.PSY_init = condition.PSY_init
-#     self.Algorithm = condition.algorithm
-#     self.phi = condition.phi
-#     self.erase_t = condition.erase_t
-#     self.erase_time_step = condition.erase_time_step  # 電場を消すのにかける時間ステップ数
-#     self.init_vector = np.zeros_like(self.PSY_init, dtype=np.complex128)  # その他の場所の確率振幅ベクトルの設定
