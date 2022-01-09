@@ -91,34 +91,6 @@ def get_probability(simulation_data_file_names, index):
     return probability
 
 
-# TODO:直す
-def plot_multi_scatter(setting):
-    x_label = setting[0].x_label
-    y_label = setting[0].y_label
-    title = setting[0].title
-    file_name = setting[0].file_name
-    path_to_file = setting[0].path_to_file
-    x_axis_data = setting[0].x_axis_data_list
-    data_num = len(setting[0].y_axis_data_list)
-
-    # Figureの初期化
-    fig = plt.figure(figsize=(8, 6))
-    # axオブジェクトの生成
-    ax = fig.add_subplot(111)
-    ax.set_xlabel(f"${x_label}$", size=24, labelpad=5)
-    ax.set_ylabel(f"${y_label}$", size=24)
-    ax.set_title(title)  # グラフタイトル
-    # 描画
-    for i in range(data_num):
-        y_axis_data_ = [y_axis[0] for y_axis in y_axis_data]
-        ax.scatter(x_axis_data, y_axis_data_, s=10, label=f"${x_label}={x_axis_data}$")
-
-    plt.legend()
-    plt.savefig(f"{path_to_file}/{file_name}.png", dpi=400)
-    ax.cla()
-    plt.close()
-
-
 def check_finished_file(folder_path: str, will_generate_index_list: list, extension: str):
     """
     処理が完了しているかを確認し、処理できていないファイルのみ処理する。
