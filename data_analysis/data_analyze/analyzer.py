@@ -89,7 +89,7 @@ class AnalyzeOptimizer:
                                       exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=exp2_index)
         optimize_data = OptimizeData(optimize_KL_div_list, optimize_L1_norm_list, optimize_L2_norm_list,
                                      optimize_correlation_coefficient_list)
-        helper.save_jb_file(optimize_data, setting.path_to_file, setting.file_name)
+        helper.save_jb_file(optimize_data, setting.path_to_file, setting.file_name_jb)
 
 
 class Analyzer:
@@ -179,7 +179,7 @@ class Analyzer:
         # STEP3：保存する
         name_setting = AnalyzeNameSetting(exp1_name=exp1_name, exp1_index=exp1_index,
                                           exp2_name=exp2_name, file_index=exp2_index)
-        helper.save_jb_file(analyze_data, name_setting.path_to_file, name_setting.file_name)
+        helper.save_jb_file(analyze_data, name_setting.path_to_file, name_setting.file_name_jb)
 
 #
 # class AnalyzerCore:
