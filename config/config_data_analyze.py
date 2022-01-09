@@ -111,6 +111,7 @@ class DefaultOptimizePlotSetting:
     enable_L2_norm: bool = True  # L2ノルムをプロットするかどうか（二乗誤差の和）
     enable_correlation_coefficient: bool = True  # 相関係数をプロットするかどうか
     limit: int = 5  # 上位limit位までプロットする
+    limit_rank: int = 100  # 上位100位までを横軸として使用する
 
     # @classmethod
     # def x_axis_is_index_prepare(cls, exp1_name, exp1_index, exp2_name, analyze_t, title, x_axis_data_list,

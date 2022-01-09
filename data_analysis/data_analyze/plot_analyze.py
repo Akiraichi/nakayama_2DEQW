@@ -56,59 +56,67 @@ class OptimizePlotter:
             print(optimize_correlation_coefficient)
 
     def plot_optimize_result_x_axis_is_rank(self):
-        for optimize_data in self.__all_optimize_data:
-            self.__plot_KL_div_x_axis_is_rank(optimize_data)
-            self.__plot_L1_norm_x_axis_is_rank(optimize_data)
-            self.__plot_L2_norm_x_axis_is_rank(optimize_data)
-            self.__plot_correlation_coefficient_x_axis_is_rank(optimize_data)
+        if self.__setting.enable_KL_divergence:
+            self.__plot_KL_div_x_axis_is_rank(self.__all_optimize_data)
+        if self.__setting.enable_L1_norm:
+            self.__plot_L1_norm_x_axis_is_rank(self.__all_optimize_data)
+        if self.__setting.enable_L2_norm:
+            self.__plot_L2_norm_x_axis_is_rank(self.__all_optimize_data)
+        if self.__setting.enable_correlation_coefficient:
+            self.__plot_correlation_coefficient_x_axis_is_rank(self.__all_optimize_data)
 
-    def __plot_KL_div_x_axis_is_rank(self, optimize_data: OptimizeData):
-        self.__setting.y_axis_dates_list = optimize_data.KL_divergence
-        self.__setting.x_axis_data_list = list(range(1, len(self.__setting.y_axis_dates_list)))
-        self.__setting.title = f"{self.__analyze_t}step KL divergence"
-        helper.plot_multi_scatter()
+    def __plot_KL_div_x_axis_is_rank(self, optimize_data_list: List[OptimizeData]):
+        title = f"{self.__analyze_t}step KL divergence"
+        limit_rank = self.__setting.limit_rank
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.KL_divergence[:limit_rank] for optimize_data in optimize_data_list]
+        # [時間ステップ, 値]の時間ステップの方だけを抽出する
+        y_axis_data_list_step2 = [self.__extract_data_of_time(y_axis_data) for y_axis_data in y_axis_data_list_step1]
 
-    def __plot_L1_norm_x_axis_is_rank(self, optimize_data: OptimizeData):
-        y_axis_data_list = optimize_data.L1_norm
+        self.__setting.y_axis_dates_list = y_axis_data_list_step2
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=self.__exp2_indexes, setting=self.__setting)
+
+    def __plot_L1_norm_x_axis_is_rank(self, optimize_data_list: List[OptimizeData]):
         title = f"{self.__analyze_t}step L1 norm"
-        x_axis_data_list = list(range(1, len(y_axis_data_list)))
-        plot_setting = DefaultOptimizePlotSetting.x_axis_is_rank_prepare(exp1_name=self.__exp1_name,
-                                                                         exp1_index=self.__exp1_index,
-                                                                         exp2_name=self.__exp2_name,
-                                                                         analyze_t=self.__analyze_t,
-                                                                         x_axis_data_list=x_axis_data_list,
-                                                                         y_axis_data_list=y_axis_data_list,
-                                                                         title=title)
+        limit_rank = self.__setting.limit_rank
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.L1_norm[:limit_rank] for optimize_data in optimize_data_list]
+        # [時間ステップ, 値]の時間ステップの方だけを抽出する
+        y_axis_data_list_step2 = [self.__extract_data_of_time(y_axis_data) for y_axis_data in y_axis_data_list_step1]
 
-        helper.plot_multi_scatter(plot_setting)
+        self.__setting.y_axis_dates_list = y_axis_data_list_step2
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=self.__exp2_indexes, setting=self.__setting)
 
-    def __plot_L2_norm_x_axis_is_rank(self, optimize_data: OptimizeData):
-        y_axis_data_list = optimize_data.L2_norm
+    def __plot_L2_norm_x_axis_is_rank(self, optimize_data_list: List[OptimizeData]):
         title = f"{self.__analyze_t}step L2 norm"
-        x_axis_data_list = list(range(1, len(y_axis_data_list)))
-        plot_setting = DefaultOptimizePlotSetting.x_axis_is_rank_prepare(exp1_name=self.__exp1_name,
-                                                                         exp1_index=self.__exp1_index,
-                                                                         exp2_name=self.__exp2_name,
-                                                                         analyze_t=self.__analyze_t,
-                                                                         x_axis_data_list=x_axis_data_list,
-                                                                         y_axis_data_list=y_axis_data_list,
-                                                                         title=title)
+        limit_rank = self.__setting.limit_rank
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.L2_norm[:limit_rank] for optimize_data in optimize_data_list]
+        # [時間ステップ, 値]の時間ステップの方だけを抽出する
+        y_axis_data_list_step2 = [self.__extract_data_of_time(y_axis_data) for y_axis_data in y_axis_data_list_step1]
 
-        helper.plot_multi_scatter(plot_setting)
+        self.__setting.y_axis_dates_list = y_axis_data_list_step2
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=self.__exp2_indexes, setting=self.__setting)
 
-    def __plot_correlation_coefficient_x_axis_is_rank(self, optimize_data: OptimizeData):
-        y_axis_data_list = optimize_data.correlation_coefficient
+    def __plot_correlation_coefficient_x_axis_is_rank(self, optimize_data_list: List[OptimizeData]):
         title = f"{self.__analyze_t}step correlation_coefficient"
-        x_axis_data_list = list(range(1, len(y_axis_data_list)))
-        plot_setting = DefaultOptimizePlotSetting.x_axis_is_rank_prepare(exp1_name=self.__exp1_name,
-                                                                         exp1_index=self.__exp1_index,
-                                                                         exp2_name=self.__exp2_name,
-                                                                         analyze_t=self.__analyze_t,
-                                                                         x_axis_data_list=x_axis_data_list,
-                                                                         y_axis_data_list=y_axis_data_list,
-                                                                         title=title)
+        limit_rank = self.__setting.limit_rank
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.correlation_coefficient[:limit_rank] for optimize_data in
+                                  optimize_data_list]
+        # [時間ステップ, 値]の時間ステップの方だけを抽出する
+        y_axis_data_list_step2 = [self.__extract_data_of_time(y_axis_data) for y_axis_data in y_axis_data_list_step1]
 
-        helper.plot_multi_scatter(plot_setting)
+        self.__setting.y_axis_dates_list = y_axis_data_list_step2
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=self.__exp2_indexes, setting=self.__setting)
 
     def plot_optimize_result_x_axis_is_index(self):
         if self.__setting.enable_KL_divergence:

@@ -107,9 +107,12 @@ class SimulationResultAnalyzer:
         name_setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
                                            exp2_name=self.__exp2_name, analyze_t=analyze_t)
 
-        _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", title="", x_axis_data_list=[],
-                                              y_axis_data_list=[], path_to_file=name_setting.path_to_file,
-                                              file_name=name_setting.file_name + "x_axis_is_rank", analyze_t=analyze_t)
+        _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", title="", legend_label="t_{erase}",
+                                              x_axis_data_list=[],
+                                              path_to_file=name_setting.path_to_file,
+                                              y_axis_dates_list=[],
+                                              file_name="", analyze_t=analyze_t, x_axis="rank")
+        _setting.x_axis_data_list = list(range(1, _setting.limit_rank + 1))
         # オプション設定があれば適用
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
@@ -135,4 +138,5 @@ if __name__ == '__main__':
     # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    analyzer.plot_optimize_x_axis_is_index(analyze_t=200)
+    # analyzer.plot_optimize_x_axis_is_index(analyze_t=200)
+    analyzer.plot_optimize_x_axis_is_rank(analyze_t=200)
