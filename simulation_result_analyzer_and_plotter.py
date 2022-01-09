@@ -77,14 +77,30 @@ class SimulationResultAnalyzer:
         analyzer_.optimize_t_all()
 
     def print_optimize_t(self, analyze_t):
-        _setting = DefaultOptimizePlotSetting(x_label="k", y_label="", title="", x_axis_data_list=[],
-                                              y_axis_data_list=[], path_to_file="", file_name="", analyze_t=analyze_t)
+        _setting = DefaultOptimizePlotSetting(x_label="", y_label="", title="", legend_label="",
+                                              x_axis_data_list=self.__analyze_indexes,
+                                              path_to_file="",
+                                              y_axis_dates_list=[],
+                                              file_name="", analyze_t=analyze_t, x_axis="")
         plotter = OptimizePlotter(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
                                   setting=_setting)
         plotter.print_all_optimize_result()
 
-    def plot_optimize_x_axis_is_index(self, analyze_t):
-        plotter = OptimizePlotter(self.__qw1, self.__qw2, self.__analyze_indexes, analyze_t)
+    def plot_optimize_x_axis_is_index(self, analyze_t, options=None):
+        name_setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                           exp2_name=self.__exp2_name, analyze_t=analyze_t)
+
+        _setting = DefaultOptimizePlotSetting(x_label="t_{erase}", y_label="t", title="", legend_label="rank",
+                                              x_axis_data_list=self.__analyze_indexes,
+                                              path_to_file=name_setting.path_to_file,
+                                              y_axis_dates_list=[],
+                                              file_name="", analyze_t=analyze_t, x_axis="index")
+        # オプション設定があれば適用
+        if options is not None:
+            _setting = dataclasses.replace(_setting, **options)
+
+        plotter = OptimizePlotter(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
+                                  setting=_setting)
         plotter.plot_optimize_result_x_axis_is_index()
 
     def plot_optimize_x_axis_is_rank(self, analyze_t, options=None):
@@ -93,7 +109,7 @@ class SimulationResultAnalyzer:
 
         _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", title="", x_axis_data_list=[],
                                               y_axis_data_list=[], path_to_file=name_setting.path_to_file,
-                                              file_name=name_setting.file_name + "x_axis_is_index", analyze_t=analyze_t)
+                                              file_name=name_setting.file_name + "x_axis_is_rank", analyze_t=analyze_t)
         # オプション設定があれば適用
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
@@ -112,11 +128,11 @@ if __name__ == '__main__':
     # analyzer.analyze()
     # その結果をプロット
     # plot_indexes = analyze_indexes
-    # analyzer.plot_x_axis_is_index(_plot_t_list=plot_indexes, )
+    # analyzer.plot_x_axis_is_index(_plot_t_list=plot_indexes)
+    # analyzer.plot_x_axis_is_t(_plot_indexes=plot_indexes)
 
     # 最適な時間ステップを求める
-    analyzer.analyze_for_optimization_t(analyze_t=600, options={"t_list": list(range(1, 601))})
+    # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.print_optimize_t(analyze_t=600)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=600)
+    analyzer.plot_optimize_x_axis_is_index(analyze_t=200)
