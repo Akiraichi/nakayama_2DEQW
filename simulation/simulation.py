@@ -1,6 +1,6 @@
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
 from helper import print_finish, print_green_text, print_warning
-from simulation.simulation_core import calculate_QW2D
+from simulation.simulation_algorithm import calculate_QW2D
 from multiprocessing import Pool
 import glob
 import numpy as np

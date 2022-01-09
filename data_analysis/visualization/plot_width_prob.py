@@ -4,7 +4,7 @@ import joblib
 import glob
 
 from config.config_simulation import config_simulation_data_save_path
-from simulation.simulation_core import calc_probability
+from simulation.simulation_algorithm import calc_probability
 
 
 def plot_width_prob(exp_name, plot_exp_indexes=None):
