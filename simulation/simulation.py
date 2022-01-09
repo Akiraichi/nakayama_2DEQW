@@ -1,10 +1,10 @@
+import helper
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
 from helper import print_finish, print_green_text, print_warning
 from simulation.simulation_algorithm import calculate_QW2D
 from multiprocessing import Pool
 import glob
 import numpy as np
-import joblib
 
 
 class SimulationQWAgent:
@@ -83,7 +83,9 @@ class SimulationQWAgent:
             # 途中からシミュレーションを再開
             path = f"{config_simulation_data_save_path(exp_name, str(start_step_t - 1).zfill(4), exp_index)}/{str(start_step_t - 1).zfill(4)}.jb"
             print(path)
-            init_PSY_now = joblib.load(path)["シミュレーションデータ"]
+
+            # init_PSY_now = joblib.load(path)["シミュレーションデータ"]
+            init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
             start_t = start_step_t
 
         return init_PSY_now, start_t
@@ -94,13 +96,16 @@ class SimulationQWAgent:
         exp_index = condition.exp_index
         t = str(t).zfill(4)
 
-        simulation_data_save_path = f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}/{t}.jb"
+        # simulation_data_save_path = f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}/{t}.jb"
         data_dict = {
             "シミュレーションデータ": psy,
             "実験条件データ（condition）": condition,
             "このシミュレーションデータが何ステップ目か（t）": t
         }
-        joblib.dump(data_dict, simulation_data_save_path, compress=3)
+        helper.save_jb_file(data_dict=data_dict,
+                            path_to_file=f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}",
+                            file_name=f"{t}.jb")
+        # joblib.dump(data_dict, simulation_data_save_path, compress=3)
 
     @staticmethod
     def main_simulation(condition, start_step_t):
