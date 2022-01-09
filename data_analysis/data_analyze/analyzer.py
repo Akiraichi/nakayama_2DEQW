@@ -86,7 +86,8 @@ class AnalyzeOptimizer:
 
         # STEP4：保存する
         setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                           exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=exp2_index)
+                                           exp2_name=self.__exp2_name, analyze_t=self.__analyze_t,
+                                           file_index=exp2_index)
         optimize_data = OptimizeData(optimize_KL_div_list, optimize_L1_norm_list, optimize_L2_norm_list,
                                      optimize_correlation_coefficient_list)
         helper.save_jb_file(optimize_data, setting.path_to_file, setting.file_name_jb)
@@ -180,55 +181,3 @@ class Analyzer:
         name_setting = AnalyzeNameSetting(exp1_name=exp1_name, exp1_index=exp1_index,
                                           exp2_name=exp2_name, file_index=exp2_index)
         helper.save_jb_file(analyze_data, name_setting.path_to_file, name_setting.file_name_jb)
-
-#
-# class AnalyzerCore:
-#     def __init__(self, exp1_name, exp1_index, exp2_name, exp2_index, p1_list, setting: DefaultAnalyzeSetting):
-#         self.__exp1_name = exp1_name
-#         self.__exp2_name = exp2_name
-#         self.__exp1_index = exp1_index
-#         self.__exp2_index = exp2_index
-#         self.__p1_list = p1_list
-#         self.__setting = setting
-#         self.__simulation_data_names_2 = helper.return_simulation_data_file_names(exp_name=self.__exp2_name,
-#                                                                                   exp_index=self.__exp2_index)
-#         print(f"exp_name_2のデータ数：{len(self.__simulation_data_names_2)}")
-#
-#     def do(self):
-#         KL_div_list = []
-#         L1_norm_list = []
-#         L2_norm_list = []
-#         correlation_coefficient_list = []
-#
-#         for i, t_step in enumerate(self.__setting.t_list):
-#             # t=t_stepのシミュレーションデータをロード
-#             p1 = self.__p1_list[i]
-#             p2 = helper.get_probability(self.__simulation_data_names_2, t_step)
-#             KL_div, L1_norm, L2_norm = calc_KL_and_L1_and_L2(p1=p1, p2=p2,
-#                                                              enable_KL_div=self.__setting.enable_KL_divergence,
-#                                                              enable_L1_norm=self.__setting.enable_L1_norm,
-#                                                              enable_L2_norm=self.__setting.enable_L2_norm)
-#             correlation_coefficient = calc_correlation_coefficient(p1=p1, p2=p2,
-#                                                                    enable_correlation_coefficient=self.__setting.enable_correlation_coefficient)
-#
-#             if self.__setting.enable_KL_divergence:
-#                 KL_div_list.append(KL_div)
-#             if self.__setting.enable_L1_norm:
-#                 L1_norm_list.append(L1_norm)
-#             if self.__setting.enable_L2_norm:
-#                 L2_norm_list.append(L2_norm)
-#             if self.__setting.enable_correlation_coefficient:
-#                 correlation_coefficient_list.append(correlation_coefficient)
-#             print(self.__exp2_index, f"t={t_step}")
-#
-#         self.__save(KL_div_list=KL_div_list, L1_norm_list=L1_norm_list, L2_norm_list=L2_norm_list,
-#                     correlation_coefficient_list=correlation_coefficient_list)
-#         helper.print_finish(self.__exp2_index)
-#
-#     def __save(self, KL_div_list, L1_norm_list, L2_norm_list, correlation_coefficient_list):
-#         setting = AnalyzeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-#                                      exp2_name=self.__exp2_name, file_index=self.__exp2_index)
-#
-#         analyze_data = AnalyzeData(KL_div=KL_div_list, L1_norm=L1_norm_list, L2_norm=L2_norm_list,
-#                                    correlation_coefficient=correlation_coefficient_list, t=self.__setting.t_list)
-#         helper.save_jb_file(analyze_data, setting.path_to_file, setting.file_name)

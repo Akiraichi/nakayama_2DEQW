@@ -109,26 +109,3 @@ class OptimizePlotSetting:
     enable_correlation_coefficient: bool = True  # 相関係数をプロットするかどうか
     limit: int = 5  # 上位limit位までプロットする
     limit_rank: int = 100  # 上位100位までを横軸として使用する
-
-    # @classmethod
-    # def x_axis_is_index_prepare(cls, exp1_name, exp1_index, exp2_name, analyze_t, title, x_axis_data_list,
-    #                             y_axis_data_list):
-    #     x_label = "t_{erase}"
-    #     y_label = "t"
-    #     setting = OptimizeNameSetting(exp1_name=exp1_name, exp1_index=exp1_index,
-    #                                   exp2_name=exp2_name, analyze_t=analyze_t)
-    #     file_name = setting.file_name + "x_axis_is_index"
-    #     return cls(x_label, y_label, title, x_axis_data_list, y_axis_data_list, setting.path_to_file, file_name)
-
-    @classmethod
-    def x_axis_is_rank_prepare(cls, exp1_name, exp1_index, exp2_name, analyze_t, title, x_axis_data_list,
-                               y_axis_data_list):
-        x_label = "rank"
-        y_label = "t"
-        setting = AnalysisOptimizeSaveName(exp1_name=exp1_name, exp1_index=exp1_index,
-                                           exp2_name=exp2_name, analyze_t=analyze_t)
-        file_name = setting.file_name + "x_axis_is_rank"
-        return cls(x_label, y_label, title, x_axis_data_list, y_axis_data_list, setting.path_to_file, file_name)
-
-    def __post_init__(self):
-        self.file_name_png = f"{self.file_name}.png"

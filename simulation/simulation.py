@@ -105,7 +105,6 @@ class SimulationQWAgent:
         helper.save_jb_file(data_dict=data_dict,
                             path_to_file=f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}",
                             file_name=f"{t}.jb")
-        # joblib.dump(data_dict, simulation_data_save_path, compress=3)
 
     @staticmethod
     def main_simulation(condition, start_step_t):

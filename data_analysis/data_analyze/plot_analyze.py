@@ -1,8 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from data_analysis.data_analyze.analyzer import AnalyzeData, OptimizeData
+from data_analysis.data_analyze.analyzer import OptimizeData
 import helper
-from typing import List
 
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, OptimizePlotSetting, \
     AnalysisOptimizeSaveName
@@ -206,6 +205,7 @@ class OptimizePlotter:
             # 具体的な値の方を除去し、時間ステップのみのデータに変える
             y_axis_dates = setting.y_axis_dates_list[i]
             ax.scatter(setting.x_axis_data_list, y_axis_dates, s=10, label=f"${setting.legend_label}={legend_list[i]}$")
+            # ax.plot(setting.x_axis_data_list, y_axis_dates,  label=f"${setting.legend_label}={legend_list[i]}$")
 
         plt.legend()
         plt.savefig(f"{setting.path_to_file}/{setting.file_name}", dpi=400)

@@ -49,27 +49,6 @@ class Plotter:
         with Pool(ConfigSimulationSetting.PlotParallelNum) as p:
             p.starmap(func=Plotter.plot_image, iterable=arguments)
 
-    # def check_finished(self, plot_type):
-    #     """
-    #     plotが完了しているかを確認し、plotできていないファイルのみplotする。
-    #     """
-    #     folder_path = plot_save_path(self.__exp_name, plot_type, self.__save_path_index)
-    #
-    #     plot_files = glob.glob(f"{folder_path}/*.png")  # すでにプロットされたファイルの一覧
-    #     plotted_t_list = []  # すでにプロットされたtの一覧
-    #     for plot_file in plot_files:
-    #         extract_t = int(plot_file[-8:-4])
-    #         plotted_t_list.append(extract_t)
-    #
-    #     # 共通しない要素のうち、まだプロットされていないものを取得
-    #     not_plot_t_list = set(self.__setting.plot_t_list) - set(plotted_t_list)
-    #
-    #     if not not_plot_t_list:
-    #         helper.print_green_text(f"exp_index={self.__save_path_index}：既に完了")
-    #     else:
-    #         helper.print_warning(f"exp_index={self.__save_path_index}：完了していません")
-    #     return not_plot_t_list
-
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index):
         plotter = MainPlotter(simulation_data_file_name=simulation_data_file_name, exp_name=exp_name,
@@ -189,20 +168,3 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     fig.clf()
     ax.cla()
     plt.close()
-
-# def check_plot_progress(exp_name, plot_exp_index, T):
-#     # plotがどこまで進んだかをチェックし途中から再開するために、
-#     # plotのindexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
-#     finished = False
-#     folder_path = plot_save_path(exp_name, plot_exp_index)
-#     file_list = glob.glob(f"{folder_path}/*")
-#
-#     need_file_num = T + 1
-#     file_num = len(file_list)
-#     print(f"exp_index={plot_exp_index}のデータ数：{file_num}")
-#     print(f"必要なデータ数：{need_file_num}")
-#
-#     if need_file_num == file_num:
-#         helper.print_green_text(f"plot_exp_index={plot_exp_index}：既に完了")
-#         finished = True
-#     return finished
