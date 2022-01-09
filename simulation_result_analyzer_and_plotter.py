@@ -1,5 +1,5 @@
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
-    DefaultAnalyzePlotSetting, DefaultOptimizePlotSetting, OptimizeNameSetting
+    DefaultAnalyzePlotSetting, DefaultOptimizePlotSetting, AnalysisOptimizeSaveName
 from data_analysis.data_analyze.analyzer import Analyzer, AnalyzeOptimizer
 from data_analysis.data_analyze.plot_analyze import AnalyzePlotter, OptimizePlotter
 from qw import *
@@ -87,14 +87,12 @@ class SimulationResultAnalyzer:
         plotter.print_all_optimize_result()
 
     def plot_optimize_x_axis_is_index(self, analyze_t, options=None):
-        name_setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                           exp2_name=self.__exp2_name, analyze_t=analyze_t)
+        save_name = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                             exp2_name=self.__exp2_name, analyze_t=analyze_t)
 
-        _setting = DefaultOptimizePlotSetting(x_label="t_{erase}", y_label="t", title="", legend_label="rank",
+        _setting = DefaultOptimizePlotSetting(x_label="t_{erase}", y_label="t", legend_label="rank",
                                               x_axis_data_list=self.__analyze_indexes,
-                                              path_to_file=name_setting.path_to_file,
-                                              y_axis_dates_list=[],
-                                              file_name="", analyze_t=analyze_t, x_axis="index")
+                                              path_to_file=save_name.path_to_file, analyze_t=analyze_t, x_axis="index")
         # オプション設定があれば適用
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
@@ -104,14 +102,12 @@ class SimulationResultAnalyzer:
         plotter.plot_optimize_result_x_axis_is_index()
 
     def plot_optimize_x_axis_is_rank(self, analyze_t, options=None):
-        name_setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                           exp2_name=self.__exp2_name, analyze_t=analyze_t)
+        name_setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                                exp2_name=self.__exp2_name, analyze_t=analyze_t)
 
-        _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", title="", legend_label="t_{erase}",
-                                              x_axis_data_list=[],
-                                              path_to_file=name_setting.path_to_file,
-                                              y_axis_dates_list=[],
-                                              file_name="", analyze_t=analyze_t, x_axis="rank")
+        _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", legend_label="t_{erase}",
+                                              path_to_file=name_setting.path_to_file, analyze_t=analyze_t,
+                                              x_axis="rank")
         _setting.x_axis_data_list = list(range(1, _setting.limit_rank + 1))
         # オプション設定があれば適用
         if options is not None:
@@ -123,7 +119,7 @@ class SimulationResultAnalyzer:
 
 
 if __name__ == '__main__':
-    analyze_indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    analyze_indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=analyze_indexes),
                                         _analyze_indexes=analyze_indexes)
@@ -138,5 +134,5 @@ if __name__ == '__main__':
     # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=200)
+    analyzer.plot_optimize_x_axis_is_index(analyze_t=200, options={"limit": 5})
     analyzer.plot_optimize_x_axis_is_rank(analyze_t=200)

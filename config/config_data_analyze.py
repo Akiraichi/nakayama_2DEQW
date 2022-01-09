@@ -27,11 +27,10 @@ class AnalyzeNameSetting(DefaultNameSetting):
         os.makedirs(self.path_to_file, exist_ok=True)
 
 
-# Optimize処理を実行するときの名前の設定
 @dataclass(frozen=True)
-class OptimizeNameSetting(DefaultNameSetting):
+class AnalysisOptimizeSaveName(DefaultNameSetting):
     """
-    Optimizeに関する名前の設定を行うクラス
+    Optimize処理を実行するときの保存に関係する名前の設定を管理するデータクラス
     """
     analyze_t: InitVar[int]  # 最適化処理を行なった時間ステップ
     file_index: InitVar[int] = 0  # ファイル名につけるindex
@@ -91,21 +90,19 @@ class DefaultAnalyzePlotSetting:
         self.file_name_png = f"{self.file_name}.png"
 
 
-# Optimizeデータのプロットを実行するときのデータクラスおよび設定
 @dataclass
 class DefaultOptimizePlotSetting:
-    x_label: str
-    y_label: str
-    title: str
-    legend_label: str
-    path_to_file: str
-    file_name: str
+    """Optimizeデータのプロットを実行するときのデータクラスおよびデフォルト設定"""
     analyze_t: int
-    x_axis: str
-
-    x_axis_data_list: list
-    y_axis_dates_list: list
-
+    x_label: str = ""
+    y_label: str = ""
+    title: str = ""
+    legend_label: str = ""
+    path_to_file: str = ""
+    file_name: str = ""
+    x_axis: str = ""
+    x_axis_data_list: list = field(default_factory=list)
+    y_axis_dates_list: list = field(default_factory=list)
     enable_KL_divergence: bool = True  # KLダイバージェンスをプロットするかどうか
     enable_L1_norm: bool = True  # L1ノルムをプロットするかどうか（誤差の絶対値の和）
     enable_L2_norm: bool = True  # L2ノルムをプロットするかどうか（二乗誤差の和）
@@ -128,8 +125,8 @@ class DefaultOptimizePlotSetting:
                                y_axis_data_list):
         x_label = "rank"
         y_label = "t"
-        setting = OptimizeNameSetting(exp1_name=exp1_name, exp1_index=exp1_index,
-                                      exp2_name=exp2_name, analyze_t=analyze_t)
+        setting = AnalysisOptimizeSaveName(exp1_name=exp1_name, exp1_index=exp1_index,
+                                           exp2_name=exp2_name, analyze_t=analyze_t)
         file_name = setting.file_name + "x_axis_is_rank"
         return cls(x_label, y_label, title, x_axis_data_list, y_axis_data_list, setting.path_to_file, file_name)
 
