@@ -117,7 +117,7 @@ class Analyzer:
             self.__start_parallel_processing()
         else:
             self.__start_single_processing()
-        helper.print_finish("FINISH：KLダイバージェンス")
+        helper.print_finish("FINISH：Analyze")
 
     def __start_parallel_processing(self):
         arguments = [[self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list, self.__setting]
