@@ -1,6 +1,6 @@
 from data_analysis.data_analyze.analyze_algorithm import calc_KL_and_L1_and_L2, calc_correlation_coefficient
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
-    OptimizeNameSetting
+    AnalysisOptimizeSaveName
 import helper
 from multiprocessing import Pool
 from dataclasses import dataclass
@@ -34,8 +34,8 @@ class AnalyzeOptimizer:
         self.__setting = setting
         self.__analyze_t = self.__setting.analyze_t
         self.__not_analyzed_indexes = helper.check_finished_file(
-            folder_path=OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                            exp2_name=self.__exp2_name, analyze_t=self.__analyze_t).path_to_file,
+            folder_path=AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                                 exp2_name=self.__exp2_name, analyze_t=self.__analyze_t).path_to_file,
             will_generate_index_list=analyze_indexes, extension="jb")
 
         self.simulation_data_names_1 = helper.return_simulation_data_file_names(exp_name=self.__exp1_name,
@@ -85,8 +85,8 @@ class AnalyzeOptimizer:
         optimize_L2_norm_list = sorted(optimize_L2_norm_list, key=lambda x: x[1])
 
         # STEP4：保存する
-        setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                      exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=exp2_index)
+        setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                           exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=exp2_index)
         optimize_data = OptimizeData(optimize_KL_div_list, optimize_L1_norm_list, optimize_L2_norm_list,
                                      optimize_correlation_coefficient_list)
         helper.save_jb_file(optimize_data, setting.path_to_file, setting.file_name_jb)

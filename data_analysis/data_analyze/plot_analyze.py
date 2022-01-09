@@ -5,7 +5,7 @@ import helper
 from typing import List
 
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, DefaultOptimizePlotSetting, \
-    OptimizeNameSetting
+    AnalysisOptimizeSaveName
 
 
 class OptimizePlotter:
@@ -23,8 +23,8 @@ class OptimizePlotter:
         return optimize_data_list
 
     def __load_single_optimize_data(self, index):
-        setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                      exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=index)
+        setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                           exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=index)
         return helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
 
     def __get_file_name(self):
