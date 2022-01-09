@@ -4,12 +4,12 @@ from data_analysis.data_analyze.analyzer import AnalyzeData, OptimizeData
 import helper
 from typing import List
 
-from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, DefaultOptimizePlotSetting, \
+from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, OptimizePlotSetting, \
     AnalysisOptimizeSaveName
 
 
 class OptimizePlotter:
-    def __init__(self, exp1_name, exp2_name, exp1_index, analyze_indexes, setting: DefaultOptimizePlotSetting):
+    def __init__(self, exp1_name, exp2_name, exp1_index, analyze_indexes, setting: OptimizePlotSetting):
         self.__exp1_name = exp1_name
         self.__exp2_name = exp2_name
         self.__exp1_index = exp1_index
@@ -189,7 +189,7 @@ class OptimizePlotter:
         self.__plot_multi_scatter(legend_list=list(range(1, limit + 1)), setting=self.__setting)
 
     @staticmethod
-    def __plot_multi_scatter(legend_list, setting: DefaultOptimizePlotSetting):
+    def __plot_multi_scatter(legend_list, setting: OptimizePlotSetting):
         data_num = len(setting.y_axis_dates_list)  # プロットを重ねる数
 
         # Figureの初期化

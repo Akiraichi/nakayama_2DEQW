@@ -91,7 +91,7 @@ class DefaultAnalyzePlotSetting:
 
 
 @dataclass
-class DefaultOptimizePlotSetting:
+class OptimizePlotSetting:
     """Optimizeデータのプロットを実行するときのデータクラスおよびデフォルト設定"""
     analyze_t: int
     x_label: str = ""

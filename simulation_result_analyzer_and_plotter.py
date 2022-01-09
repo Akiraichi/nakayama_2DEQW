@@ -1,5 +1,5 @@
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
-    DefaultAnalyzePlotSetting, DefaultOptimizePlotSetting, AnalysisOptimizeSaveName
+    DefaultAnalyzePlotSetting, OptimizePlotSetting, AnalysisOptimizeSaveName
 from data_analysis.data_analyze.analyzer import Analyzer, AnalyzeOptimizer
 from data_analysis.data_analyze.plot_analyze import AnalyzePlotter, OptimizePlotter
 from qw import *
@@ -77,11 +77,11 @@ class SimulationResultAnalyzer:
         analyzer_.optimize_t_all()
 
     def print_optimize_t(self, analyze_t):
-        _setting = DefaultOptimizePlotSetting(x_label="", y_label="", title="", legend_label="",
-                                              x_axis_data_list=self.__analyze_indexes,
-                                              path_to_file="",
-                                              y_axis_dates_list=[],
-                                              file_name="", analyze_t=analyze_t, x_axis="")
+        _setting = OptimizePlotSetting(x_label="", y_label="", title="", legend_label="",
+                                       x_axis_data_list=self.__analyze_indexes,
+                                       path_to_file="",
+                                       y_axis_dates_list=[],
+                                       file_name="", analyze_t=analyze_t, x_axis="")
         plotter = OptimizePlotter(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
                                   setting=_setting)
         plotter.print_all_optimize_result()
@@ -90,9 +90,9 @@ class SimulationResultAnalyzer:
         save_name = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
                                              exp2_name=self.__exp2_name, analyze_t=analyze_t)
 
-        _setting = DefaultOptimizePlotSetting(x_label="t_{erase}", y_label="t", legend_label="rank",
-                                              x_axis_data_list=self.__analyze_indexes,
-                                              path_to_file=save_name.path_to_file, analyze_t=analyze_t, x_axis="index")
+        _setting = OptimizePlotSetting(x_label="t_{erase}", y_label="t", legend_label="rank",
+                                       x_axis_data_list=self.__analyze_indexes,
+                                       path_to_file=save_name.path_to_file, analyze_t=analyze_t, x_axis="index")
         # オプション設定があれば適用
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
@@ -105,9 +105,9 @@ class SimulationResultAnalyzer:
         name_setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
                                                 exp2_name=self.__exp2_name, analyze_t=analyze_t)
 
-        _setting = DefaultOptimizePlotSetting(x_label="rank", y_label="t", legend_label="t_{erase}",
-                                              path_to_file=name_setting.path_to_file, analyze_t=analyze_t,
-                                              x_axis="rank")
+        _setting = OptimizePlotSetting(x_label="rank", y_label="t", legend_label="t_{erase}",
+                                       path_to_file=name_setting.path_to_file, analyze_t=analyze_t,
+                                       x_axis="rank")
         _setting.x_axis_data_list = list(range(1, _setting.limit_rank + 1))
         # オプション設定があれば適用
         if options is not None:
