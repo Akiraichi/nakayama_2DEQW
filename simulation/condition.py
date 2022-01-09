@@ -1,11 +1,15 @@
+import dataclasses
+
 import numpy as np
 from config.config_simulation import ConfigSimulationSetting
 from helper import print_warning
 import sympy
+from dataclasses import dataclass, asdict
 
 
 class Condition:
     """旧形式"""
+
     def __init__(self):
         self.T = None
         # self.P = None
@@ -24,9 +28,24 @@ class Condition:
         # self.erase_time_step = 0
 
 
+@dataclass(frozen=True)
 class ConditionNew:
-    def __init__(self, **params):
-        self.__params = params
+    T: int
+    algorithm: int
+    phi: float
+    phi_latex: str
+    exp_name: str
+    exp_index: int
+    erase_t: int
+    erase_time_step: int
+    P: np.ndarray
+    Q: np.ndarray
+    R: np.ndarray
+    S: np.ndarray
+    PSY_init: np.ndarray
+
+    def __post_init__(self):
+        object.__setattr__(self, "phi_latex", sympy.latex(self.phi))
         print(f"t = {self.erase_t}")  # erase_tの中身を確認するため
 
     @classmethod
@@ -42,174 +61,114 @@ class ConditionNew:
         """
         if options is None:
             options = {}
-
         if pattern == ConditionType.Grover:
-            return cls(**{**DefaultGroverProps, **options})  # https://note.nkmk.me/python-dict-add-update/
+            _obj = DefaultGroverProps()
         elif pattern == ConditionType.Hadamard:
-            return cls(**{**DefaultHadamardProps, **options})
+            _obj = DefaultHadamardProps()
         elif pattern == ConditionType.DFT:
-            return cls(**{**DefaultDFTProps, **options})
+            _obj = DefaultDFTProps()
         else:
             print_warning("Conditionの設定がおかしいですよ！")
             raise OSError
-
-    @property
-    def T(self):
-        return self.__params["T"]
-
-    @property
-    def P(self):
-        return self.__params["P"]
-
-    @property
-    def Q(self):
-        return self.__params["Q"]
-
-    @property
-    def R(self):
-        return self.__params["R"]
-
-    @property
-    def S(self):
-        return self.__params["S"]
-
-    @property
-    def PSY_init(self):
-        return self.__params["PSY_init"]
-
-    @property
-    def algorithm(self):
-        return self.__params["algorithm"]
-
-    @property
-    def phi(self):
-        return self.__params["phi"]
-
-    @property
-    def phi_latex(self):
-        return sympy.latex(self.__params["phi"])
-
-    @property
-    def exp_name(self):
-        return self.__params["exp_name"]
-
-    @property
-    def exp_index(self):
-        return self.__params["exp_index"]
-
-    @property
-    def erase_t(self):
-        return self.__params["erase_t"]
-
-    @property
-    def erase_time_step(self):
-        return self.__params["erase_time_step"]
+        _obj = dataclasses.replace(_obj, **options)  # optionで設定された内容に上書きする
+        return cls(**asdict(_obj))
 
 
+@dataclass(frozen=True)
 class ConditionType:
-    Grover = "Grover"
-    Hadamard = "Hadamard"
-    DFT = "DFT"
+    Grover: str = "Grover"
+    Hadamard: str = "Hadamard"
+    DFT: str = "DFT"
 
 
-DefaultBaseProps = {
-    "T": ConfigSimulationSetting.MaxTimeStep,
-    "algorithm": None,
-    "phi": None,
-    "exp_name": None,
-    "exp_index": None,
+@dataclass(frozen=True)
+class DefaultBaseProps:
+    T: int = ConfigSimulationSetting.MaxTimeStep
+    algorithm: int = None
+    phi: float = None
+    phi_latex: str = None  # phiをlatex表記したもの
+    exp_name: str = None
+    exp_index: int = None
     # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
-    "erase_t": 0,
+    erase_t: int = 0
     # 電場をどの程度ゆっくり消すか
-    "erase_time_step": 0
-}
+    erase_time_step: int = 0
 
-DefaultGroverProps = {
-    **DefaultBaseProps,
-    "P": np.array([
+
+@dataclass(frozen=True)
+class DefaultGroverProps(DefaultBaseProps):
+    P: np.ndarray = np.array([
         [-1 / 2, 1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "Q": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    Q: np.ndarray = np.array([
         [0, 0, 0, 0],
         [1 / 2, -1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "R": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    R: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, 1 / 2, -1 / 2, 1 / 2],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "S": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    S: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [1 / 2, 1 / 2, 1 / 2, -1 / 2]
-    ], dtype=np.complex128),
-    "PSY_init": 1 / 2 * np.array([1, 1, -1, -1])
-}
+        [1 / 2, 1 / 2, 1 / 2, -1 / 2]], dtype=np.complex128)
+    PSY_init: np.ndarray = 1 / 2 * np.array([1, 1, -1, -1])
 
-DefaultHadamardProps = {
-    **DefaultBaseProps,
-    "P": np.array([
+
+@dataclass(frozen=True)
+class DefaultHadamardProps(DefaultBaseProps):
+    P: np.ndarray = np.array([
         [1 / 2, 1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "Q": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    Q: np.ndarray = np.array([
         [0, 0, 0, 0],
         [1 / 2, -1 / 2, 1 / 2, -1 / 2],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "R": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    R: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, -1 / 2, -1 / 2, 1 / 2],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "S": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    S: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [1 / 2, 1 / 2, -1 / 2, -1 / 2]
-    ], dtype=np.complex128),
-    "PSY_init": 1 / 2 * np.array([1, -1, 1j, 1j])
-}
+        [1 / 2, 1 / 2, -1 / 2, -1 / 2]], dtype=np.complex128)
+    PSY_init: np.ndarray = 1 / 2 * np.array([1, -1, 1j, 1j])
 
-DefaultDFTProps = {
-    **DefaultBaseProps,
-    "P": np.array([
+
+@dataclass(frozen=True)
+class DefaultDFTProps(DefaultBaseProps):
+    P: np.ndarray = np.array([
         [1 / 2, 1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "Q": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    Q: np.ndarray = np.array([
         [0, 0, 0, 0],
         [1 / 2, -1j / 2, -1 / 2, 1j / 2],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "R": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    R: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [1 / 2, -1 / 2, 1 / 2, -1 / 2],
-        [0, 0, 0, 0]
-    ], dtype=np.complex128),
-    "S": np.array([
+        [0, 0, 0, 0]], dtype=np.complex128)
+    S: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [1 / 2, 1j / 2, -1 / 2, -1j / 2]
-    ], dtype=np.complex128),
-    "PSY_init": 1 / 2 * np.array([1, -1, 1j, 1j])
-}
+        [1 / 2, 1j / 2, -1 / 2, -1j / 2]], dtype=np.complex128)
+    PSY_init: np.ndarray = 1 / 2 * np.array([1, -1, 1j, 1j])
+
 
 if __name__ == '__main__':
     c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"phi": 49})
