@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
-import glob
 import seaborn as sns
 import pandas as pd
 
@@ -191,20 +190,19 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     ax.cla()
     plt.close()
 
-
-def check_plot_progress(exp_name, plot_exp_index, T):
-    # plotがどこまで進んだかをチェックし途中から再開するために、
-    # plotのindexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
-    finished = False
-    folder_path = plot_save_path(exp_name, plot_exp_index)
-    file_list = glob.glob(f"{folder_path}/*")
-
-    need_file_num = T + 1
-    file_num = len(file_list)
-    print(f"exp_index={plot_exp_index}のデータ数：{file_num}")
-    print(f"必要なデータ数：{need_file_num}")
-
-    if need_file_num == file_num:
-        helper.print_green_text(f"plot_exp_index={plot_exp_index}：既に完了")
-        finished = True
-    return finished
+# def check_plot_progress(exp_name, plot_exp_index, T):
+#     # plotがどこまで進んだかをチェックし途中から再開するために、
+#     # plotのindexのフォルダが既に存在しており、plot数が足りていたらそのplotはは既に終了しているとする。
+#     finished = False
+#     folder_path = plot_save_path(exp_name, plot_exp_index)
+#     file_list = glob.glob(f"{folder_path}/*")
+#
+#     need_file_num = T + 1
+#     file_num = len(file_list)
+#     print(f"exp_index={plot_exp_index}のデータ数：{file_num}")
+#     print(f"必要なデータ数：{need_file_num}")
+#
+#     if need_file_num == file_num:
+#         helper.print_green_text(f"plot_exp_index={plot_exp_index}：既に完了")
+#         finished = True
+#     return finished

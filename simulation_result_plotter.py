@@ -6,6 +6,12 @@ from data_analysis.visualization.plot_image import plot_image
 
 class SimulationResultPlotter:
     def __init__(self, conditions, save_path_indexes):
+        """
+
+        Args:
+            conditions: 実験条件をリストで指定したもの
+            save_path_indexes: 保存する際のフォルダ名に使うindexのリスト
+        """
         self.__conditions = conditions
         self.__save_path_indexes = save_path_indexes
 
