@@ -25,14 +25,23 @@ class OptimizePlotter:
     def __load_single_optimize_data(self, index):
         setting = OptimizeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
                                       exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=index)
-        return helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name}")
+        return helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
+
+    def __get_file_name(self):
+        if self.__setting.x_axis == "index":
+            return f"{self.__setting.title}_limit={self.__setting.limit}.png"
+        elif self.__setting.x_axis == "rank":
+            return f"{self.__setting.title}_{self.__exp2_indexes}.png"
+        else:
+            helper.print_warning("axisパラメータに不正値が入力されています")
+            raise OSError
 
     def print_all_optimize_result(self):
         for optimize_data in self.__all_optimize_data:
             self.__print_single_optimize_result(optimize_data)
 
     @staticmethod
-    def __print_single_optimize_result(optimize_data:OptimizeData, count=3):
+    def __print_single_optimize_result(optimize_data: OptimizeData, count=3):
         print(f"KL_div：")
         for optimize_KL_div in optimize_data.KL_divergence[:count]:
             print(optimize_KL_div)
@@ -54,8 +63,8 @@ class OptimizePlotter:
             self.__plot_correlation_coefficient_x_axis_is_rank(optimize_data)
 
     def __plot_KL_div_x_axis_is_rank(self, optimize_data: OptimizeData):
-        self.__setting.y_axis_data_list = optimize_data.KL_divergence
-        self.__setting.x_axis_data_list = list(range(1, len(self.__setting.y_axis_data_list)))
+        self.__setting.y_axis_dates_list = optimize_data.KL_divergence
+        self.__setting.x_axis_data_list = list(range(1, len(self.__setting.y_axis_dates_list)))
         self.__setting.title = f"{self.__analyze_t}step KL divergence"
         helper.plot_multi_scatter()
 
@@ -102,69 +111,96 @@ class OptimizePlotter:
         helper.plot_multi_scatter(plot_setting)
 
     def plot_optimize_result_x_axis_is_index(self):
-        self.__plot_KL_div_x_axis_is_index(self.__all_optimize_data)
-        # self.__plot_L1_norm_x_axis_is_index(self.__all_optimize_data)
-        # self.__plot_L2_norm_x_axis_is_index(self.__all_optimize_data)
-        # self.__plot_correlation_coefficient_x_axis_is_index(self.__all_optimize_data)
+        if self.__setting.enable_KL_divergence:
+            self.__plot_KL_div_x_axis_is_index(self.__all_optimize_data)
+        if self.__setting.enable_L1_norm:
+            self.__plot_L1_norm_x_axis_is_index(self.__all_optimize_data)
+        if self.__setting.enable_L2_norm:
+            self.__plot_L2_norm_x_axis_is_index(self.__all_optimize_data)
+        if self.__setting.enable_correlation_coefficient:
+            self.__plot_correlation_coefficient_norm_x_axis_is_index(self.__all_optimize_data)
+
+    def __translate_and_extract_time(self, y_axis_data_list_step1):
+        # STEP2：転置する
+        y_axis_data_list_step2 = [list(data_tuple) for data_tuple in zip(*y_axis_data_list_step1)]
+        # STEP3：[時間ステップ, 値]の時間ステップの方だけを抽出する
+        y_axis_data_list_step3 = [self.__extract_data_of_time(y_axis_data) for y_axis_data in y_axis_data_list_step2]
+        return y_axis_data_list_step3
 
     @staticmethod
-    def __convert_to_plot_data_x_axis_is_index(optimize_data_list: List[OptimizeData]):
-        y_axis_data_list = [optimize_data.KL_divergence[:5] for optimize_data in optimize_data_list]
-        y_axis_data_list = [list(data_tuple) for data_tuple in zip(*y_axis_data_list)]  # 転置
-        return y_axis_data_list
-        # 上位10位までのデータを取得する
+    def __extract_data_of_time(data_list):
+        """[時間ステップ, 値]の時間ステップの方だけを抽出する"""
+        return [data[0] for data in data_list]
 
     def __plot_KL_div_x_axis_is_index(self, optimize_data_list: List[OptimizeData]):
-        y_axis_data_list = self.__convert_to_plot_data_x_axis_is_index(optimize_data_list)
         title = f"{self.__analyze_t}step KL divergence"
-        plot_setting = DefaultOptimizePlotSetting.x_axis_is_index_prepare(exp1_name=self.__exp1_name,
-                                                                          exp1_index=self.__exp1_index,
-                                                                          exp2_name=self.__exp2_name,
-                                                                          analyze_t=self.__analyze_t,
-                                                                          x_axis_data_list=self.__exp2_indexes,
-                                                                          y_axis_data_list=y_axis_data_list,
-                                                                          title=title)
+        limit = self.__setting.limit
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.KL_divergence[:limit] for optimize_data in optimize_data_list]
+        y_axis_dates_list = self.__translate_and_extract_time(y_axis_data_list_step1)
 
-        helper.plot_multi_scatter(plot_setting)
+        self.__setting.y_axis_dates_list = y_axis_dates_list
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=list(range(1, limit + 1)), setting=self.__setting)
 
-    # def __plot_L1_norm_x_axis_is_index(self, optimize_data: OptimizeData):
-    #     y_axis_data_list = optimize_data.L1_norm
-    #     title = f"{self.__analyze_t}step L1 norm"
-    #     plot_setting = DefaultOptimizePlotSetting.x_axis_is_index_prepare(exp1_name=self.__exp1_name,
-    #                                                                       exp1_index=self.__exp1_index,
-    #                                                                       exp2_name=self.__exp2_name,
-    #                                                                       analyze_t=self.__analyze_t,
-    #                                                                       x_axis_data_list=self.__exp2_indexes,
-    #                                                                       y_axis_data_list=y_axis_data_list,
-    #                                                                       title=title)
-    #
-    #     helper.plot_multi_scatter(plot_setting)
-    #
-    # def __plot_L2_norm_x_axis_is_index(self, optimize_data: OptimizeData):
-    #     y_axis_data_list = optimize_data.L2_norm
-    #     title = f"{self.__analyze_t}step L2 norm"
-    #     plot_setting = DefaultOptimizePlotSetting.x_axis_is_index_prepare(exp1_name=self.__exp1_name,
-    #                                                                       exp1_index=self.__exp1_index,
-    #                                                                       exp2_name=self.__exp2_name,
-    #                                                                       analyze_t=self.__analyze_t,
-    #                                                                       x_axis_data_list=self.__exp2_indexes,
-    #                                                                       y_axis_data_list=y_axis_data_list,
-    #                                                                       title=title)
-    #
-    #     helper.plot_multi_scatter(plot_setting)
-    #
-    # def __plot_correlation_coefficient_x_axis_is_index(self, optimize_data: OptimizeData):
-    #     y_axis_data_list = optimize_data.correlation_coefficient
-    #     title = f"{self.__analyze_t}step correlation_coefficient"
-    #     plot_setting = DefaultOptimizePlotSetting.x_axis_is_index_prepare(exp1_name=self.__exp1_name,
-    #                                                                       exp1_index=self.__exp1_index,
-    #                                                                       exp2_name=self.__exp2_name,
-    #                                                                       analyze_t=self.__analyze_t,
-    #                                                                       x_axis_data_list=self.__exp2_indexes,
-    #                                                                       y_axis_data_list=y_axis_data_list,
-    #                                                                       title=title)
-    #
-    #     helper.plot_multi_scatter(plot_setting)
+    def __plot_L1_norm_x_axis_is_index(self, optimize_data_list: List[OptimizeData]):
+        title = f"{self.__analyze_t}step L1 norm"
+        limit = self.__setting.limit
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.L1_norm[:limit] for optimize_data in optimize_data_list]
+        y_axis_dates_list = self.__translate_and_extract_time(y_axis_data_list_step1)
+
+        self.__setting.y_axis_dates_list = y_axis_dates_list
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=list(range(1, limit + 1)), setting=self.__setting)
+
+    def __plot_L2_norm_x_axis_is_index(self, optimize_data_list: List[OptimizeData]):
+        title = f"{self.__analyze_t}step L2 norm"
+        limit = self.__setting.limit
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.L2_norm[:limit] for optimize_data in optimize_data_list]
+        y_axis_dates_list = self.__translate_and_extract_time(y_axis_data_list_step1)
+
+        self.__setting.y_axis_dates_list = y_axis_dates_list
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=list(range(1, limit + 1)), setting=self.__setting)
+
+    def __plot_correlation_coefficient_norm_x_axis_is_index(self, optimize_data_list: List[OptimizeData]):
+        title = f"{self.__analyze_t}step correlation_coefficient"
+        limit = self.__setting.limit
+        # STEP1：optimize_data_listの全リストに対して、上位limit位までの時間ステップのKL_divデータを抽出する
+        y_axis_data_list_step1 = [optimize_data.correlation_coefficient[:limit] for optimize_data in optimize_data_list]
+        y_axis_dates_list = self.__translate_and_extract_time(y_axis_data_list_step1)
+
+        self.__setting.y_axis_dates_list = y_axis_dates_list
+        self.__setting.title = title
+        self.__setting.file_name = self.__get_file_name()
+        self.__plot_multi_scatter(legend_list=list(range(1, limit + 1)), setting=self.__setting)
+
+    @staticmethod
+    def __plot_multi_scatter(legend_list, setting: DefaultOptimizePlotSetting):
+        data_num = len(setting.y_axis_dates_list)  # プロットを重ねる数
+
+        # Figureの初期化
+        fig = plt.figure(figsize=(8, 6))
+        # axオブジェクトの生成
+        ax = fig.add_subplot(111)
+        ax.set_xlabel(f"${setting.x_label}$", size=24, labelpad=5)
+        ax.set_ylabel(f"${setting.y_label}$", size=24)
+        ax.set_title(setting.title)  # グラフタイトル
+        # 描画
+        for i in range(data_num):
+            # 具体的な値の方を除去し、時間ステップのみのデータに変える
+            y_axis_dates = setting.y_axis_dates_list[i]
+            ax.scatter(setting.x_axis_data_list, y_axis_dates, s=10, label=f"${setting.legend_label}={legend_list[i]}$")
+
+        plt.legend()
+        plt.savefig(f"{setting.path_to_file}/{setting.file_name}", dpi=400)
+        ax.cla()
+        plt.close()
 
 
 class AnalyzePlotter:
@@ -177,27 +213,6 @@ class AnalyzePlotter:
         self.__plot_list = plot_list
         self.__analyze_data_list = self.__load_analyze_data()
         self.__setting = setting
-        # self.__DefaultPlotSetting_x_axis_is_t = {
-        #     "plot_indexes": plot_list,  # t_erase_list
-        #     "x_label": "t",
-        #     "y_label": None,
-        #     "folder_path": AnalyzeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-        #                                       exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0],
-        #                                       mode="analyze").folder_path,
-        #     "file_name": None,
-        #     "legend_label": "t_{erase}",
-        #     "start_t": start_t
-        # }
-        # self.__DefaultPlotSetting_x_axis_is_index = {
-        #     "plot_t_list": plot_list,  # t_list
-        #     "x_label": "t_{erase}",
-        #     "y_label": None,
-        #     "folder_path": AnalyzeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-        #                                       exp2_name=self.__exp2_name, exp2_index=self.__exp2_indexes[0],
-        #                                       mode="analyze").folder_path,
-        #     "file_name": None,
-        #     "legend_label": "t"
-        # }
 
     def plot(self):
         if self.__analyze_data_list[0].KL_div:
@@ -229,9 +244,9 @@ class AnalyzePlotter:
 
     def __get_file_name(self):
         if self.__setting.x_axis == "index":
-            return f"{self.__setting.y_label}_{self.__setting.plot_indexes}"
+            return f"{self.__setting.y_label}_{self.__setting.plot_indexes}.png"
         elif self.__setting.x_axis == "t":
-            return f"{self.__setting.y_label}_start_t={self.__setting.start_t}_{self.__setting.plot_indexes}"
+            return f"{self.__setting.y_label}_start_t={self.__setting.start_t}_{self.__setting.plot_indexes}.png"
         else:
             helper.print_warning("axisパラメータに不正値が入力されています")
             raise OSError
@@ -241,7 +256,8 @@ class AnalyzePlotter:
         for exp2_index in self.__exp2_indexes:
             setting = AnalyzeNameSetting(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
                                          exp2_name=self.__exp2_name, file_index=exp2_index)
-            analyze_data = helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name}")
+            analyze_data = helper.load_file_by_error_handling(
+                file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
             analyze_data_list.append(analyze_data)
         return analyze_data_list
 
@@ -285,7 +301,7 @@ def plot_x_axis_is_index(df, setting: DefaultAnalyzePlotSetting):
     for i in range(1, len(setting.plot_indexes)):
         df.loc[f"$t={setting.plot_indexes[i]}$"].plot(grid=True, x="t", figsize=(8, 6), ax=ax)  # 同じ表に次々とプロットしていく
     plt.legend()
-    plt.savefig(f"{setting.path_to_file}/{setting.file_name}.png", dpi=400)
+    plt.savefig(f"{setting.path_to_file}/{setting.file_name}", dpi=400)
     ax.cla()
     plt.close()
 
@@ -313,7 +329,7 @@ def plot_x_axis_is_t(df, setting: DefaultAnalyzePlotSetting):
     ax.set_ylabel(f"${setting.y_label}$", size=24)
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
-    plt.savefig(f"{setting.path_to_file}/{setting.file_name}.png", dpi=400)
+    plt.savefig(f"{setting.path_to_file}/{setting.file_name}", dpi=400)
 
 
 def change_df_index_name(df, legend_label):
