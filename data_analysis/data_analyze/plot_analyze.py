@@ -268,7 +268,6 @@ class AnalyzePlotter:
                                          exp2_name=self.__exp2_name, file_index=exp2_index)
             analyze_data = helper.load_file_by_error_handling(
                 file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
-            kk = analyze_data.KL_div
             analyze_data_list.append(analyze_data)
         return analyze_data_list
 
@@ -290,7 +289,9 @@ class AnalyzePlotter:
         elif model == "L2 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
-                data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.L2_norm}}
+                # TODO:注意：analyze.algorithmのL2の部分がルートしていない点を考慮
+                L2_norm = [value ** 0.5 for value in analyze_data.L2_norm]
+                data_dict = {**data_dict, **{f"{exp2_index}": L2_norm}}
             return pd.DataFrame(data_dict)
 
         elif model == "correlation coefficient":
