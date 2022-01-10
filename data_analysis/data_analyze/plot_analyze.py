@@ -268,6 +268,7 @@ class AnalyzePlotter:
                                          exp2_name=self.__exp2_name, file_index=exp2_index)
             analyze_data = helper.load_file_by_error_handling(
                 file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
+            kk = analyze_data.KL_div
             analyze_data_list.append(analyze_data)
         return analyze_data_list
 
