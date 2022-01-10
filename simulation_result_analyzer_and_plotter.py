@@ -119,21 +119,23 @@ class SimulationResultAnalyzer:
 
 
 if __name__ == '__main__':
-    analyze_indexes = list(range(1, 101))
+    # analyze_indexes = list(range(1, 101))
+    # analyze_indexes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    analyze_indexes = [100]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
-                                        qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=analyze_indexes),
+                                        qw2=EraseElectricGroverWalk2DAlongXY(erase_t_list=analyze_indexes),
                                         _analyze_indexes=analyze_indexes)
     # analyze処理を実行
     # analyzer.analyze()
     # その結果をプロット
     # plot_indexes = analyze_indexes
-    plot_t_list = [200, 300, 400, 500, 600]
-    analyzer.plot_x_axis_is_index(_plot_t_list=plot_t_list)
+    # plot_t_list = [200, 300, 400, 500, 600]
+    # analyzer.plot_x_axis_is_index(_plot_t_list=plot_t_list)
     # analyzer.plot_x_axis_is_t(_plot_indexes=plot_indexes)
 
     # 最適な時間ステップを求める
     # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=200, options={"limit": 5})
-    # analyzer.plot_optimize_x_axis_is_rank(analyze_t=200)
+    # analyzer.plot_optimize_x_axis_is_index(analyze_t=600, options={"limit": 5})
+    analyzer.plot_optimize_x_axis_is_rank(analyze_t=600)
