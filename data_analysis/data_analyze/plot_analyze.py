@@ -289,8 +289,10 @@ class AnalyzePlotter:
         elif model == "L2 norm":
             data_dict = {"t": analyze_data_list[0].t}  # 代表して0番目のanalyze_dataのtを使う
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
-                # TODO:注意：analyze.algorithmのL2の部分がルートしていない点を考慮
-                L2_norm = [value ** 0.5 for value in analyze_data.L2_norm]
+                # TODO:注意：これを使用すると、L2ノルムとなる。analyze.algorithmのL2の部分がルートしていない点を考慮
+                # L2_norm = [value ** 0.5 for value in analyze_data.L2_norm]
+                # これを使用すると二乗誤差和になる
+                L2_norm = analyze_data.L2_norm
                 data_dict = {**data_dict, **{f"{exp2_index}": L2_norm}}
             return pd.DataFrame(data_dict)
 
