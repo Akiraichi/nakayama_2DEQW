@@ -1,5 +1,5 @@
-from conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
-from conditions_factories.conditions_single_factory import ConditionsSingleFactory
+from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
+from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
 from simulation.simulation import SimulationQWAgent
 
 
