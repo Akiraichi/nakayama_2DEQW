@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from data_analysis.data_analyze.analyzer import OptimizeData
+from data_analysis.data_analyze.analyzer import OptimizeData, AnalyzeData
 import helper
 
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, OptimizePlotSetting, \
@@ -301,6 +301,166 @@ class AnalyzePlotter:
             for analyze_data, exp2_index in zip(analyze_data_list, exp2_indexes):
                 data_dict = {**data_dict, **{f"{exp2_index}": analyze_data.correlation_coefficient}}
             return pd.DataFrame(data_dict)
+
+    def find_time_step_max_indicator(self):
+        # 電場を消してから指標の最大値がくるまでの時間ステップ数を求める
+        # time_of_max_value_list = []
+        KL_div_diff_time_list = []
+        L1_norm_diff_time_list = []
+        L2_norm_diff_time_list = []
+        correlation_coefficient_diff_time_list = []
+        time_of_erase_field_list = self.__setting.plot_indexes
+
+        # 実行
+        for analyze_data, time_of_erase_field in zip(self.__analyze_data_list, time_of_erase_field_list):
+            _, KL_div_diff_time = self.__single_find_time_step_max_indicator(analyze_data.KL_div,
+                                                                             analyze_data.t,
+                                                                             time_of_erase_field)
+
+            _, L1_norm_diff_time = self.__single_find_time_step_max_indicator(analyze_data.L1_norm,
+                                                                              analyze_data.t,
+                                                                              time_of_erase_field)
+
+            _, L2_norm_diff_time = self.__single_find_time_step_max_indicator(analyze_data.L2_norm,
+                                                                              analyze_data.t,
+                                                                              time_of_erase_field)
+
+            _, correlation_coefficient_diff_time = self.__single_find_time_step_min_indicator(
+                analyze_data.correlation_coefficient,
+                analyze_data.t,
+                time_of_erase_field)
+
+            KL_div_diff_time_list.append(KL_div_diff_time)
+            L1_norm_diff_time_list.append(L1_norm_diff_time)
+            L2_norm_diff_time_list.append(L2_norm_diff_time)
+            correlation_coefficient_diff_time_list.append(correlation_coefficient_diff_time)
+
+        # プロットする
+        params1 = {
+            "x_axis": time_of_erase_field_list,
+            "y_axis_list": [KL_div_diff_time_list, correlation_coefficient_diff_time_list, L1_norm_diff_time_list,
+                            L2_norm_diff_time_list],
+            "x_label": "t_{erase}",
+            "y_label": "diff time",
+            "legend_list": ["KL divergence", "correlation coefficient", "L1 norm", "L2 norm"],
+            "path_to_file": self.__setting.path_to_file,
+            "file_name": f"from time of erase field to indicator is worst_{self.__setting.plot_indexes[:10]}.png"
+        }
+        params2 = {
+            "x_axis": time_of_erase_field_list,
+            "y_axis_list": [KL_div_diff_time_list, L1_norm_diff_time_list,
+                            L2_norm_diff_time_list],
+            "x_label": "t_{erase}",
+            "y_label": "diff time",
+            "legend_list": ["KL divergence", "L1 norm", "L2 norm"],
+            "path_to_file": self.__setting.path_to_file,
+            "file_name": f"find_diff_time_{self.__setting.file_name}.png"
+        }
+
+        self.__plot_simple_graph(**params1)
+        # self.__plot_simple_graph(**params2)
+
+    def find_max_step_max_indicator(self):
+        # 電場を消してから指標の最大値がくるまでの時間ステップを差ではなく値として求める
+        # time_of_max_value_list = []
+        KL_div_diff_time_list = []
+        L1_norm_diff_time_list = []
+        L2_norm_diff_time_list = []
+        correlation_coefficient_diff_time_list = []
+        time_of_erase_field_list = self.__setting.plot_indexes
+
+        # 実行
+        for analyze_data, time_of_erase_field in zip(self.__analyze_data_list, time_of_erase_field_list):
+            KL_div_diff_time, _ = self.__single_find_time_step_max_indicator(analyze_data.KL_div,
+                                                                             analyze_data.t,
+                                                                             time_of_erase_field)
+
+            L1_norm_diff_time, _ = self.__single_find_time_step_max_indicator(analyze_data.L1_norm,
+                                                                              analyze_data.t,
+                                                                              time_of_erase_field)
+
+            L2_norm_diff_time, _ = self.__single_find_time_step_max_indicator(analyze_data.L2_norm,
+                                                                              analyze_data.t,
+                                                                              time_of_erase_field)
+
+            correlation_coefficient_diff_time, _ = self.__single_find_time_step_min_indicator(
+                analyze_data.correlation_coefficient,
+                analyze_data.t,
+                time_of_erase_field)
+
+            KL_div_diff_time_list.append(KL_div_diff_time)
+            L1_norm_diff_time_list.append(L1_norm_diff_time)
+            L2_norm_diff_time_list.append(L2_norm_diff_time)
+            correlation_coefficient_diff_time_list.append(correlation_coefficient_diff_time)
+
+        # プロットする
+        params1 = {
+            "x_axis": time_of_erase_field_list,
+            "y_axis_list": [KL_div_diff_time_list, correlation_coefficient_diff_time_list, L1_norm_diff_time_list,
+                            L2_norm_diff_time_list],
+            "x_label": "t_{erase}",
+            "y_label": "time_step",
+            "legend_list": ["KL divergence", "correlation coefficient", "L1 norm", "L2 norm"],
+            "path_to_file": self.__setting.path_to_file,
+            "file_name": f"indicator is worst_{self.__setting.plot_indexes[:10]}.png"
+        }
+        self.__plot_simple_graph(**params1)
+        # self.__plot_simple_graph(**params2)
+
+    @staticmethod
+    def __single_find_time_step_max_indicator(data_list: list, t_list: list, time_of_erase_field: int):
+        # STEP0：time_of_erase_fieldよりも後のデータに対して処理を行う
+        # 5の倍数に切り上げする。
+        time_of_erase_field += 5 - (time_of_erase_field % 5)
+        index_of_time_of_erase_field = t_list.index(time_of_erase_field)
+        data_list = data_list[index_of_time_of_erase_field:]
+        # STEP1：指標の最大値（相関係数は最小値）の時間ステップを求める
+        index_of_max_value = data_list.index(max(data_list))
+        time_of_max_value = t_list[index_of_max_value + index_of_time_of_erase_field]
+        # STEP2：電場を消したタイミングとの時間さを求める
+        diff_time = time_of_max_value - time_of_erase_field
+        print(f"電場を消した時間：{time_of_erase_field}")
+        print(f"指標の最大値の時間：{time_of_max_value}")
+        print(f"時間差:{diff_time}")
+        return time_of_max_value, diff_time
+
+    @staticmethod
+    def __single_find_time_step_min_indicator(data_list: list, t_list: list, time_of_erase_field: int):
+        # 5の倍数に切り上げする。
+        time_of_erase_field += 5 - (time_of_erase_field % 5)
+        # STEP0：time_of_erase_fieldよりも後のデータに対して処理を行う
+        index_of_time_of_erase_field = t_list.index(time_of_erase_field)
+        data_list = data_list[index_of_time_of_erase_field:]
+        # STEP1：指標の最大値（相関係数は最小値）の時間ステップを求める
+        index_of_min_value = data_list.index(min(data_list))
+        time_of_min_value = t_list[index_of_min_value + index_of_time_of_erase_field]
+        # STEP2：電場を消したタイミングとの時間さを求める
+        diff_time = time_of_min_value - time_of_erase_field
+        print(f"電場を消した時間：{time_of_erase_field}")
+        print(f"指標の最小値の時間：{time_of_min_value}")
+        print(f"時間差:{diff_time}")
+        return time_of_min_value, diff_time
+
+    @staticmethod
+    def __plot_simple_graph(x_axis, y_axis_list, x_label, y_label, legend_list, path_to_file,
+                            file_name):
+        data_num = len(y_axis_list)
+        # Figureの初期化
+        fig = plt.figure(figsize=(8, 6))
+        # axオブジェクトの生成
+        ax = fig.add_subplot(111)
+        ax.set_xlabel(f"${x_label}$", size=24, labelpad=5)
+        ax.set_ylabel(f"${y_label}$", size=24)
+        # ax.set_title(title)  # グラフタイトル
+        # 描画
+        for i in range(data_num):
+            # 具体的な値の方を除去し、時間ステップのみのデータに変える
+            y_axis_dates = y_axis_list[i]
+            ax.plot(x_axis, y_axis_dates, label=f"${legend_list[i]}$")
+        plt.legend()
+        plt.savefig(f"{path_to_file}/{file_name}", dpi=400)
+        ax.cla()
+        plt.close()
 
 
 def plot_x_axis_is_index(df, setting: DefaultAnalyzePlotSetting):
