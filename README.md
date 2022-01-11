@@ -1,26 +1,47 @@
-# 高知工業高等専門学校 特別研究
+# Quantum Walk Simulation
+ 
+様々なタイプの量子ウォークをシミュレーションできます。
+ 
+# features
 
-## シミュレーション結果に対するレポート
-[シミュレーション結果](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/シミュレーション結果まとめ/シミュレーション結果.pdf)
 
-上手く表示されない場合はダウンロードすると上手く見えます。
+# Requirement
+ 
+* Python 3.7以降
+* numba
+* matplotlib
+* seaborn
+* pandas
 
-## シミュレーション結果フォルダへのリンク
-[シミュレーション結果フォルダ](https://drive.google.com/drive/folders/1uRr74jvY0Q83lu1f6nHSbGY331xTujIL?usp=sharing)
+Environments under [Anaconda](https://www.anaconda.com/) is tested.
+ 
+```bash
+# なんかコードを入れる
+conda create -n pyxel pip python=3.6 Anaconda
+activate pyxel
+```
+ 
+# Installation
+ 
+```bash
+conda install numpy,matplotlib,seaborn,numba,pandas
+```
+ 
+# Usage
 
-google driveで共有しています。たまにリンクを更新します。
+使い方を説明する
+ 
+```bash
+python main.py
+```
+ 
+# Note
+ 
+シミュレーション結果の正当性については保証していません。多分正しいとは思うけど。
 
-## 研究日誌
-[研究日誌](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/研究日誌.md)
-
-雑多な内容を書いています。研究日誌というより、ただのメモ帳です。
-
-## 自分へ
-- 論文を執筆する中での疑問点、実験がうまくいかない、実験方法の改善アイディア、などなど、思いついたら論点を明らかにするため、また内容を忘れないために[Issue](https://github.com/Akiraichi/knct_study/issues)に投稿してください
-- 先生に聞きたいことは[Issue](https://github.com/Akiraichi/knct_study/issues)に投稿し、ラベルをhelp wantedにしてください。そして、次回ミーティング時に聞きましょう。
-
-## 研究室メンバーへ
-- [研究日誌](https://github.com/Akiraichi/nakayama_2DEQW/blob/master/研究日誌とシミュレーション結果.ipynb)に一応、その日何をやったのか、などは記録しています。（githubの仕様変更のためか、latexがレンダリングされません）
-- [Issue](https://github.com/Akiraichi/knct_study/issues)には現在私が立ち向かっている問題が投稿されています。help wantedのラベルがついている投稿は先生に質問する予定です。
-- 論文執筆について、mainブランチは前稿があり、n稿ブランチに第n稿があります。添削してもらうたびにn稿をmainにマージするイメージです。
-- [Project](https://github.com/Akiraichi/nakayama_2DEQW/projects/1)ではタスクを明らかにしています。
+# Author
+ 
+ 
+# License
+ 
+"Quantum Walk Simulation" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
