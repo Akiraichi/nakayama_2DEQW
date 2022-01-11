@@ -2,7 +2,7 @@ import sys
 
 from conditions_factories.conditions_base_factory import ConditionsBaseFactory
 from helper import helper
-from simulator.condition import ConditionNew, ConditionType
+from simulation.condition import ConditionNew, ConditionType
 
 
 class ConditionsEraseTFactory(ConditionsBaseFactory):

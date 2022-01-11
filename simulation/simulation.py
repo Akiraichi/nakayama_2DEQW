@@ -1,5 +1,5 @@
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
-from helper.helper import helper, print_finish, print_green_text, print_warning
+from helper import helper
 from simulation.simulation_algorithm import calculate_QW2D
 from multiprocessing import Pool
 import glob
@@ -22,7 +22,7 @@ class SimulationQWAgent:
             arguments.append([condition, self.__start_step_t])
         with Pool(ConfigSimulationSetting.SimulationParallelNum) as p:
             p.starmap(func=SimulationQWAgent.main_simulation, iterable=arguments)
-        print_finish("execute_simulation")
+        helper.print_finish("execute_simulation")
 
     @staticmethod
     def check_finished(T, exp_name, exp_index):
@@ -49,9 +49,9 @@ class SimulationQWAgent:
                 finished = False
 
         if finished:
-            print_green_text(f"exp_index={exp_index}：既に完了")
+            helper.print_green_text(f"exp_index={exp_index}：既に完了")
         else:
-            print_warning(f"exp_index={exp_index}：完了していません")
+            helper.print_warning(f"exp_index={exp_index}：完了していません")
         return finished
 
     @classmethod
@@ -82,8 +82,6 @@ class SimulationQWAgent:
             # 途中からシミュレーションを再開
             path = f"{config_simulation_data_save_path(exp_name, str(start_step_t - 1).zfill(4), exp_index)}/{str(start_step_t - 1).zfill(4)}.jb"
             print(path)
-
-            # init_PSY_now = joblib.load(path)["シミュレーションデータ"]
             init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
             start_t = start_step_t
 
@@ -94,13 +92,12 @@ class SimulationQWAgent:
         exp_name = condition.exp_name
         exp_index = condition.exp_index
         t = str(t).zfill(4)
-
-        # simulation_data_save_path = f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}/{t}.jb"
         data_dict = {
             "シミュレーションデータ": psy,
             "実験条件データ（condition）": condition,
             "このシミュレーションデータが何ステップ目か（t）": t
         }
+
         helper.save_jb_file(data_dict=data_dict,
                             path_to_file=f"{config_simulation_data_save_path(exp_name, t[:2], exp_index)}",
                             file_name=f"{t}.jb")
