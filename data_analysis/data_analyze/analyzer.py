@@ -1,7 +1,7 @@
 from data_analysis.data_analyze.analyze_algorithm import calc_KL_and_L1_and_L2, calc_correlation_coefficient
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
     AnalysisOptimizeSaveName
-import helper
+from helper import helper
 from multiprocessing import Pool
 from dataclasses import dataclass
 

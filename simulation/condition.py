@@ -2,7 +2,7 @@ import dataclasses
 
 import numpy as np
 from config.config_simulation import ConfigSimulationSetting
-from helper import print_warning
+from helper.helper import print_warning
 import sympy
 from dataclasses import dataclass, asdict
 

@@ -2,7 +2,7 @@ from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting
     DefaultAnalyzePlotSetting, OptimizePlotSetting, AnalysisOptimizeSaveName
 from data_analysis.data_analyze.analyzer import Analyzer, AnalyzeOptimizer
 from data_analysis.data_analyze.plot_analyze import AnalyzePlotter, OptimizePlotter
-from qw import *
+from simulation.qw import *
 import dataclasses
 
 

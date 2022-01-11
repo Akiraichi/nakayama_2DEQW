@@ -7,7 +7,7 @@ from data_analysis.data_analyze.analyzer import get_probability
 from multiprocessing import Process
 
 from config.config_simulation import config_simulation_data_save_path
-from helper import print_finish, print_warning, select_plot_t_step
+from helper.helper import print_finish, print_warning, select_plot_t_step
 
 
 def plot_prob(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r, parallel):

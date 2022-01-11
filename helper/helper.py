@@ -5,7 +5,7 @@ import zlib
 import termcolor
 
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
-from simulation.simulation_algorithm import calc_probability
+from simulator.simulation_algorithm import calc_probability
 
 
 def return_simulation_data_file_names(exp_name, exp_index):

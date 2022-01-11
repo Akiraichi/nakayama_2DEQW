@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass, field
 
-import helper
+from helper import helper
 
 
 def plot_save_path(exp_name, plot_type, index=None):

@@ -1,6 +1,6 @@
 from conditions_factories.conditions_base_factory import ConditionsBaseFactory
-import helper
-from simulation.condition import ConditionNew, ConditionType
+from helper import helper
+from simulator.condition import ConditionNew, ConditionType
 import sys
 
 

@@ -1,10 +1,10 @@
-from helper import select_plot_t_step_detail
+from helper.helper import select_plot_t_step_detail
 from data_analysis.data_analyze.analyzer import do_plot_graph
 import joblib
 import glob
 
 from config.config_simulation import config_simulation_data_save_path
-from simulation.simulation_algorithm import calc_probability
+from simulator.simulation_algorithm import calc_probability
 
 
 def plot_width_prob(exp_name, plot_exp_indexes=None):

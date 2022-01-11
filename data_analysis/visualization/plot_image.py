@@ -6,8 +6,8 @@ import pandas as pd
 
 from config.config_visualization import plot_save_path, DefaultPlotSetting
 from config.config_simulation import ConfigSimulationSetting
-import helper
-from simulation.simulation_algorithm import calc_probability
+from helper import helper
+from simulator.simulation_algorithm import calc_probability
 
 
 def plot_image(_setting: DefaultPlotSetting):

@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 from config.config_visualization import plot_save_path
-from helper import print_finish, print_green_text
+from helper.helper import print_finish, print_green_text
 
 
 def output_gif_image(exp_name, plot_type, plot_exp_indexes, plot_t_step, duration=50):

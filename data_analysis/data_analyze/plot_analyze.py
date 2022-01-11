@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from data_analysis.data_analyze.analyzer import OptimizeData, AnalyzeData
-import helper
+from data_analysis.data_analyze.analyzer import OptimizeData
+from helper import helper
 
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzePlotSetting, OptimizePlotSetting, \
     AnalysisOptimizeSaveName

@@ -6,7 +6,7 @@ import joblib
 from numba import njit
 from data_analysis.data_analyze.analyzer import get_probability
 from config.config_simulation import ConfigSimulationSetting
-from helper import print_finish, print_warning, return_simulation_data_file_names, select_plot_t_step
+from helper.helper import print_finish, print_warning, return_simulation_data_file_names, select_plot_t_step
 
 
 def main_analyze(exp_name, exp_indexes, cut_circle_r, circle_inner_r, circle_outer_r, ext):

@@ -1,6 +1,6 @@
 import numpy as np
 from numba import njit, jit
-import helper
+from helper import helper
 
 
 # 1/0での挙動が想定外である。

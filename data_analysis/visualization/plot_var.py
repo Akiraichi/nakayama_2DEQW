@@ -4,7 +4,7 @@ import joblib
 import glob
 
 from config.config_simulation import config_simulation_data_save_path
-from simulation.simulation_algorithm import calc_probability
+from simulator.simulation_algorithm import calc_probability
 
 
 # 実験環境データの読みこみと展開
