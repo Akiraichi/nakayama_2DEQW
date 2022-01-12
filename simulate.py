@@ -1,6 +1,5 @@
 from simulation.qw import *
 
 if __name__ == '__main__':
-    # qw = GroverWalk2D()
-    qw = EraseElectricHadamardWalk2DAlongX(erase_t_list=[10, 50, 100])
+    qw = EraseElectricGroverWalk2DAlongX(erase_t_list=list(range(101,201)))
     qw.simulate(start_step_t=0)

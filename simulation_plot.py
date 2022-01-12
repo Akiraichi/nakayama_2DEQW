@@ -2,6 +2,8 @@ import dataclasses
 
 from config.config_visualization import DefaultPlotSetting
 from data_analysis.visualization.plot_image import plot_image
+from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
+from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
 
 
 class SimulationResultPlotter:
@@ -28,3 +30,10 @@ class SimulationResultPlotter:
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
         plot_image(_setting=_setting)
+
+
+if __name__ == '__main__':
+    indexes = [0]
+    plotter = SimulationResultPlotter(conditions=ConditionsSingleFactory().single_007_GroverWalk2D(),
+                                      save_path_indexes=indexes)
+    plotter.plot_heatmap()
