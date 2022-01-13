@@ -3,11 +3,40 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 import seaborn as sns
 import pandas as pd
+from numba import njit, typeof
 
 from config.config_visualization import plot_save_path, DefaultPlotSetting
 from config.config_simulation import ConfigSimulationSetting
 from helper import helper
 from simulation.simulation_algorithm import calc_probability
+
+# 3次元プロット用
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib import colors
+
+
+@njit('Tuple((i8[:],i8[:],i8[:],f8[:]))(i8,i8,i8[:],f8[:,:,:])', cache=False)
+def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
+    index_count = 0
+    len_list = len_x * len_y * len(not_plot_t_list)
+    x_list = np.zeros(len_list, dtype=np.int64)
+    y_list = np.zeros(len_list, dtype=np.int64)
+    z_list = np.zeros(len_list, dtype=np.int64)
+    value_list = np.zeros(len_list, dtype=np.float64)
+
+    for i, t_index in enumerate(not_plot_t_list):
+        for x in range(len_x):
+            print(f"x={x}, i={i}")
+            for y in range(len_y):
+                if round(p_list[i][x, y], 3) == 0.0:
+                    continue
+                x_list[index_count] = x
+                y_list[index_count] = y
+                z_list[index_count] = t_index
+                value_list[index_count] = p_list[i][x, y]
+                index_count += 1
+    return x_list, y_list, z_list, value_list
 
 
 def plot_image(_setting: DefaultPlotSetting):
@@ -54,6 +83,49 @@ class Plotter:
         plotter = MainPlotter(simulation_data_file_name=simulation_data_file_name, exp_name=exp_name,
                               exp_index=exp_index, plot_type=plot_type, is_enlarge=is_enlarge)
         plotter.plot()
+
+    def plot_3d_image(self):
+        # ステップ(1)：シミュレーションデータへのアクセス用のパスをゲットする
+        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=self.__exp_name,
+                                                                              exp_index=self.__save_path_index)
+        # step(2)：確率データを得る。そしてリストへappend
+        p_list = []
+        len_x: int = 0
+        len_y: int = 0
+        for _, t in enumerate(self.__not_plot_t_list):
+            simulation_data = helper.load_file_by_error_handling(simulation_data_file_names[t])
+            condition = simulation_data["実験条件データ（condition）"]
+            _T = condition.T
+            len_x = 2 * _T + 1
+            len_y = 2 * _T + 1
+            PSY = simulation_data["シミュレーションデータ"]
+            p = calc_probability(PSY, len_x, len_y)
+            p_list.append(p)
+        # step(3)：プロットする
+        x_list, y_list, z_list, value_list = x_y_z_set(len_x, len_y, np.array(list(self.__not_plot_t_list)),
+                                                       np.array(p_list))
+        # creating figures
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # setting color bar
+        color_map = cm.ScalarMappable(cmap=cm.gist_heat_r)
+        color_map.set_array(value_list)
+
+        # creating the heatmap
+        img = ax.scatter(x_list, y_list, z_list, cmap="gist_heat_r", c=value_list,
+                         s=1)
+        plt.colorbar(color_map)
+
+        # adding title and labels
+        ax.set_title("3D Heatmap")
+        ax.set_xlabel('X-axis')
+        ax.set_ylabel('Y-axis')
+        ax.set_zlabel('Z-axis')
+
+        # displaying plot
+        plt.show()
+        print("")
 
 
 class MainPlotter:
