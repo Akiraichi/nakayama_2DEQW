@@ -102,8 +102,9 @@ class Plotter:
             p = calc_probability(PSY, len_x, len_y)
             p_list.append(p)
         # step(3)：プロットする
-        x_list, y_list, z_list, value_list = x_y_z_set(len_x, len_y, np.array(list(self.__not_plot_t_list)),
-                                                       np.array(p_list))
+        x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(len_x, len_y,
+                                                                            np.array(list(self.__not_plot_t_list)),
+                                                                            np.array(p_list))
         # creating figures
         fig = plt.figure(figsize=(10, 10))
         ax = fig.add_subplot(111, projection='3d')
@@ -113,8 +114,7 @@ class Plotter:
         color_map.set_array(value_list)
 
         # creating the heatmap
-        img = ax.scatter(x_list, y_list, z_list, cmap="gist_heat_r", c=value_list,
-                         s=1)
+        ax.scatter(x_list, y_list, z_list, cmap="gist_heat_r", c=value_list, s=1)
         plt.colorbar(color_map)
 
         # adding title and labels
@@ -123,9 +123,7 @@ class Plotter:
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Z-axis')
 
-        # displaying plot
         plt.show()
-        print("")
 
 
 class MainPlotter:
