@@ -199,7 +199,7 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
     ax.set_title(title, size=24)
     # 曲面を描画
     ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer")
-    plt.savefig(f"{path}/{file_name}", dpi=400, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=400, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
@@ -234,7 +234,7 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
     ax.set_title(title, size=24)
-    plt.savefig(f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=800, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()

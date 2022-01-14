@@ -66,15 +66,7 @@ def return_phi(num):
 
 def save_jb_file(data_dict, path_to_file, file_name):
     save_path = f"{path_to_file}/{file_name}"
-    while True:
-        try:
-            joblib.dump(data_dict, save_path, compress=3)
-        # Google DriveのOSError: [Errno 5] Input/output errorへの対応
-        except OSError as e:
-            print_warning(e)
-            time.sleep(180)
-        else:
-            break
+    Google_Drive_OS_error_wrapper(joblib.dump, data_dict, save_path, compress=3)
 
 
 def get_probability(simulation_data_file_names, index):
@@ -243,3 +235,15 @@ def select_plot_t_step_by_100():
     elif ConfigSimulationSetting.MaxTimeStep == 100:
         t_list = list(range(0, 105, 5))
     return t_list
+
+
+def Google_Drive_OS_error_wrapper(fn, *args, **kwargs):
+    """Google DriveのOSError: [Errno 5] Input/output errorへの対応"""
+    while True:
+        try:
+            fn(*args, **kwargs)
+        except OSError as e:
+            print_warning(e)
+            time.sleep(180)
+        else:
+            break
