@@ -4,25 +4,27 @@ from helper import helper
 
 
 # 1/0での挙動が想定外である。
-@jit
-def e_i_phi(position, T, phi, pow_n):
-    # 座標はposition+1。0+Tを座標0としている
-    # exp(iH), H=電位, 電位＝位置座標position * phi（何かしらの電位をphiで表現）
-    res = np.exp(1j * np.power(position - T, pow_n) * phi)
-    # print(np.power(position - T, pow_n))
-    # print(phi)
-    # print(pow_n)
-    # print(position)
-    return res
+# @jit
+# def e_i_phi(position, T, phi, pow_n):
+#     # 座標はposition+1。0+Tを座標0としている
+#     # exp(iH), H=電位, 電位＝位置座標position * phi（何かしらの電位をphiで表現）
+#     res = np.exp(1j * np.power(position - T, pow_n) * phi)
+#     # print(np.power(position - T, pow_n))
+#     # print(phi)
+#     # print(pow_n)
+#     # print(position)
+#     return res
 
 
-@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8,i8)', cache=True)
-def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S, t, erase_t, erase_time_step):
+@njit('c16[:,:,:](i8,c16[:],f8,c16[:,:,:],i8,c16[:,:],c16[:,:],c16[:,:],c16[:,:],i8,i8,i8)', cache=True)
+def calculate_QW2D(T, init_vector, phi, PSY_now, Algorithm, P, Q, R, S, t, erase_t, erase_time_step):
     """
     [x,y]：この場合x行y列となるため、数学的には(y,x)となる点に注意すること。
     可読性の観点から、リストの操作は[x,y]でやる方が望ましいと考えた。
     しかし、その後の解析操作では、不都合が生じるため、データ使用時は転置する事
     """
+    # 1ステップ進めたPSYを初期化する。
+    PSY_next = np.zeros((2 * T + 1, 2 * T + 1, 4), dtype=np.complex128)
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
             if x == 2 * T:
@@ -58,12 +60,12 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                                (Q @ PSY_of_Q) +
                                                                (R @ PSY_of_R) +
                                                                (S @ PSY_of_S))
-            elif Algorithm == 4:
-                # y軸に電場をかけた
-                PSY_next[x, y] = e_i_phi(y, T, phi, 1) * ((P @ PSY_of_P) +
-                                                          (Q @ PSY_of_Q) +
-                                                          (R @ PSY_of_R) +
-                                                          (S @ PSY_of_S))
+            # elif Algorithm == 4:
+            #     # y軸に電場をかけた
+            #     PSY_next[x, y] = e_i_phi(y, T, phi, 1) * ((P @ PSY_of_P) +
+            #                                               (Q @ PSY_of_Q) +
+            #                                               (R @ PSY_of_R) +
+            #                                               (S @ PSY_of_S))
             elif Algorithm == 5:
                 # xとy両方
                 PSY_next[x, y] = np.exp(1j * (x - T) * phi) * np.exp(1j * (y - T) * phi) * \
@@ -79,47 +81,47 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                              (R @ PSY_of_R) +
                                                              (S @ PSY_of_S))
 
-            elif Algorithm == 10:
-                # xとy両方。位置の逆数
-                PSY_next[x, y] = e_i_phi(x, T, phi, -1) * e_i_phi(y, T, phi, -1) \
-                                 * ((P @ PSY_of_P) +
-                                    (Q @ PSY_of_Q) +
-                                    (R @ PSY_of_R) +
-                                    (S @ PSY_of_S))
+            # elif Algorithm == 10:
+            #     # xとy両方。位置の逆数
+            #     PSY_next[x, y] = e_i_phi(x, T, phi, -1) * e_i_phi(y, T, phi, -1) \
+            #                      * ((P @ PSY_of_P) +
+            #                         (Q @ PSY_of_Q) +
+            #                         (R @ PSY_of_R) +
+            #                         (S @ PSY_of_S))
 
-            elif Algorithm == 1010:
-                # x軸で電場をかけた
-                PSY_next[x, y] = e_i_phi(x + 1, T, phi, 1) * (P @ PSY_of_P) + \
-                                 e_i_phi(x - 1, T, phi, 1) * (Q @ PSY_of_Q) + \
-                                 (R @ PSY_of_R) + \
-                                 (S @ PSY_of_S)
-            elif Algorithm == 1020:
-                # y軸に電場をかけた
-                PSY_next[x, y] = P @ PSY_of_P + \
-                                 Q @ PSY_of_Q + \
-                                 e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
-                                 e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
-            elif Algorithm == 1030:
-                # xとy両方
-                PSY_next[x, y] = e_i_phi(x + 1, T, phi, 1) * (P @ PSY_of_P) + \
-                                 e_i_phi(x - 1, T, phi, 1) * (Q @ PSY_of_Q) + \
-                                 e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
-                                 e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
+            # elif Algorithm == 1010:
+            #     # x軸で電場をかけた
+            #     PSY_next[x, y] = e_i_phi(x + 1, T, phi, 1) * (P @ PSY_of_P) + \
+            #                      e_i_phi(x - 1, T, phi, 1) * (Q @ PSY_of_Q) + \
+            #                      (R @ PSY_of_R) + \
+            #                      (S @ PSY_of_S)
+            # elif Algorithm == 1020:
+            #     # y軸に電場をかけた
+            #     PSY_next[x, y] = P @ PSY_of_P + \
+            #                      Q @ PSY_of_Q + \
+            #                      e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
+            #                      e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
+            # elif Algorithm == 1030:
+            #     # xとy両方
+            #     PSY_next[x, y] = e_i_phi(x + 1, T, phi, 1) * (P @ PSY_of_P) + \
+            #                      e_i_phi(x - 1, T, phi, 1) * (Q @ PSY_of_Q) + \
+            #                      e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
+            #                      e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
 
-            elif Algorithm == 5010:
-                # 電場が時間変化する場合
-                if t % 2 == 0:
-                    # x軸で電場をかけた。
-                    PSY_next[x, y] = e_i_phi(x, T, phi, 1) * ((P @ PSY_of_P) +
-                                                              (Q @ PSY_of_Q) +
-                                                              (R @ PSY_of_R) +
-                                                              (S @ PSY_of_S))
-                else:
-                    # y軸に電場をかけた。
-                    PSY_next[x, y] = e_i_phi(y, T, phi, 1) * ((P @ PSY_of_P) +
-                                                              (Q @ PSY_of_Q) +
-                                                              (R @ PSY_of_R) +
-                                                              (S @ PSY_of_S))
+            # elif Algorithm == 5010:
+            #     # 電場が時間変化する場合
+            #     if t % 2 == 0:
+            #         # x軸で電場をかけた。
+            #         PSY_next[x, y] = e_i_phi(x, T, phi, 1) * ((P @ PSY_of_P) +
+            #                                                   (Q @ PSY_of_Q) +
+            #                                                   (R @ PSY_of_R) +
+            #                                                   (S @ PSY_of_S))
+            #     else:
+            #         # y軸に電場をかけた。
+            #         PSY_next[x, y] = e_i_phi(y, T, phi, 1) * ((P @ PSY_of_P) +
+            #                                                   (Q @ PSY_of_Q) +
+            #                                                   (R @ PSY_of_R) +
+            #                                                   (S @ PSY_of_S))
 
             elif Algorithm == 100:
                 # x軸で電場をかけた

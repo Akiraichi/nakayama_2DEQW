@@ -131,9 +131,9 @@ class SimulationQWAgent:
             # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
             PSY_now = init_PSY_now
             for t in range(start_t, T + 1):
-                PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
+                # PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
                 print(f"{t}：ステップ")
-                PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, algorithm,
+                PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, algorithm,
                                          P=P, Q=Q, R=R, S=S, t=t, erase_t=erase_t,
                                          erase_time_step=erase_time_step)
                 # ここでセーブする。保存するのはt+1ステップめ（なぜ＋1するのかというと初期値で一回保存しているから）
