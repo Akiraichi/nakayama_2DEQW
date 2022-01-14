@@ -28,7 +28,7 @@ def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
 
     for i, t_index in enumerate(not_plot_t_list):
         for x in range(len_x):
-            print(f"x={x}, i={i}")
+            print("x={}, i={}".format(x, i))
             for y in range(len_y):
                 if round(p_list[i][x, y], 3) == 0.0:
                     continue
