@@ -17,7 +17,7 @@ from matplotlib import cm
 from matplotlib import colors
 
 
-@njit('Tuple((i8[:],i8[:],i8[:],f8[:]))(i8,i8,i8[:],f8[:,:,:])', cache=False)
+@njit('Tuple((i8[:],i8[:],i8[:],f8[:]))(i8,i8,i8[:],f8[:,:,:])', cache=True)
 def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
     index_count = 0
     len_list = len_x * len_y * len(not_plot_t_list)
