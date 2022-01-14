@@ -1,9 +1,9 @@
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
 from helper import helper
 from simulation.simulation_algorithm import calculate_QW2D
-from multiprocessing import Pool
 import glob
 import numpy as np
+from concurrent.futures import ProcessPoolExecutor
 
 
 class SimulationQWAgent:
@@ -16,13 +16,9 @@ class SimulationQWAgent:
         self.__start_step_t = start_step_t
 
     def start_parallel_processing(self):
-        # 並列処理させるために、各プロセスに渡す引数を生成する
-        arguments = []
-        for condition in self.__conditions:
-            arguments.append([condition, self.__start_step_t])
-        with Pool(ConfigSimulationSetting.SimulationParallelNum) as p:
-            p.starmap(func=SimulationQWAgent.main_simulation, iterable=arguments)
-        helper.print_finish("execute_simulation")
+        with ProcessPoolExecutor(max_workers=ConfigSimulationSetting.SimulationParallelNum) as e:
+            for condition in self.__conditions:
+                e.submit(SimulationQWAgent.main_simulation, condition, self.__start_step_t)
 
     @staticmethod
     def check_finished(T, exp_name, exp_index):
