@@ -25,7 +25,6 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
     """
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
-            # PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S = set_param(PSY_now, init_vector, x, y, T)
             if x == 2 * T:
                 PSY_of_P = init_vector
             else:
@@ -45,9 +44,7 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                 PSY_of_S = init_vector
             else:
                 PSY_of_S = PSY_now[x, y - 1]
-            # 指定された計算式で計算
-            # PSY_next = algo_list(PSY_next, Algorithm, P, Q, R, S, PSY_of_P, PSY_of_Q, PSY_of_R, PSY_of_S, x, y, T,
-            #                      phi)
+
             if Algorithm == 2:
                 # 通常
                 PSY_next[x, y] = P @ PSY_of_P + \
@@ -81,20 +78,7 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                                              (Q @ PSY_of_Q) +
                                                              (R @ PSY_of_R) +
                                                              (S @ PSY_of_S))
-            #
-            # elif Algorithm == 8:
-            #     # x軸で電場をかけた。位置の逆数
-            #     PSY_next[x, y] = e_i_phi(x, T, phi, -1) * ((P @ PSY_of_P) +
-            #                                                (Q @ PSY_of_Q) +
-            #                                                (R @ PSY_of_R) +
-            #                                                (S @ PSY_of_S))
 
-            # elif Algorithm == 9:
-            #     # y軸に電場をかけた。位置の逆数
-            #     PSY_next[x, y] = e_i_phi(y, T, phi, -1) * ((P @ PSY_of_P) +
-            #                                                (Q @ PSY_of_Q) +
-            #                                                (R @ PSY_of_R) +
-            #                                                (S @ PSY_of_S))
             elif Algorithm == 10:
                 # xとy両方。位置の逆数
                 PSY_next[x, y] = e_i_phi(x, T, phi, -1) * e_i_phi(y, T, phi, -1) \
@@ -121,20 +105,7 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, PSY_next, Algorithm, P, Q, R, S
                                  e_i_phi(x - 1, T, phi, 1) * (Q @ PSY_of_Q) + \
                                  e_i_phi(y + 1, T, phi, 1) * (R @ PSY_of_R) + \
                                  e_i_phi(y - 1, T, phi, 1) * (S @ PSY_of_S)
-            # elif Algorithm == 4010:
-            #     # 電場が時間変化する場合。位置の逆数
-            #     if t % 2 == 0:
-            #         # x軸で電場をかけた。
-            #         PSY_next[x, y] = e_i_phi(x, T, phi, -1) * ((P @ PSY_of_P) +
-            #                                                    (Q @ PSY_of_Q) +
-            #                                                    (R @ PSY_of_R) +
-            #                                                    (S @ PSY_of_S))
-            #     elif t % 2 == 1:
-            #         # y軸に電場をかけた。
-            #         PSY_next[x, y] = e_i_phi(y, T, phi, -1) * ((P @ PSY_of_P) +
-            #                                                    (Q @ PSY_of_Q) +
-            #                                                    (R @ PSY_of_R) +
-            #                                                    (S @ PSY_of_S))
+
             elif Algorithm == 5010:
                 # 電場が時間変化する場合
                 if t % 2 == 0:
