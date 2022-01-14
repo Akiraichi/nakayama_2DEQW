@@ -1,8 +1,9 @@
+from concurrent.futures import ProcessPoolExecutor
+
 from data_analysis.data_analyze.analyze_algorithm import calc_KL_and_L1_and_L2, calc_correlation_coefficient
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
     AnalysisOptimizeSaveName
 from helper import helper
-from multiprocessing import Pool
 from dataclasses import dataclass
 
 from config.config_simulation import ConfigSimulationSetting
@@ -121,12 +122,10 @@ class Analyzer:
         helper.print_finish("FINISH：Analyze")
 
     def __start_parallel_processing(self):
-        arguments = [[self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index, self.__p1_list, self.__setting]
-                     for exp2_index in self.__not_analyzed_indexes]
-
-        with Pool(ConfigSimulationSetting.PlotParallelNum) as p:
-            # 並列処理開始
-            p.starmap(func=self.single_analyze_do, iterable=arguments)
+        with ProcessPoolExecutor(max_workers=ConfigSimulationSetting.SimulationParallelNum) as e:
+            for exp2_index in self.__not_analyzed_indexes:
+                e.submit(self.single_analyze_do, self.__exp1_name, self.__exp1_index, self.__exp2_name, exp2_index,
+                         self.__p1_list, self.__setting)
 
     def __start_single_processing(self):
         for i, exp2_index in enumerate(self.__not_analyzed_indexes):

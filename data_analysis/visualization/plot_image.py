@@ -1,9 +1,10 @@
+from concurrent.futures import ProcessPoolExecutor
+
 import numpy as np
 import matplotlib.pyplot as plt
-from multiprocessing import Pool
 import seaborn as sns
 import pandas as pd
-from numba import njit, typeof
+from numba import njit
 
 from config.config_visualization import plot_save_path, DefaultPlotSetting
 from config.config_simulation import ConfigSimulationSetting
@@ -73,10 +74,10 @@ class Plotter:
                             self.__exp_name, self.__save_path_index)
 
     def __start_parallel_processing(self, simulation_data_file_names):
-        arguments = [[simulation_data_file_names[t], self.__setting.plot_type, self.__setting.is_enlarge,
-                      self.__exp_name, self.__save_path_index] for t in self.__not_plot_t_list]
-        with Pool(ConfigSimulationSetting.PlotParallelNum) as p:
-            p.starmap(func=Plotter.plot_image, iterable=arguments)
+        with ProcessPoolExecutor(max_workers=ConfigSimulationSetting.PlotParallelNum) as e:
+            for t in self.__not_plot_t_list:
+                e.submit(Plotter.plot_image, simulation_data_file_names[t], self.__setting.plot_type,
+                         self.__setting.is_enlarge, self.__exp_name, self.__save_path_index)
 
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index):
