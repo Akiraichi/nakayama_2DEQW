@@ -104,7 +104,7 @@ class Plotter:
             p_list.append(p)
         # step(3)：プロットする
         x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(len_x, len_y,
-                                                                            np.array(list(self.__not_plot_t_list)),
+                                                                            np.array(self.__not_plot_t_list),
                                                                             np.array(p_list))
         # creating figures
         fig = plt.figure(figsize=(10, 10))

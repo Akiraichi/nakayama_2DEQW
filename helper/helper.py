@@ -92,6 +92,7 @@ def get_probability(simulation_data_file_names, index):
 def check_finished_file(folder_path: str, will_generate_index_list: list, extension: str):
     """
     処理が完了しているかを確認し、処理できていないファイルのみ処理する。
+    返却値の順序は保証されない。
     """
     # すでに生成されたファイルのファイル名の一覧を取得する
     generated_file_names = glob.glob(f"{folder_path}/*.{extension}")
@@ -101,7 +102,7 @@ def check_finished_file(folder_path: str, will_generate_index_list: list, extens
                             generated_file_names]
 
     # 共通しない要素のうち、まだ処理されていないものを取得
-    not_generated_index_list = set(will_generate_index_list) - set(generated_index_list)
+    not_generated_index_list = list(set(will_generate_index_list) - set(generated_index_list))
 
     # 実行状況に応じて、状況を報告
     if not_generated_index_list:
