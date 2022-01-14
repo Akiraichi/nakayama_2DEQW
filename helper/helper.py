@@ -3,6 +3,7 @@ import sympy
 import joblib
 import zlib
 import termcolor
+import time
 
 from config.config_simulation import ConfigSimulationSetting, config_simulation_data_save_path
 from simulation.simulation_algorithm import calc_probability
@@ -37,12 +38,11 @@ def load_file_by_error_handling(file_path):
             data = joblib.load(file_path)
         except zlib.error as e:
             print_warning(e)
-            import time
             time.sleep(60)
+        # Google DriveのOSError: [Errno 5] Input/output errorへの対応
         except OSError as e:
             print_warning(e)
-            import time
-            time.sleep(60)
+            time.sleep(180)
         else:
             break
     return data
@@ -66,7 +66,16 @@ def return_phi(num):
 
 def save_jb_file(data_dict, path_to_file, file_name):
     save_path = f"{path_to_file}/{file_name}"
-    joblib.dump(data_dict, save_path, compress=3)
+    while True:
+        try:
+            joblib.dump(data_dict, save_path, compress=3)
+        # Google DriveのOSError: [Errno 5] Input/output errorへの対応
+        except OSError as e:
+            print_warning(e)
+            time.sleep(180)
+        else:
+            break
+
 
 
 def get_probability(simulation_data_file_names, index):
