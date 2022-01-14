@@ -23,7 +23,7 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, Algorithm, P, Q, R, S, t, erase
     可読性の観点から、リストの操作は[x,y]でやる方が望ましいと考えた。
     しかし、その後の解析操作では、不都合が生じるため、データ使用時は転置する事
     """
-    # 1ステップ進めたPSYを初期化する。
+    # 初期化する。
     PSY_next = np.zeros((2 * T + 1, 2 * T + 1, 4), dtype=np.complex128)
     for x in range(0, 2 * T + 1):
         for y in range(0, 2 * T + 1):
