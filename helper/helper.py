@@ -77,7 +77,6 @@ def save_jb_file(data_dict, path_to_file, file_name):
             break
 
 
-
 def get_probability(simulation_data_file_names, index):
     save_data_object = load_file_by_error_handling(simulation_data_file_names[index])
     # save_data_object = joblib.load(simulation_data_file_names[index])
