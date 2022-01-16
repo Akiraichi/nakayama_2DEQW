@@ -60,10 +60,10 @@ class SimulationQWAgent:
 
         """初期データを保存する。あるいは途中データをロードする"""
         # conditionを展開する
-        exp_name = condition.exp_name
-        exp_index = condition.exp_index
-        T = condition.T
-        PSY_init = condition.PSY_init
+        # exp_name = condition.exp_name
+        # exp_index = condition.exp_index
+        # T = condition.T
+        # PSY_init = condition.PSY_init
 
         if start_step_t == 0:
             # # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
@@ -77,17 +77,29 @@ class SimulationQWAgent:
             cls.save_initial_PSY(PSY, condition)
             start_t = 1
         else:
-            # 途中からシミュレーションを再開
-            path = f"{config_simulation_data_save_path(exp_name, str(start_step_t - 1).zfill(4), exp_index)}/{str(start_step_t - 1).zfill(4)}.jb"
-            print(path)
-            # init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
-            PSY = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+            # # 途中からシミュレーションを再開
+            # path = f"{config_simulation_data_save_path(exp_name, str(start_step_t - 1).zfill(4), exp_index)}/{str(start_step_t - 1).zfill(4)}.jb"
+            # print(path)
+            # # init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+            # PSY = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+            PSY = cls.restart_simulation(condition, start_step_t)
             start_t = start_step_t
 
         return PSY, start_t
 
     @staticmethod
+    def restart_simulation(condition, start_step_t):
+        """途中からシミュレーションを再開する"""
+        # 再開する一つ前の時間ステップのデータへのパスを取得する
+        path = f"{config_simulation_data_save_path(condition.exp_name, str(start_step_t - 1).zfill(4), condition.exp_index)}{str(start_step_t - 1).zfill(4)}.jb"
+        print(path)
+        # データをロードする
+        PSY = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+        return PSY
+
+    @staticmethod
     def create_initial_PSY(condition):
+        """初期確率振幅ベクトルを作成する"""
         # 初期確率振幅ベクトルは原点以外全て0であるため、0で初期化する。[x座標, y座標, 4成分]。座標は-Tをindexの0番、+Tを2T+1番とするように処理する。
         PSY = np.zeros([2 * condition.T + 1, 2 * condition.T + 1, 4], dtype=np.complex128)
 
@@ -97,6 +109,7 @@ class SimulationQWAgent:
 
     @classmethod
     def save_initial_PSY(cls, PSY, condition):
+        """初期確率振幅ベクトルを保存する"""
         # ここでセーブする。保存するのは初期状態のPSY
         cls.save(psy=PSY, t=0, condition=condition)
 
