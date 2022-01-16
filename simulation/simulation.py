@@ -142,7 +142,6 @@ def main_simulation(condition, t_of_start):
         # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
 
         for t in range(t_of_start + 1, T + 1):
-            # PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
             print(f"{t}：ステップ")
             PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, algorithm,
                                      P=P, Q=Q, R=R, S=S, t=t, erase_t=erase_t,
