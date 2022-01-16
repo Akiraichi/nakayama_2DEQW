@@ -66,22 +66,39 @@ class SimulationQWAgent:
         PSY_init = condition.PSY_init
 
         if start_step_t == 0:
-            # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
-            # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
-            init_PSY_now = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
-            # t=0でx=0,y=0の位置にいる。成分はPSY_init
-            init_PSY_now[0 + T, 0 + T] = PSY_init
-            # ここでセーブする。保存するのは初期状態のPSY
-            cls.save(psy=init_PSY_now, t=0, condition=condition)
+            # # 既に完了したシミュレーションが0。つまり完全新規のシミュレーション
+            # # 一つ前の時刻と今の時刻と2ステップ分だけメモリを用意する[時間ステップ, x, y, 4成分]
+            # init_PSY_now = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
+            # # t=0でx=0,y=0の位置にいる。成分はPSY_init
+            # init_PSY_now[0 + T, 0 + T] = PSY_init
+            # # ここでセーブする。保存するのは初期状態のPSY
+            # cls.save(psy=init_PSY_now, t=0, condition=condition)
+            PSY = cls.create_initial_PSY(condition)
+            cls.save_initial_PSY(PSY, condition)
             start_t = 1
         else:
             # 途中からシミュレーションを再開
             path = f"{config_simulation_data_save_path(exp_name, str(start_step_t - 1).zfill(4), exp_index)}/{str(start_step_t - 1).zfill(4)}.jb"
             print(path)
-            init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+            # init_PSY_now = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
+            PSY = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
             start_t = start_step_t
 
-        return init_PSY_now, start_t
+        return PSY, start_t
+
+    @staticmethod
+    def create_initial_PSY(condition):
+        # 初期確率振幅ベクトルは原点以外全て0であるため、0で初期化する。[x座標, y座標, 4成分]。座標は-Tをindexの0番、+Tを2T+1番とするように処理する。
+        PSY = np.zeros([2 * condition.T + 1, 2 * condition.T + 1, 4], dtype=np.complex128)
+
+        # 量子ウォーカーは、t=0では原点のみに位置しており、初期状態はPSY_initで指定される
+        PSY[0 + condition.T, 0 + condition.T] = condition.PSY_init
+        return PSY
+
+    @classmethod
+    def save_initial_PSY(cls, PSY, condition):
+        # ここでセーブする。保存するのは初期状態のPSY
+        cls.save(psy=PSY, t=0, condition=condition)
 
     @staticmethod
     def save(psy, t, condition):
@@ -101,13 +118,13 @@ class SimulationQWAgent:
     @staticmethod
     def main_simulation(condition, start_step_t):
         # conditionを展開する
-        T = condition.T
+        T = condition.T  # 最大時間ステップT（Tステップを実行してT+1ステップ目は実行せずに終了）
         exp_name = condition.exp_name
         exp_index = condition.exp_index
-        PSY_init = condition.PSY_init
-        phi = condition.phi
+        PSY_init = condition.PSY_init  # 初期確率分布
+        phi = condition.phi  # 電場の位相
         algorithm = condition.algorithm
-        erase_t = condition.erase_t
+        erase_t = condition.erase_t  # erase_tステップ目に電場を消す。
         P = condition.P
         Q = condition.Q
         R = condition.R
