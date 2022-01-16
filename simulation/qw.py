@@ -11,8 +11,8 @@ class QW:
     def __init__(self, conditions):
         self.__conditions = conditions
 
-    def simulate(self, start_step_t=0):
-        simulation = SimulationQWAgent(conditions=self.__conditions, start_step_t=start_step_t)
+    def simulate(self, t_of_load=0):
+        simulation = SimulationQWAgent(conditions=self.__conditions, t_of_load=t_of_load)
         simulation.start_parallel_processing()
 
     @property

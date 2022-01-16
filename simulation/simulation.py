@@ -11,14 +11,14 @@ class SimulationQWAgent:
     QWをシミュレーションする関数群のクラス
     """
 
-    def __init__(self, conditions, start_step_t):
+    def __init__(self, conditions, t_of_load):
         self.__conditions = conditions
-        self.__start_step_t = start_step_t
+        self.__t_of_load = t_of_load
 
     def start_parallel_processing(self):
         with ProcessPoolExecutor(max_workers=ConfigSimulationSetting.SimulationParallelNum) as e:
             for condition in self.__conditions:
-                e.submit(main_simulation, condition, self.__start_step_t)
+                e.submit(main_simulation, condition, self.__t_of_load)
 
 
 def check_finished(T, exp_name, exp_index):
@@ -51,23 +51,30 @@ def check_finished(T, exp_name, exp_index):
     return finished
 
 
-def set_start_point(start_step_t, condition):
-    """初期データを保存する。あるいは途中データをロードする"""
-    if start_step_t == 0:
+def load_start_PSY(t_of_load, condition):
+    """
+    初期データを保存する。あるいは途中データをロードする
+    Args:
+        t_of_load: ロード（あるいは生成）する時間ステップt
+        condition: 実験条件
+
+    Returns: t_of_loadステップ目が完了した時点でのシステム全体の確率振幅ベクトル
+
+    """
+    if t_of_load == 0:
         PSY = create_initial_PSY(condition)
         save_initial_PSY(PSY, condition)
-        start_t = 1
     else:
-        PSY = restart_simulation(condition, start_step_t)
-        start_t = start_step_t
+        PSY = load_simulation_data(condition, t_of_load)
 
-    return PSY, start_t
+    return PSY
 
 
-def restart_simulation(condition, start_step_t):
-    """途中からシミュレーションを再開する"""
-    # 再開する一つ前の時間ステップのデータへのパスを取得する
-    path = f"{config_simulation_data_save_path(condition.exp_name, str(start_step_t - 1).zfill(4), condition.exp_index)}{str(start_step_t - 1).zfill(4)}.jb"
+def load_simulation_data(condition, t_of_load):
+    """
+    t_of_load目のデータをロードして返却する
+    """
+    path = f"{config_simulation_data_save_path(condition.exp_name, str(t_of_load).zfill(4), condition.exp_index)}{str(t_of_load).zfill(4)}.jb"
     print(path)
     # データをロードする
     PSY = helper.load_file_by_error_handling(file_path=path)["シミュレーションデータ"]
@@ -105,7 +112,7 @@ def save(psy, t, condition):
                         file_name=f"{t}.jb")
 
 
-def main_simulation(condition, start_step_t):
+def main_simulation(condition, t_of_start):
     # conditionを展開する
     T = condition.T  # 最大時間ステップT（Tステップを実行してT+1ステップ目は実行せずに終了）
     exp_name = condition.exp_name
@@ -121,18 +128,20 @@ def main_simulation(condition, start_step_t):
     erase_time_step = condition.erase_time_step  # 電場を消すのにかける時間ステップ数
 
     # 初期化する
-    init_vector = np.zeros_like(PSY_init, dtype=np.complex128)
+    init_vector = np.zeros_like(PSY_init, dtype=np.complex128)  # TODO:目的は？
 
     if check_finished(T=T, exp_name=exp_name, exp_index=exp_index):
         return
     else:
         # 時間発展を開始する初めの時間ステップを設定する。その時の確率振幅ベクトルの状態とt
-        init_PSY_now, start_t = set_start_point(start_step_t=start_step_t, condition=condition)
+        # 時間発展を開始する時点での確率振幅ベクトルを得る。
+        PSY_now = load_start_PSY(t_of_load=t_of_start, condition=condition)
+
         # シミュレーション実行
         print(f"START：exp_index={exp_index}：simulation")
         # 繰り返し回数はT+1回。現在時刻を0次の時刻を1に代入する
-        PSY_now = init_PSY_now
-        for t in range(start_t, T + 1):
+
+        for t in range(t_of_start + 1, T + 1):
             # PSY_next = np.zeros([2 * T + 1, 2 * T + 1, 4], dtype=np.complex128)
             print(f"{t}：ステップ")
             PSY_now = calculate_QW2D(T, init_vector, phi, PSY_now, algorithm,
