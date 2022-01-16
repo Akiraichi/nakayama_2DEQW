@@ -8,6 +8,14 @@ from simulation.condition import ConditionNew, ConditionType
 class ConditionsEraseTFactory(ConditionsBaseFactory):
     """
     erase_tのみを変えた場合のconditionを生成するクラス
+    t=erase_tから通常の（電場のない）QWを開始する。
+    例：erase_t=100
+    ・・・
+    t=99のEQWを実行して完了。
+    t=100ではQWを実行して完了
+    t=101ではQWを実行して完了
+    ・・・
+    t=TでQWを実行して終了。
     """
 
     def __init__(self):

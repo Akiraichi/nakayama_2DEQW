@@ -120,7 +120,7 @@ def main_simulation(condition, t_of_start):
     PSY_init = condition.PSY_init  # 初期確率分布
     phi = condition.phi  # 電場の位相
     algorithm = condition.algorithm
-    erase_t = condition.erase_t  # erase_tステップ目に電場を消す。
+    erase_t = condition.erase_t  # t=erase_tから通常の（電場のない）QWを開始する
     P = condition.P
     Q = condition.Q
     R = condition.R
