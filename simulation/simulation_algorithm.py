@@ -48,6 +48,12 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, Algorithm, P, Q, R, S, t, erase
                                                                (Q @ PSY_of_Q) +
                                                                (R @ PSY_of_R) +
                                                                (S @ PSY_of_S))
+            elif Algorithm == 31234:
+                # x軸で電場をかけた
+                PSY_next[x, y] = np.exp(1j * (x + 1 - T) * phi) * (P @ PSY_of_P) + \
+                                 np.exp(1j * (x - 1 - T) * phi) * (Q @ PSY_of_Q) + \
+                                 np.exp(1j * (x - T) * phi) * (R @ PSY_of_R) + \
+                                 np.exp(1j * (x - T) * phi) * (S @ PSY_of_S)
 
             elif Algorithm == 5:
                 # xとy両方
@@ -56,6 +62,13 @@ def calculate_QW2D(T, init_vector, phi, PSY_now, Algorithm, P, Q, R, S, t, erase
                                   (Q @ PSY_of_Q) +
                                   (R @ PSY_of_R) +
                                   (S @ PSY_of_S))
+
+            elif Algorithm == 51234:
+                # xとy両方
+                PSY_next[x, y] = np.exp(1j * (x + 1 - T) * phi) * np.exp(1j * (y - T) * phi) * (P @ PSY_of_P) + \
+                                 np.exp(1j * (x - 1 - T) * phi) * np.exp(1j * (y - T) * phi) * (Q @ PSY_of_Q) + \
+                                 np.exp(1j * (x - T) * phi) * np.exp(1j * (y + 1 - T) * phi) * (R @ PSY_of_R) + \
+                                 np.exp(1j * (x - T) * phi) * np.exp(1j * (y - 1 - T) * phi) * (S @ PSY_of_S)
 
             # elif Algorithm == 6:
             #     # 固定値-x軸
