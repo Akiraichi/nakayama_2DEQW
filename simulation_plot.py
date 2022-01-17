@@ -52,7 +52,7 @@ class SimulationResultPlotter:
 if __name__ == '__main__':
     indexes = [0]
     plotter = SimulationResultPlotter(
-        conditions=ConditionsSingleFactory.single_009_ElectricGroverWalk2DAlongXY(),
+        conditions=ConditionsSingleFactory.single_008_ElectricGroverWalk2DAlongX(),
         save_path_indexes=indexes)
     plotter.plot_surface()
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
