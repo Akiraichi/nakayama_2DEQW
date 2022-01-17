@@ -109,7 +109,7 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = helper.return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
-                                                                        "algorithm": 31234,
+                                                                        "algorithm": 3,
                                                                         "exp_index": 0,
                                                                         "phi": phi})
         conditions.append(c)
@@ -122,7 +122,7 @@ class ConditionsSingleFactory(ConditionsBaseFactory):
         conditions = []
         phi = helper.return_phi(num=4)
         c = ConditionNew.prepare(pattern=ConditionType.Grover, options={"exp_name": exp_name,
-                                                                        "algorithm": 51234,
+                                                                        "algorithm": 5,
                                                                         "exp_index": 0,
                                                                         "phi": phi})
         conditions.append(c)
