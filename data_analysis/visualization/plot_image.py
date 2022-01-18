@@ -50,6 +50,21 @@ def plot_image(_setting: DefaultPlotSetting):
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
 
+def plot_image_group(_setting: DefaultPlotSetting):
+    for i in range(len(_setting.conditions)):
+        exp_name = _setting.conditions[i].exp_name
+        save_path_index = _setting.save_path_indexes[i]
+
+        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=exp_name,
+                                                                              exp_index=save_path_index)
+        plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[0]],
+                              exp_name=exp_name,
+                              exp_index=save_path_index, plot_type=_setting.plot_type, is_enlarge=_setting.is_enlarge,
+                              _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))
+        plotter.plot()
+        helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
+
+
 class Plotter:
     def __init__(self, exp_mame, save_path_index, setting: DefaultPlotSetting):
         self.p = 0  # 何に使うんだっけ？
@@ -128,7 +143,7 @@ class Plotter:
 
 
 class MainPlotter:
-    def __init__(self, simulation_data_file_name, exp_name, exp_index, plot_type, is_enlarge):
+    def __init__(self, simulation_data_file_name, exp_name, exp_index, plot_type, is_enlarge, _save_path=None):
         self.__plot_type = plot_type
         simulation_data = helper.load_file_by_error_handling(simulation_data_file_name)
         condition = simulation_data["実験条件データ（condition）"]
@@ -141,8 +156,12 @@ class MainPlotter:
         len_y = 2 * self.__T + 1
         PSY = simulation_data["シミュレーションデータ"]
         self.__mesh_z = calc_probability(PSY, len_x, len_y)
-        self.__file_name = f"{self.__t_index}"
-        self.__plot_save_path = plot_save_path(exp_name, self.__plot_type, exp_index)  #
+        if _save_path is None:
+            self.__file_name = f"{self.__t_index}"
+            self.__plot_save_path = plot_save_path(exp_name, self.__plot_type, exp_index)
+        else:
+            self.__file_name = f"{exp_index}_{self.__t_index}"
+            self.__plot_save_path = _save_path
         self.__is_enlarge = is_enlarge
 
     def plot(self):
