@@ -1,7 +1,7 @@
 import dataclasses
 
 from config.config_visualization import DefaultPlotSetting
-from data_analysis.visualization.plot_image import plot_image, Plotter
+from data_analysis.visualization.plot_image import plot_image, Plotter,plot_image_group
 from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
 from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
 
@@ -48,15 +48,31 @@ class SimulationResultPlotter:
             _plotter = Plotter(exp_mame=exp_name, save_path_index=save_path_index, setting=_setting)
             _plotter.plot_3d_image()
 
+    def plot_surface_group_by(self, t_of_plot):
+        plot_type = "surface"
+        _setting = DefaultPlotSetting(plot_type, self.__conditions, self.__save_path_indexes)
+        options = {"plot_t_list": [t_of_plot]}
+        _setting = dataclasses.replace(_setting, **options)
+        plot_image_group(_setting=_setting)
+
+    def plot_heatmap_group_by(self, t_of_plot):
+        plot_type = "heatmap"
+        _setting = DefaultPlotSetting(plot_type, self.__conditions, self.__save_path_indexes)
+        options = {"plot_t_list": [t_of_plot]}
+        _setting = dataclasses.replace(_setting, **options)
+        plot_image_group(_setting=_setting)
+
 
 if __name__ == '__main__':
-    indexes = [0]
+    indexes = [16, 31, 46, 61]
     plotter = SimulationResultPlotter(
-        conditions=ConditionsSingleFactory.single_008_ElectricGroverWalk2DAlongX(),
+        conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
         save_path_indexes=indexes)
-    plotter.plot_surface()
+    # plotter.plot_surface()
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
-    plotter.plot_heatmap()
+    # plotter.plot_heatmap()
+
+    plotter.plot_heatmap_group_by(t_of_plot=200)
 
     # plotter.plot_3d_image(options={"plot_t_list": list(range(20, 205, 5))})
     # plotter.plot_3d_image()
