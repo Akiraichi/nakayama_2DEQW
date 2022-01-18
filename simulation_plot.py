@@ -35,7 +35,7 @@ class SimulationResultPlotter:
             _setting = dataclasses.replace(_setting, **options)
         plot_image(_setting=_setting)
 
-    def plot_3d_image_cmp_t(self, plot_t_list):
+    def plot_3d_images(self, plot_t_list, z_axis):
         """
         z軸を時間ステップtとした3d_heatmapを作成する。save_path_indexesで指定されたindex全てに対して実行
         Args:
@@ -47,7 +47,7 @@ class SimulationResultPlotter:
         for i in range(len(self.__conditions)):
             exp_name = self.__conditions[i].exp_name
             _setting = Plot3dSetting(exp_name=exp_name, plot_type="heatmap", plot_t_list=plot_t_list,
-                                     plot_index_list=self.__save_path_indexes, z_axis="t")
+                                     plot_index_list=self.__save_path_indexes, z_axis=z_axis)
 
             plot_3d_image(_setting)
 
@@ -79,4 +79,4 @@ if __name__ == '__main__':
     # plotter.plot_heatmap()
 
     # plotter.plot_heatmap_group_by(t_of_plot_list=[200] * len(indexes))
-    plotter.plot_3d_image_cmp_t(plot_t_list=[10, 20, 30, 40, 50])
+    plotter.plot_3d_images(plot_t_list=[10, 20, 30, 40, 50], z_axis="t")
