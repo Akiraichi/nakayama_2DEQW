@@ -68,26 +68,38 @@ def plot_image_group(_setting: DefaultPlotSetting):
 
 def plot_3d_image(_setting: Plot3dSetting):
     # データが存在するかを確認。なければ作成し、プロットする
-    while True:
-        try:
-            data_dict = joblib.load(f"{_setting.path_to_file}/{_setting.file_name}.jb")
-        except FileNotFoundError as e:
-            print(e)
-            # ファイルがないので作成する
-            if _setting.z_axis == "t":
-                create_3d_image_data_cmp_t(_setting)
-            elif _setting.z_axis == "i":
-                create_3d_image_data_cmp_i(_setting)
-            else:
-                helper.print_warning("z_axisの設定を間違えています")
-                raise OSError
-        else:
-            break
+    data_dict = {}
+    if _setting.z_axis == "t":
+        for index in _setting.plot_index_list:
+            while True:
+                try:
+                    data_dict = joblib.load(f"{_setting.path_to_file}/{_setting.file_name(index=index)}.jb")
+                except FileNotFoundError as e:
+                    print(e)
+                    # ファイルがないので作成する
+                    create_3d_image_data_cmp_t(_setting, index)
+                else:
+                    break
+    elif _setting.z_axis == "i":
+        for index in _setting.plot_t_list:
+            while True:
+                try:
+                    data_dict = joblib.load(f"{_setting.path_to_file}/{_setting.file_name(index=index)}.jb")
+                except FileNotFoundError as e:
+                    print(e)
+                    # ファイルがないので作成する
+                    create_3d_image_data_cmp_i(_setting, index)
+                else:
+                    break
+    else:
+        helper.print_warning("z_axisの設定を間違えています")
+        raise OSError
+
     if Env.ENV == "local":
         do_plot_3d_image(**data_dict)
 
 
-def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
+def create_3d_image_data_cmp_t(_setting: Plot3dSetting, index):
     simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=_setting.conditions[0].exp_name,
                                                                           exp_index=_setting.plot_index_list[0])
     # STEP(1.5)：後でlen_x,len_yを計算するために代表して0番のデータをロードする
@@ -107,10 +119,10 @@ def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
                                                                         calc_len_y(_condition.T),
                                                                         np.array(_setting.plot_t_list),
                                                                         np.array(p_list))
-    image_data_save(x_list, y_list, z_list, value_list, _setting)
+    image_data_save(x_list, y_list, z_list, value_list, _setting, index)
 
 
-def create_3d_image_data_cmp_i(_setting: Plot3dSetting):
+def create_3d_image_data_cmp_i(_setting: Plot3dSetting, index):
     # STEP(2)：確率データを得る。そしてリストへappend
     p_list = []
     for i, exp_index in enumerate(_setting.plot_index_list):
@@ -130,10 +142,10 @@ def create_3d_image_data_cmp_i(_setting: Plot3dSetting):
                                                                         calc_len_y(condition.T),
                                                                         np.array(_setting.plot_index_list),
                                                                         np.array(p_list))
-    image_data_save(x_list, y_list, z_list, value_list, _setting)
+    image_data_save(x_list, y_list, z_list, value_list, _setting, index)
 
 
-def image_data_save(x_list, y_list, z_list, value_list, _setting: Plot3dSetting):
+def image_data_save(x_list, y_list, z_list, value_list, _setting: Plot3dSetting, index):
     # STEP(3)：データを保存する。プロットはローカルで行うため。
     data_dict = {
         "x_list": x_list,
@@ -143,7 +155,7 @@ def image_data_save(x_list, y_list, z_list, value_list, _setting: Plot3dSetting)
         "file_name": _setting.file_name,
         "path_to_file": _setting.path_to_file
     }
-    helper.save_jb_file(data_dict, _setting.path_to_file, f"{_setting.file_name}.jb")
+    helper.save_jb_file(data_dict, _setting.path_to_file, f"{_setting.file_name(index=index)}.jb")
 
 
 def calc_len_x(_T):

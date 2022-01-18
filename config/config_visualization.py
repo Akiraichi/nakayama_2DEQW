@@ -46,18 +46,18 @@ class Plot3dSetting:
     z_axis: str
     conditions: list
     path_to_file: str = field(init=False)
-    file_name: str = field(init=False)
 
     def __post_init__(self):
         name = DefaultNameSetting
         top_folder_name = "3d_plot"
+        self.path_to_file = f"{name.default_top_folder_name}/{top_folder_name}/{self.z_axis}/{self.conditions[0].exp_name}"
+        os.makedirs(self.path_to_file, exist_ok=True)
+
+    def file_name(self, index):
         if self.z_axis == "t":
-            self.file_name = f"3d_{self.z_axis}_{self.plot_type}_group={self.conditions[0].exp_name}_{self.plot_index_list[0]}_{self.plot_t_list[:10]}"
-            self.path_to_file = f"{name.default_top_folder_name}/{top_folder_name}/{self.z_axis}/{self.conditions[0].exp_name}"
+            return f"3d_{self.z_axis}_{self.plot_type}_exp={index}_t={self.plot_t_list[:10]}"
         elif self.z_axis == "i":
-            self.file_name = f"3d_{self.z_axis}_{self.plot_type}_group={self.plot_t_list[0]}_{self.plot_index_list[:10]}_{self.plot_t_list[0]}"
-            self.path_to_file = f"{name.default_top_folder_name}/{top_folder_name}/{self.z_axis}/t={self.plot_t_list[0]}"
+            return f"3d_{self.z_axis}_{self.plot_type}_t={index}_exp={self.plot_index_list[:10]}"
         else:
             helper.print_warning("z_axisの設定を間違えています")
             raise OSError
-        os.makedirs(self.path_to_file, exist_ok=True)
