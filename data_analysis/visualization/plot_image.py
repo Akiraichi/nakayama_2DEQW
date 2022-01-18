@@ -6,7 +6,7 @@ import seaborn as sns
 import pandas as pd
 from numba import njit
 
-from config.config_visualization import plot_save_path, DefaultPlotSetting
+from config.config_visualization import plot_save_path, DefaultPlotSetting, Plot3dSetting
 from config.config_simulation import ConfigSimulationSetting
 from helper import helper
 from simulation.simulation_algorithm import calc_probability
@@ -65,6 +65,74 @@ def plot_image_group(_setting: DefaultPlotSetting):
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
 
+def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
+    for exp_index in _setting.plot_index_list:
+        # STEP(1)：シミュレーションデータへのパスを得る
+        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=_setting.exp_name,
+                                                                              exp_index=exp_index)
+        # STEP(1.5)：後でlen_x,len_yを計算するために代表して0番のデータをロードする
+        _simulation_data = helper.load_file_by_error_handling(simulation_data_file_names[0])
+        _condition = _simulation_data["実験条件データ（condition）"]
+
+        # STEP(2)：確率データを得る。そしてリストへappend
+        p_list = []
+        for _, t in enumerate(_setting.plot_t_list):
+            simulation_data = helper.load_file_by_error_handling(simulation_data_file_names[t])
+            condition = simulation_data["実験条件データ（condition）"]
+            PSY = simulation_data["シミュレーションデータ"]
+            p = calc_probability(PSY, calc_len_x(condition.T), calc_len_y(condition.T))
+            p_list.append(p)
+
+        # STEP(3)：データを保存する。プロットはローカルで行うため。
+        data_dict = {
+            "len_x": calc_len_x(_condition.T),
+            "len_y": calc_len_y(_condition.T),
+            "plot_t_list": _setting.plot_t_list,
+            "p_list": p_list,
+            "file_name": _setting.file_name,
+            "path_to_file": _setting.path_to_file
+        }
+        helper.save_jb_file(data_dict, _setting.path_to_file, _setting.file_name)
+
+        do_plot_3d_image(**data_dict)
+
+
+def calc_len_x(_T):
+    """2次元格子の長さを返す。正方形なのでx方向もy方向も同じ"""
+    return 2 * _T + 1
+
+
+def calc_len_y(_T):
+    """2次元格子の長さを返す。正方形なのでx方向もy方向も同じ"""
+    return 2 * _T + 1
+
+
+def do_plot_3d_image(len_x, len_y, plot_t_list, p_list, file_name, path_to_file):
+    # step(3)：プロットする
+    x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(len_x, len_y,
+                                                                        np.array(plot_t_list),
+                                                                        np.array(p_list))
+    # creating figures
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # setting color bar
+    color_map = cm.ScalarMappable(cmap=cm.gist_heat_r)
+    color_map.set_array(value_list)
+
+    # creating the heatmap
+    ax.scatter(x_list, y_list, z_list, cmap="gist_heat_r", c=value_list, s=1)
+    plt.colorbar(color_map)
+
+    # adding title and labels
+    ax.set_title("3D Heatmap")
+    ax.set_xlabel('X-axis')
+    ax.set_ylabel('Y-axis')
+    ax.set_zlabel('Z-axis')
+
+    plt.show()
+
+
 class Plotter:
     def __init__(self, exp_mame, save_path_index, setting: DefaultPlotSetting):
         self.p = 0  # 何に使うんだっけ？
@@ -99,47 +167,6 @@ class Plotter:
         plotter = MainPlotter(simulation_data_file_name=simulation_data_file_name, exp_name=exp_name,
                               exp_index=exp_index, plot_type=plot_type, is_enlarge=is_enlarge)
         plotter.plot()
-
-    def plot_3d_image(self):
-        # ステップ(1)：シミュレーションデータへのアクセス用のパスをゲットする
-        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=self.__exp_name,
-                                                                              exp_index=self.__save_path_index)
-        # step(2)：確率データを得る。そしてリストへappend
-        p_list = []
-        len_x: int = 0
-        len_y: int = 0
-        for _, t in enumerate(self.__not_plot_t_list):
-            simulation_data = helper.load_file_by_error_handling(simulation_data_file_names[t])
-            condition = simulation_data["実験条件データ（condition）"]
-            _T = condition.T
-            len_x = 2 * _T + 1
-            len_y = 2 * _T + 1
-            PSY = simulation_data["シミュレーションデータ"]
-            p = calc_probability(PSY, len_x, len_y)
-            p_list.append(p)
-        # step(3)：プロットする
-        x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(len_x, len_y,
-                                                                            np.array(self.__not_plot_t_list),
-                                                                            np.array(p_list))
-        # creating figures
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
-
-        # setting color bar
-        color_map = cm.ScalarMappable(cmap=cm.gist_heat_r)
-        color_map.set_array(value_list)
-
-        # creating the heatmap
-        ax.scatter(x_list, y_list, z_list, cmap="gist_heat_r", c=value_list, s=1)
-        plt.colorbar(color_map)
-
-        # adding title and labels
-        ax.set_title("3D Heatmap")
-        ax.set_xlabel('X-axis')
-        ax.set_ylabel('Y-axis')
-        ax.set_zlabel('Z-axis')
-
-        plt.show()
 
 
 class MainPlotter:
