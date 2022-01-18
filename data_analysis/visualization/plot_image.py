@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from numba import njit
+import joblib
 
 from config.config_visualization import plot_save_path, DefaultPlotSetting, Plot3dSetting
-from config.config_simulation import ConfigSimulationSetting
+from config.config_simulation import ConfigSimulationSetting, Env
 from helper import helper
 from simulation.simulation_algorithm import calc_probability
 
@@ -65,6 +66,21 @@ def plot_image_group(_setting: DefaultPlotSetting):
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
 
+def plot_3d_image(_setting: Plot3dSetting):
+    # データが存在するかを確認。なければ作成し、プロットする
+    while True:
+        try:
+            data_dict = joblib.load(f"{_setting.path_to_file}/{_setting.file_name}.jb")
+        except FileNotFoundError as e:
+            print(e)
+            # ファイルがないので作成する
+            create_3d_image_data_cmp_t(_setting)
+        else:
+            break
+    if Env.ENV == "local":
+        do_plot_3d_image(**data_dict)
+
+
 def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
     for exp_index in _setting.plot_index_list:
         # STEP(1)：シミュレーションデータへのパスを得る
@@ -92,9 +108,7 @@ def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
             "file_name": _setting.file_name,
             "path_to_file": _setting.path_to_file
         }
-        helper.save_jb_file(data_dict, _setting.path_to_file, _setting.file_name)
-
-        do_plot_3d_image(**data_dict)
+        helper.save_jb_file(data_dict, _setting.path_to_file, f"{_setting.file_name}.jb")
 
 
 def calc_len_x(_T):
