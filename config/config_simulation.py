@@ -2,6 +2,8 @@ import os
 import sys
 from dataclasses import dataclass, field
 
+from config.config_name import DefaultNameSetting
+
 
 @dataclass(frozen=True)
 class CloudSimulationSetting:
@@ -33,14 +35,16 @@ class ConfigSimulationSetting:
 
 def config_simulation_data_save_path(exp_name, str_t=None, index=None):
     # 実験データの保存先のフォルダーがなければ作成する
+    name = DefaultNameSetting(exp1_name="", exp1_index=0, exp2_name="")
+    top_folder = name.default_top_folder_name
     if index is None:
-        path = f"result/{exp_name}/simulation_data_{exp_name}/"
+        path = f"{top_folder}/{exp_name}/simulation_data_{exp_name}/"
     elif str_t is None:
         index = str(index).zfill(2)
-        path = f"result/{exp_name}/simulation_data_{exp_name}/{index}/"
+        path = f"{top_folder}/{exp_name}/simulation_data_{exp_name}/{index}/"
     else:
         # index=実験した時の順番でつけた番号。0埋めする
         index = str(index).zfill(2)
-        path = f"result/{exp_name}/simulation_data_{exp_name}/{index}/{str_t[:2]}/"
+        path = f"{top_folder}/{exp_name}/simulation_data_{exp_name}/{index}/{str_t[:2]}/"
     os.makedirs(path, exist_ok=True)
     return path
