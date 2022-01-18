@@ -48,10 +48,10 @@ class SimulationResultPlotter:
             _plotter = Plotter(exp_mame=exp_name, save_path_index=save_path_index, setting=_setting)
             _plotter.plot_3d_image()
 
-    def plot_surface_group_by(self, t_of_plot):
+    def plot_surface_group_by(self, t_of_plot_list):
         plot_type = "surface"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, self.__save_path_indexes)
-        options = {"plot_t_list": [t_of_plot]}
+        options = {"plot_t_list": t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
         plot_image_group(_setting=_setting)
 
@@ -64,7 +64,7 @@ class SimulationResultPlotter:
 
 
 if __name__ == '__main__':
-    indexes = [16, 31, 46, 61]
+    indexes = list(range(16, 256, 15))
     plotter = SimulationResultPlotter(
         conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
         save_path_indexes=indexes)
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
     # plotter.plot_heatmap()
 
-    plotter.plot_heatmap_group_by(t_of_plot_list=[200 - 16, 200 - 31, 200 - 46, 200 - 61])
+    plotter.plot_heatmap_group_by(t_of_plot_list=[200] * len(indexes))
 
     # plotter.plot_3d_image(options={"plot_t_list": list(range(20, 205, 5))})
     # plotter.plot_3d_image()
