@@ -2,12 +2,14 @@ import dataclasses
 
 from config.config_visualization import DefaultPlotSetting, Plot3dSetting
 from data_analysis.visualization.plot_image import plot_image, plot_image_group, plot_3d_image
+from simulation.condition import ConditionNew
 from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
 from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
+from typing import List
 
 
 class SimulationResultPlotter:
-    def __init__(self, conditions, save_path_indexes):
+    def __init__(self, conditions: List[ConditionNew], save_path_indexes):
         """
         plot_t_listで指定されたtのプロットを行う。
         例：plot_t_list=[200]の場合
@@ -19,7 +21,7 @@ class SimulationResultPlotter:
             save_path_indexes: 保存する際のフォルダ名に使うindexのリスト
         """
         self.__conditions = conditions
-        self.__save_path_indexes = save_path_indexes
+        self.__save_path_indexes = save_path_indexes  # 不要ではある.conditionから持ってこれるから
 
     def plot_surface(self, options=None):
         plot_type = "surface"
@@ -40,16 +42,14 @@ class SimulationResultPlotter:
         z軸を時間ステップtとした3d_heatmapを作成する。save_path_indexesで指定されたindex全てに対して実行
         Args:
             plot_t_list: z軸にプロットするtをリストで指定したもの
+            z_axis:iかtを指定
 
         Returns:
 
         """
-        for i in range(len(self.__conditions)):
-            exp_name = self.__conditions[i].exp_name
-            _setting = Plot3dSetting(exp_name=exp_name, plot_type="heatmap", plot_t_list=plot_t_list,
-                                     plot_index_list=self.__save_path_indexes, z_axis=z_axis)
-
-            plot_3d_image(_setting)
+        _setting = Plot3dSetting(plot_type="heatmap", plot_t_list=plot_t_list, plot_index_list=self.__save_path_indexes,
+                                 conditions=self.__conditions, z_axis=z_axis)
+        plot_3d_image(_setting)
 
     def plot_surface_group_by(self, t_of_plot_list):
         plot_type = "surface"
@@ -68,6 +68,7 @@ class SimulationResultPlotter:
 
 if __name__ == '__main__':
     indexes = [0]
+    # indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136]
     # plotter = SimulationResultPlotter(
     #     conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
     #     save_path_indexes=indexes)
@@ -79,4 +80,5 @@ if __name__ == '__main__':
     # plotter.plot_heatmap()
 
     # plotter.plot_heatmap_group_by(t_of_plot_list=[200] * len(indexes))
-    plotter.plot_3d_images(plot_t_list=[10, 20, 30, 40, 50], z_axis="t")
+    plotter.plot_3d_images(plot_t_list=[15, 30, 45, 60, 75, 90, 105, 120, 135], z_axis="t")
+    # plotter.plot_3d_images(plot_t_list=[200], z_axis="i")
