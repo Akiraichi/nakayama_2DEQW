@@ -13,6 +13,14 @@ class CloudSimulationSetting:
 
 
 @dataclass(frozen=True)
+class Env:
+    if 'google.colab' in sys.modules:
+        ENV = "colab"
+    else:
+        ENV = "local"
+
+
+@dataclass(frozen=True)
 class LocalSimulationSetting:
     MaxTimeStep: int = 200
     SimulationParallelNum: int = 4
@@ -21,16 +29,19 @@ class LocalSimulationSetting:
 
 @dataclass(frozen=True)
 class ConfigSimulationSetting:
-    if 'google.colab' in sys.modules:
+    if Env.ENV == "colab":
         # google colab環境
         MaxTimeStep: int = field(init=False, default=CloudSimulationSetting.MaxTimeStep)
         SimulationParallelNum: int = field(init=False, default=CloudSimulationSetting.SimulationParallelNum)
         PlotParallelNum: int = field(init=False, default=CloudSimulationSetting.PlotParallelNum)
-    else:
+    elif Env.ENV == "local":
         # local環境
         MaxTimeStep: int = field(init=False, default=LocalSimulationSetting.MaxTimeStep)
         SimulationParallelNum: int = field(init=False, default=LocalSimulationSetting.SimulationParallelNum)
         PlotParallelNum: int = field(init=False, default=LocalSimulationSetting.PlotParallelNum)
+    else:
+        print("環境設定を間違えています")
+        raise OSError
 
 
 def config_simulation_data_save_path(exp_name, str_t=None, index=None):
