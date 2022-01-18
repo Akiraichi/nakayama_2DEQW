@@ -57,7 +57,7 @@ def plot_image_group(_setting: DefaultPlotSetting):
 
         simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=exp_name,
                                                                               exp_index=save_path_index)
-        plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[0]],
+        plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[i]],
                               exp_name=exp_name,
                               exp_index=save_path_index, plot_type=_setting.plot_type, is_enlarge=_setting.is_enlarge,
                               _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))

@@ -1,7 +1,7 @@
 import dataclasses
 
 from config.config_visualization import DefaultPlotSetting
-from data_analysis.visualization.plot_image import plot_image, Plotter,plot_image_group
+from data_analysis.visualization.plot_image import plot_image, Plotter, plot_image_group
 from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
 from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
 
@@ -55,10 +55,10 @@ class SimulationResultPlotter:
         _setting = dataclasses.replace(_setting, **options)
         plot_image_group(_setting=_setting)
 
-    def plot_heatmap_group_by(self, t_of_plot):
+    def plot_heatmap_group_by(self, t_of_plot_list):
         plot_type = "heatmap"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, self.__save_path_indexes)
-        options = {"plot_t_list": [t_of_plot]}
+        options = {"plot_t_list": t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
         plot_image_group(_setting=_setting)
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
     # plotter.plot_heatmap()
 
-    plotter.plot_heatmap_group_by(t_of_plot=200)
+    plotter.plot_heatmap_group_by(t_of_plot_list=[200 - 16, 200 - 31, 200 - 46, 200 - 61])
 
     # plotter.plot_3d_image(options={"plot_t_list": list(range(20, 205, 5))})
     # plotter.plot_3d_image()
