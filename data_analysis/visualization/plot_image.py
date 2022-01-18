@@ -99,12 +99,17 @@ def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
             p = calc_probability(PSY, calc_len_x(condition.T), calc_len_y(condition.T))
             p_list.append(p)
 
+        # STEP(3)：データを加工する。プロット用のデータに変える
+        x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(calc_len_x(_condition.T),
+                                                                            calc_len_y(_condition.T),
+                                                                            np.array(_setting.plot_t_list),
+                                                                            np.array(p_list))
         # STEP(3)：データを保存する。プロットはローカルで行うため。
         data_dict = {
-            "len_x": calc_len_x(_condition.T),
-            "len_y": calc_len_y(_condition.T),
-            "plot_t_list": _setting.plot_t_list,
-            "p_list": p_list,
+            "x_list": x_list,
+            "y_list": y_list,
+            "z_list": z_list,
+            "value_list": value_list,
             "file_name": _setting.file_name,
             "path_to_file": _setting.path_to_file
         }
@@ -121,11 +126,8 @@ def calc_len_y(_T):
     return 2 * _T + 1
 
 
-def do_plot_3d_image(len_x, len_y, plot_t_list, p_list, file_name, path_to_file):
+def do_plot_3d_image(x_list, y_list, z_list, value_list, file_name, path_to_file):
     # step(3)：プロットする
-    x_list, y_list, z_list, value_list = return_x_y_z_v_set_for_3d_plot(len_x, len_y,
-                                                                        np.array(plot_t_list),
-                                                                        np.array(p_list))
     # creating figures
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
