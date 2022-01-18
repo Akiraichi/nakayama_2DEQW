@@ -107,7 +107,7 @@ def create_3d_image_data_cmp_t(_setting: Plot3dSetting):
                                                                         calc_len_y(_condition.T),
                                                                         np.array(_setting.plot_t_list),
                                                                         np.array(p_list))
-    plot_image_data_save(x_list, y_list, z_list, value_list, _setting)
+    image_data_save(x_list, y_list, z_list, value_list, _setting)
 
 
 def create_3d_image_data_cmp_i(_setting: Plot3dSetting):
@@ -130,10 +130,10 @@ def create_3d_image_data_cmp_i(_setting: Plot3dSetting):
                                                                         calc_len_y(condition.T),
                                                                         np.array(_setting.plot_index_list),
                                                                         np.array(p_list))
-    plot_image_data_save(x_list, y_list, z_list, value_list, _setting)
+    image_data_save(x_list, y_list, z_list, value_list, _setting)
 
 
-def plot_image_data_save(x_list, y_list, z_list, value_list, _setting: Plot3dSetting):
+def image_data_save(x_list, y_list, z_list, value_list, _setting: Plot3dSetting):
     # STEP(3)：データを保存する。プロットはローカルで行うため。
     data_dict = {
         "x_list": x_list,
