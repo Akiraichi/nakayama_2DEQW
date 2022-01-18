@@ -1,7 +1,7 @@
 import dataclasses
 
 from config.config_visualization import DefaultPlotSetting, Plot3dSetting
-from data_analysis.visualization.plot_image import plot_image, plot_image_group, create_3d_image_data_cmp_t
+from data_analysis.visualization.plot_image import plot_image, plot_image_group, plot_3d_image
 from simulation.conditions_factories.conditions_single_factory import ConditionsSingleFactory
 from simulation.conditions_factories.conditions_erase_t_factory import ConditionsEraseTFactory
 
@@ -48,7 +48,8 @@ class SimulationResultPlotter:
             exp_name = self.__conditions[i].exp_name
             _setting = Plot3dSetting(exp_name=exp_name, plot_type="heatmap", plot_t_list=plot_t_list,
                                      plot_index_list=self.__save_path_indexes, z_axis="t")
-            create_3d_image_data_cmp_t(_setting)
+
+            plot_3d_image(_setting)
 
     def plot_surface_group_by(self, t_of_plot_list):
         plot_type = "surface"
