@@ -1,17 +1,22 @@
 import os
 from dataclasses import dataclass, field
 
+from config.config_name import DefaultNameSetting
 from helper import helper
 
 
-def plot_save_path(exp_name, plot_type, index=None):
+def plot_save_path(exp_name, plot_type, index=None, is_group=False):
     # 実験データの保存先のフォルダーがなければ作成する
+    name = DefaultNameSetting
     if index is None:
-        path = f"result/{exp_name}/{plot_type}_{exp_name}"
+        path = f"{name.default_top_folder_name}/{exp_name}/{plot_type}_{exp_name}"
     else:
         # index=実験した時の順番でつけた番号。0埋めする
         index = str(index).zfill(2)
-        path = f"result/{exp_name}/{plot_type}_{exp_name}/{index}"
+        path = f"{name.default_top_folder_name}/{exp_name}/{plot_type}_{exp_name}/{index}"
+
+    if is_group:
+        path = f"{name.default_top_folder_name}/{exp_name}/group_{plot_type}_{exp_name}"
     os.makedirs(path, exist_ok=True)
     return path
 
