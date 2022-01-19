@@ -31,7 +31,7 @@ def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
         for x in range(len_x):
             print("x=,", x, ",i=", i)
             for y in range(len_y):
-                if round(p_list[i][x, y], 3) == 0.0:
+                if round(p_list[i][x, y], 4) == 0.0:
                     continue
                 x_list[index_count] = x
                 y_list[index_count] = y
@@ -96,7 +96,12 @@ def plot_3d_image(_setting: Plot3dSetting):
         raise OSError
 
     if Env.ENV == "local":
-        do_plot_3d_image(**data_dict)
+        df_dict = {"x": data_dict["x_list"],
+                   "y": data_dict["y_list"],
+                   "z": data_dict["z_list"],
+                   "v": data_dict["value_list"]}
+        df = pd.DataFrame(df_dict)
+        do_plot_3d_image_new(df)
 
 
 def create_3d_image_data_cmp_t(_setting: Plot3dSetting, index):
@@ -189,6 +194,13 @@ def do_plot_3d_image(x_list, y_list, z_list, value_list, file_name, path_to_file
     ax.set_zlabel('Z-axis')
 
     plt.show()
+
+
+def do_plot_3d_image_new(df):
+    import plotly.express as px
+    fig = px.scatter_3d(df, x='x', y='y', z='z',
+                        color='v', symbol='z', color_continuous_scale='hot_r',opacity=0.7)
+    fig.show()
 
 
 class Plotter:
