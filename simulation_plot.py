@@ -51,19 +51,19 @@ class SimulationResultPlotter:
                                  conditions=self.__conditions, z_axis=z_axis)
         plot_3d_image(_setting)
 
-    def plot_surface_group_by(self, _t_of_plot_list, gif_only=False):
+    def plot_surface_group_by(self, _t_of_plot_list, gif_only=False, plot_only=False):
         plot_type = "surface"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 800, self.__save_path_indexes)
         options = {"plot_t_list": _t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
-        plot_image_group(_setting=_setting, gif_only=gif_only)
+        plot_image_group(_setting=_setting, gif_only=gif_only, plot_only=plot_only)
 
-    def plot_heatmap_group_by(self, _t_of_plot_list, gif_only=False):
+    def plot_heatmap_group_by(self, _t_of_plot_list, gif_only=False,plot_only=False):
         plot_type = "heatmap"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 400, self.__save_path_indexes)
         options = {"plot_t_list": _t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
-        plot_image_group(_setting=_setting, gif_only=gif_only)
+        plot_image_group(_setting=_setting, gif_only=gif_only, plot_only=plot_only)
 
 
 if __name__ == '__main__':
