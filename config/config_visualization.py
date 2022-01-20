@@ -26,6 +26,7 @@ class DefaultPlotSetting:
     # プロットに関する共通設定を記入する。
     plot_type: str  # surfaceかheatmapかを指定
     conditions: list  # プロットしたい実験条件をリストで指定する
+    dpi: int
     save_path_indexes: list = field(default_factory=[0])  # TODO:これなんだっけ？
     plot_t_list: list = field(default_factory=helper.select_plot_t_step_by_100)  # プロットしたいtをlistの形式で指定する
     is_enlarge: bool = False  # Trueにした場合、最大時間ステップまでの範囲でプロットする

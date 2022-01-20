@@ -9,6 +9,7 @@ import joblib
 
 from config.config_visualization import plot_save_path, DefaultPlotSetting, Plot3dSetting
 from config.config_simulation import ConfigSimulationSetting, Env
+from data_analysis.visualization.make_gif import make_gif
 from helper import helper
 from simulation.simulation_algorithm import calc_probability
 
@@ -59,6 +60,8 @@ def plot_image(_setting: DefaultPlotSetting):
 
 
 def plot_image_group(_setting: DefaultPlotSetting):
+    file_name_list = []
+    # プロットを行う
     for i in range(len(_setting.conditions)):
         exp_name = _setting.conditions[i].exp_name
         save_path_index = _setting.save_path_indexes[i]
@@ -68,9 +71,16 @@ def plot_image_group(_setting: DefaultPlotSetting):
         plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[i]],
                               exp_name=exp_name,
                               exp_index=save_path_index, plot_type=_setting.plot_type, is_enlarge=_setting.is_enlarge,
-                              _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))
+                              dpi=_setting.dpi, _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))
         plotter.plot()
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
+
+        # gif用の処理
+        file_name_list.append(
+            f"{plot_save_path(exp_name, _setting.plot_type, is_group=True)}/{save_path_index}_{str(_setting.plot_t_list[i]).zfill(4)}.png")
+    # 行ったプロットをgifにまとめて保存しておく
+    make_gif(plot_image_names=file_name_list,
+             save_path_to_file=plot_save_path(exp_name, _setting.plot_type, is_group=True), save_file_name="all.gif")
 
 
 def plot_3d_image(_setting: Plot3dSetting):
@@ -242,23 +252,23 @@ class Plotter:
     def __start_single_processing(self, simulation_data_file_names):
         for t in self.__not_plot_t_list:
             self.plot_image(simulation_data_file_names[t], self.__setting.plot_type, self.__setting.is_enlarge,
-                            self.__exp_name, self.__save_path_index)
+                            self.__exp_name, self.__save_path_index, self.__setting.dpi)
 
     def __start_parallel_processing(self, simulation_data_file_names):
         with ProcessPoolExecutor(max_workers=ConfigSimulationSetting.PlotParallelNum) as e:
             for t in self.__not_plot_t_list:
                 e.submit(Plotter.plot_image, simulation_data_file_names[t], self.__setting.plot_type,
-                         self.__setting.is_enlarge, self.__exp_name, self.__save_path_index)
+                         self.__setting.is_enlarge, self.__exp_name, self.__save_path_index, self.__setting.dpi)
 
     @staticmethod
-    def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index):
+    def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index, dpi):
         plotter = MainPlotter(simulation_data_file_name=simulation_data_file_name, exp_name=exp_name,
-                              exp_index=exp_index, plot_type=plot_type, is_enlarge=is_enlarge)
+                              exp_index=exp_index, plot_type=plot_type, is_enlarge=is_enlarge, dpi=dpi)
         plotter.plot()
 
 
 class MainPlotter:
-    def __init__(self, simulation_data_file_name, exp_name, exp_index, plot_type, is_enlarge, _save_path=None):
+    def __init__(self, simulation_data_file_name, exp_name, exp_index, plot_type, is_enlarge, dpi, _save_path=None):
         self.__plot_type = plot_type
         simulation_data = helper.load_file_by_error_handling(simulation_data_file_name)
         condition = simulation_data["実験条件データ（condition）"]
@@ -278,6 +288,7 @@ class MainPlotter:
             self.__file_name = f"{exp_index}_{self.__t_index}"
             self.__plot_save_path = _save_path
         self.__is_enlarge = is_enlarge
+        self.__dpi = dpi
 
     def plot(self):
         if self.__plot_type == "surface":
@@ -306,7 +317,8 @@ class MainPlotter:
             # 格子点を作成
             mesh_x, mesh_y = np.meshgrid(np.linspace(-self.__T, self.__T, 2 * self.__T + 1),
                                          np.linspace(-self.__T, self.__T, 2 * self.__T + 1))
-        do_plot_surface(mesh_x, mesh_y, self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title)
+        do_plot_surface(mesh_x, mesh_y, self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title,
+                        dpi=self.__dpi)
         print(f"t={self.__t_index}：可視化と保存：完了")
 
     def __plot_heatmap(self):
@@ -317,12 +329,13 @@ class MainPlotter:
             if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
                 self.__mesh_z = self.__mesh_z[max_y:-max_y, max_x:-max_x]
 
-        do_plot_heatmap(self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title, self.__is_enlarge)
+        do_plot_heatmap(self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title, self.__is_enlarge,
+                        dpi=self.__dpi)
         print(f"t={self.__t_index}：可視化と保存：完了")
 
 
-def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
-    fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=800)
+def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
+    fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=dpi)
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     ax.set_xlabel("$x$", size=24, labelpad=10)
     ax.set_ylabel("$y$", size=24)
@@ -333,14 +346,14 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
     ax.set_title(title, size=24)
     # 曲面を描画
     ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer")
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=800, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
     plt.close()
 
 
-def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
+def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge, dpi=800):
     """heatmapをプロットする"""
     # プロット用のデータフレームの作成
     x_len = prob_list.shape[0]
@@ -361,14 +374,14 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     df = pd.DataFrame(prob_list, index=index, columns=columns)
 
     # figureを作成しプロットする
-    fig = plt.figure(figsize=(16, 12), tight_layout=True)
+    fig = plt.figure(figsize=(12, 12), tight_layout=True,dpi=dpi)
     ax = fig.add_subplot(1, 1, 1)
     img = sns.heatmap(df, square=True, cmap="gist_heat_r")
     # sns.heatmap(df, square=True, cmap="Blues")
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
     ax.set_title(title, size=24)
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=800, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
