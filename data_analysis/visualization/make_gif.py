@@ -70,7 +70,7 @@ from helper import helper
 #         self.__core_make_gif(plot_image_names)
 
 def make_gif(plot_image_names, save_path_to_file, save_file_name, duration=50):
-    plot_image_names.sort()
+    # plot_image_names.sort()
     frames = []
     for plot_image in plot_image_names:
         new_frame = Image.open(plot_image)
