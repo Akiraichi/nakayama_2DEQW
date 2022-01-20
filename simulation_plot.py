@@ -51,24 +51,25 @@ class SimulationResultPlotter:
                                  conditions=self.__conditions, z_axis=z_axis)
         plot_3d_image(_setting)
 
-    def plot_surface_group_by(self, t_of_plot_list):
+    def plot_surface_group_by(self, _t_of_plot_list, gif_only=False):
         plot_type = "surface"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 800, self.__save_path_indexes)
-        options = {"plot_t_list": t_of_plot_list}
+        options = {"plot_t_list": _t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
-        plot_image_group(_setting=_setting)
+        plot_image_group(_setting=_setting, gif_only=gif_only)
 
-    def plot_heatmap_group_by(self, t_of_plot_list):
+    def plot_heatmap_group_by(self, _t_of_plot_list, gif_only=False):
         plot_type = "heatmap"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 400, self.__save_path_indexes)
-        options = {"plot_t_list": t_of_plot_list}
+        options = {"plot_t_list": _t_of_plot_list}
         _setting = dataclasses.replace(_setting, **options)
-        plot_image_group(_setting=_setting)
+        plot_image_group(_setting=_setting, gif_only=gif_only)
 
 
 if __name__ == '__main__':
     # indexes = [0]
-    indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136]
+    # indexes = list(range(16, 256, 15))
+    indexes = [16, 31, 46]
     plotter = SimulationResultPlotter(
         conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
         save_path_indexes=indexes)
@@ -77,10 +78,11 @@ if __name__ == '__main__':
     #     save_path_indexes=indexes)
     # plotter.plot_surface()
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
-    plotter.plot_heatmap()
+    # plotter.plot_heatmap()
+    t_of_plot_list = [100 + index for index in indexes]
 
-    # plotter.plot_heatmap_group_by(t_of_plot_list=[200] * len(indexes))
-    # plotter.plot_surface_group_by(t_of_plot_list=[200] * len(indexes))
+    plotter.plot_heatmap_group_by(_t_of_plot_list=[200] * len(indexes))
+    plotter.plot_surface_group_by(_t_of_plot_list=[200] * len(indexes))
     # plotter.plot_3d_images(plot_t_list=[15, 30, 45, 60, 75, 90, 105, 120, 135], z_axis="t")
     # plotter.plot_3d_images(plot_t_list=[15, 30, 45], z_axis="t")
     # plotter.plot_3d_images(plot_t_list=[200], z_axis="i")

@@ -59,28 +59,31 @@ def plot_image(_setting: DefaultPlotSetting):
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
 
-def plot_image_group(_setting: DefaultPlotSetting):
+def plot_image_group(_setting: DefaultPlotSetting, gif_only: bool):
     file_name_list = []
     # プロットを行う
     for i in range(len(_setting.conditions)):
         exp_name = _setting.conditions[i].exp_name
         save_path_index = _setting.save_path_indexes[i]
-
-        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=exp_name,
-                                                                              exp_index=save_path_index)
-        plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[i]],
-                              exp_name=exp_name,
-                              exp_index=save_path_index, plot_type=_setting.plot_type, is_enlarge=_setting.is_enlarge,
-                              dpi=_setting.dpi, _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))
-        plotter.plot()
-        helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
+        if not gif_only:
+            simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=exp_name,
+                                                                                  exp_index=save_path_index)
+            plotter = MainPlotter(simulation_data_file_name=simulation_data_file_names[_setting.plot_t_list[i]],
+                                  exp_name=exp_name,
+                                  exp_index=save_path_index, plot_type=_setting.plot_type,
+                                  is_enlarge=_setting.is_enlarge,
+                                  dpi=_setting.dpi,
+                                  _save_path=plot_save_path(exp_name, _setting.plot_type, is_group=True))
+            plotter.plot()
+            helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
         # gif用の処理
         file_name_list.append(
             f"{plot_save_path(exp_name, _setting.plot_type, is_group=True)}/{save_path_index}_{str(_setting.plot_t_list[i]).zfill(4)}.png")
     # 行ったプロットをgifにまとめて保存しておく
     make_gif(plot_image_names=file_name_list,
-             save_path_to_file=plot_save_path(exp_name, _setting.plot_type, is_group=True), save_file_name=f"exp={_setting.save_path_indexes[:10]},t={_setting.plot_t_list[:10]}.gif")
+             save_path_to_file=plot_save_path(exp_name, _setting.plot_type, is_group=True),
+             save_file_name=f"exp={_setting.save_path_indexes[:10]},t={_setting.plot_t_list[:10]}.gif")
 
 
 def plot_3d_image(_setting: Plot3dSetting):
@@ -374,7 +377,7 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge, dpi=800):
     df = pd.DataFrame(prob_list, index=index, columns=columns)
 
     # figureを作成しプロットする
-    fig = plt.figure(figsize=(12, 12), tight_layout=True,dpi=dpi)
+    fig = plt.figure(figsize=(12, 12), tight_layout=True, dpi=dpi)
     ax = fig.add_subplot(1, 1, 1)
     img = sns.heatmap(df, square=True, cmap="gist_heat_r")
     # sns.heatmap(df, square=True, cmap="Blues")
