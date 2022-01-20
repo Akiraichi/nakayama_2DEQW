@@ -106,10 +106,9 @@ def plot_3d_image(_setting: Plot3dSetting):
         df_dict = {"x": data_dict["x_list"],
                    "y": data_dict["y_list"],
                    "z": -1 * data_dict["z_list"],
-                   "v": data_dict["value_list"]}
+                   "v": np.log(data_dict["value_list"])}
         df = pd.DataFrame(df_dict)
-        do_plot_3d_image_new(df, data_dict["x_list"], data_dict["y_list"], -1 * data_dict["z_list"],
-                             data_dict["value_list"])
+        do_plot_3d_image_new(df)
         # do_plot_3d_image(**data_dict)
 
 
@@ -205,10 +204,12 @@ def do_plot_3d_image(x_list, y_list, z_list, value_list, file_name, path_to_file
     plt.show()
 
 
-def do_plot_3d_image_new(df, x_list, y_list, z_list, v_list):
+def do_plot_3d_image_new(df):
     import plotly.express as px
     fig = px.scatter_3d(df, x='x', y='y', z='z',
-                        color='v',  color_continuous_scale='Rainbow')
+                        color='v', color_continuous_scale='Rainbow')
+    # fig = px.scatter_3d(df, x='x', y='y', z='z',
+    #                     color='v', color_continuous_scale='gray_r')
     fig.show()
     # import plotly.graph_objects as go
     # fig = go.Figure(data=[go.Scatter3d(x=x_list, y=y_list, z=z_list, mode='markers', marker=dict(
@@ -332,7 +333,7 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title):
     ax.set_title(title, size=24)
     # 曲面を描画
     ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer")
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=800, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
@@ -367,7 +368,7 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge):
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
     ax.set_title(title, size=24)
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=800, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=800, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
