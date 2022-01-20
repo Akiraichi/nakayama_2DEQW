@@ -26,19 +26,26 @@ def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
     y_list = np.zeros(len_list, dtype=np.int64)
     z_list = np.zeros(len_list, dtype=np.int64)
     value_list = np.zeros(len_list, dtype=np.float64)
+    threshold = 0.0001
 
     for i, t_index in enumerate(not_plot_t_list):
         for x in range(len_x):
             print("x=,", x, ",i=", i)
             for y in range(len_y):
-                if round(p_list[i][x, y], 4) == 0.0:
+                if p_list[i][x, y] < threshold:
                     continue
                 x_list[index_count] = x
                 y_list[index_count] = y
                 z_list[index_count] = t_index
                 value_list[index_count] = p_list[i][x, y]
                 index_count += 1
-    return x_list, y_list, z_list, value_list
+    i_s = 0
+    for index in range(len(value_list)):
+        if value_list[index] < threshold:
+            i_s = index
+            break
+
+    return x_list[:i_s], y_list[:i_s], z_list[:i_s], value_list[:i_s]
 
 
 def plot_image(_setting: DefaultPlotSetting):
@@ -98,10 +105,12 @@ def plot_3d_image(_setting: Plot3dSetting):
     if Env.ENV == "local":
         df_dict = {"x": data_dict["x_list"],
                    "y": data_dict["y_list"],
-                   "z": data_dict["z_list"],
+                   "z": -1 * data_dict["z_list"],
                    "v": data_dict["value_list"]}
         df = pd.DataFrame(df_dict)
-        do_plot_3d_image_new(df)
+        do_plot_3d_image_new(df, data_dict["x_list"], data_dict["y_list"], -1 * data_dict["z_list"],
+                             data_dict["value_list"])
+        # do_plot_3d_image(**data_dict)
 
 
 def create_3d_image_data_cmp_t(_setting: Plot3dSetting, index):
@@ -196,11 +205,19 @@ def do_plot_3d_image(x_list, y_list, z_list, value_list, file_name, path_to_file
     plt.show()
 
 
-def do_plot_3d_image_new(df):
+def do_plot_3d_image_new(df, x_list, y_list, z_list, v_list):
     import plotly.express as px
     fig = px.scatter_3d(df, x='x', y='y', z='z',
-                        color='v', symbol='z', color_continuous_scale='hot_r',opacity=0.7)
+                        color='v',  color_continuous_scale='Rainbow')
     fig.show()
+    # import plotly.graph_objects as go
+    # fig = go.Figure(data=[go.Scatter3d(x=x_list, y=y_list, z=z_list, mode='markers', marker=dict(
+    #     size=5
+    #     , color=v_list
+    #     , colorscale='Viridis',
+    #     symbol=["circle"] * len(x_list)
+    # ))])
+    # fig.show()
 
 
 class Plotter:
