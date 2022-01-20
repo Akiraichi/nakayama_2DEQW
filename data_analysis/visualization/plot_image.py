@@ -80,7 +80,7 @@ def plot_image_group(_setting: DefaultPlotSetting):
             f"{plot_save_path(exp_name, _setting.plot_type, is_group=True)}/{save_path_index}_{str(_setting.plot_t_list[i]).zfill(4)}.png")
     # 行ったプロットをgifにまとめて保存しておく
     make_gif(plot_image_names=file_name_list,
-             save_path_to_file=plot_save_path(exp_name, _setting.plot_type, is_group=True), save_file_name="all.gif")
+             save_path_to_file=plot_save_path(exp_name, _setting.plot_type, is_group=True), save_file_name=f"exp={_setting.save_path_indexes[:10]},t={_setting.plot_t_list[:10]}.gif")
 
 
 def plot_3d_image(_setting: Plot3dSetting):
