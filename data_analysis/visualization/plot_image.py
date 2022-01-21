@@ -49,13 +49,15 @@ def return_x_y_z_v_set_for_3d_plot(len_x, len_y, not_plot_t_list, p_list):
     return x_list[:i_s], y_list[:i_s], z_list[:i_s], value_list[:i_s]
 
 
-def plot_image(_setting: DefaultPlotSetting):
+def plot_image(_setting: DefaultPlotSetting, plot_gif):
     for i in range(len(_setting.conditions)):
         exp_name = _setting.conditions[i].exp_name
         save_path_index = _setting.save_path_indexes[i]
 
         plotter = Plotter(exp_mame=exp_name, save_path_index=save_path_index, setting=_setting)
         plotter.start_processing()
+        if plot_gif:
+            plotter.make_gif_image()
         helper.print_finish(f"exp_index={_setting.conditions[i].exp_index} {_setting.plot_type}")
 
 
@@ -123,8 +125,8 @@ def plot_3d_image(_setting: Plot3dSetting):
                    "z": -1 * data_dict["z_list"],
                    "v": np.log(data_dict["value_list"])}
         df = pd.DataFrame(df_dict)
-        do_plot_3d_image_new(df)
-        # do_plot_3d_image(**data_dict)
+        # do_plot_3d_image_new(df)
+        do_plot_3d_image(**data_dict)
 
 
 def create_3d_image_data_cmp_t(_setting: Plot3dSetting, index):
@@ -245,14 +247,15 @@ class Plotter:
         self.__not_plot_t_list = helper.check_finished_file(
             folder_path=plot_save_path(self.__exp_name, self.__setting.plot_type, self.__save_path_index),
             will_generate_index_list=self.__setting.plot_t_list, extension="png")
+        self.simulation_data_file_names = []
 
     def start_processing(self):
-        simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=self.__exp_name,
-                                                                              exp_index=self.__save_path_index)
+        self.simulation_data_file_names = helper.return_simulation_data_file_names(exp_name=self.__exp_name,
+                                                                                   exp_index=self.__save_path_index)
         if self.__setting.parallel:
-            self.__start_parallel_processing(simulation_data_file_names)
+            self.__start_parallel_processing(self.simulation_data_file_names)
         else:
-            self.__start_single_processing(simulation_data_file_names)
+            self.__start_single_processing(self.simulation_data_file_names)
 
     def __start_single_processing(self, simulation_data_file_names):
         for t in self.__not_plot_t_list:
@@ -264,6 +267,19 @@ class Plotter:
             for t in self.__not_plot_t_list:
                 e.submit(Plotter.plot_image, simulation_data_file_names[t], self.__setting.plot_type,
                          self.__setting.is_enlarge, self.__exp_name, self.__save_path_index, self.__setting.dpi)
+
+    def make_gif_image(self):
+        file_name_list = []
+        for t in self.__setting.plot_t_list:
+            plotter = MainPlotter(simulation_data_file_name=self.simulation_data_file_names[t],
+                                  plot_type=self.__setting.plot_type,
+                                  is_enlarge=self.__setting.is_enlarge,
+                                  exp_name=self.__exp_name, exp_index=self.__save_path_index, dpi=self.__setting.dpi)
+            file_name_list.append(f"{plotter.plot_path_to_file}/{plotter.file_name}.png")
+
+        make_gif(plot_image_names=file_name_list,
+                 save_path_to_file=plotter.plot_path_to_file,
+                 save_file_name=f"exp={self.__setting.save_path_indexes[:10]},t={self.__setting.plot_t_list[:10]}.gif")
 
     @staticmethod
     def plot_image(simulation_data_file_name, plot_type, is_enlarge, exp_name, exp_index, dpi):
@@ -287,11 +303,11 @@ class MainPlotter:
         PSY = simulation_data["シミュレーションデータ"]
         self.__mesh_z = calc_probability(PSY, len_x, len_y)
         if _save_path is None:
-            self.__file_name = f"{self.__t_index}"
-            self.__plot_save_path = plot_save_path(exp_name, self.__plot_type, exp_index)
+            self.file_name = f"{self.__t_index}"
+            self.plot_path_to_file = plot_save_path(exp_name, self.__plot_type, exp_index)
         else:
-            self.__file_name = f"{exp_index}_{self.__t_index}"
-            self.__plot_save_path = _save_path
+            self.file_name = f"{exp_index}_{self.__t_index}"
+            self.plot_path_to_file = _save_path
         self.__is_enlarge = is_enlarge
         self.__dpi = dpi
 
@@ -322,7 +338,7 @@ class MainPlotter:
             # 格子点を作成
             mesh_x, mesh_y = np.meshgrid(np.linspace(-self.__T, self.__T, 2 * self.__T + 1),
                                          np.linspace(-self.__T, self.__T, 2 * self.__T + 1))
-        do_plot_surface(mesh_x, mesh_y, self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title,
+        do_plot_surface(mesh_x, mesh_y, self.__mesh_z, self.plot_path_to_file, self.file_name, self.__title,
                         dpi=self.__dpi)
         print(f"t={self.__t_index}：可視化と保存：完了")
 
@@ -334,7 +350,7 @@ class MainPlotter:
             if max_x != 0:  # max_xやmax_yが0になるとスライスできないから
                 self.__mesh_z = self.__mesh_z[max_y:-max_y, max_x:-max_x]
 
-        do_plot_heatmap(self.__mesh_z, self.__plot_save_path, self.__file_name, self.__title, self.__is_enlarge,
+        do_plot_heatmap(self.__mesh_z, self.plot_path_to_file, self.file_name, self.__title, self.__is_enlarge,
                         dpi=self.__dpi)
         print(f"t={self.__t_index}：可視化と保存：完了")
 

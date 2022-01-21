@@ -23,19 +23,19 @@ class SimulationResultPlotter:
         self.__conditions = conditions
         self.__save_path_indexes = save_path_indexes  # 不要ではある.conditionから持ってこれるから
 
-    def plot_surface(self, options=None):
+    def plot_surface(self, options=None, plot_gif=False):
         plot_type = "surface"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 800, self.__save_path_indexes)
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
-        plot_image(_setting=_setting)
+        plot_image(_setting=_setting, plot_gif=plot_gif)
 
-    def plot_heatmap(self, options=None):
+    def plot_heatmap(self, options=None, plot_gif=False):
         plot_type = "heatmap"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 400, self.__save_path_indexes)
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
-        plot_image(_setting=_setting)
+        plot_image(_setting=_setting, plot_gif=plot_gif)
 
     def plot_3d_images(self, plot_t_list, z_axis):
         """
@@ -58,7 +58,7 @@ class SimulationResultPlotter:
         _setting = dataclasses.replace(_setting, **options)
         plot_image_group(_setting=_setting, gif_only=gif_only, plot_only=plot_only)
 
-    def plot_heatmap_group_by(self, _t_of_plot_list, gif_only=False,plot_only=False):
+    def plot_heatmap_group_by(self, _t_of_plot_list, gif_only=False, plot_only=False):
         plot_type = "heatmap"
         _setting = DefaultPlotSetting(plot_type, self.__conditions, 400, self.__save_path_indexes)
         options = {"plot_t_list": _t_of_plot_list}
@@ -68,21 +68,22 @@ class SimulationResultPlotter:
 
 if __name__ == '__main__':
     # indexes = [0]
-    # indexes = list(range(16, 256, 15))
-    indexes = [16, 31, 46]
+    # indexes = list(range(16, 200, 15))
+    # indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136]
+    indexes = [121]
     plotter = SimulationResultPlotter(
         conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
         save_path_indexes=indexes)
     # plotter = SimulationResultPlotter(
     #     conditions=ConditionsSingleFactory.single_007_GroverWalk2D(),
     #     save_path_indexes=indexes)
-    # plotter.plot_surface()
+    plotter.plot_surface(plot_gif=True)
     # plotter.plot_heatmap(options={"plot_t_list": [118]})
     # plotter.plot_heatmap()
-    t_of_plot_list = [100 + index for index in indexes]
-
-    plotter.plot_heatmap_group_by(_t_of_plot_list=[200] * len(indexes))
-    plotter.plot_surface_group_by(_t_of_plot_list=[200] * len(indexes))
+    # t_of_plot_list = [100 + index for index in indexes]
+    #
+    # plotter.plot_heatmap_group_by(_t_of_plot_list=[200] * len(indexes))
+    # plotter.plot_surface_group_by(_t_of_plot_list=[200] * len(indexes))
     # plotter.plot_3d_images(plot_t_list=[15, 30, 45, 60, 75, 90, 105, 120, 135], z_axis="t")
     # plotter.plot_3d_images(plot_t_list=[15, 30, 45], z_axis="t")
     # plotter.plot_3d_images(plot_t_list=[200], z_axis="i")
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     # plotter = SimulationResultPlotter(
     #     conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
     #     save_path_indexes=indexes)
-    # plotter.plot_3d_images(plot_t_list=list(range(15, 210, 15)), z_axis="t")
+    # plotter.plot_3d_images(plot_t_list=[31,61,91,121,151,181], z_axis="t")
     # plotter.plot_3d_images(plot_t_list=list(range(60,660,60)), z_axis="t")
     # plotter.plot_3d_images(plot_t_list=list(range(30,630,30)), z_axis="t")
     # plotter.plot_3d_images(plot_t_list=[100, 200], z_axis="t")
