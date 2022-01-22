@@ -7,7 +7,8 @@ from config.config_name import DefaultNameSetting
 
 @dataclass(frozen=True)
 class CloudSimulationSetting:
-    MaxTimeStep: int = 1300
+    MaxTimeStep: int = 600
+    # MaxTimeStep: int = 1300
     SimulationParallelNum: int = 4
     PlotParallelNum: int = 4
 
