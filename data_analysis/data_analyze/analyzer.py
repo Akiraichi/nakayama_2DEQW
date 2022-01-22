@@ -34,10 +34,11 @@ class AnalyzeOptimizer:
         self.__exp1_index = exp1_index
         self.__setting = setting
         self.__analyze_t = self.__setting.analyze_t
-        self.__not_analyzed_indexes = helper.check_finished_file(
-            folder_path=AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
-                                                 exp2_name=self.__exp2_name, analyze_t=self.__analyze_t).path_to_file,
-            will_generate_index_list=analyze_indexes, extension="jb")
+        # self.__not_analyzed_indexes = helper.check_finished_file(
+        #     folder_path=AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+        #                                          exp2_name=self.__exp2_name, analyze_t=self.__analyze_t).path_to_file,
+        #     will_generate_index_list=analyze_indexes, extension="jb")
+        self.__not_analyzed_indexes = analyze_indexes  # 600_0021.jbなどのように600の部分も判定してほしいが判定されない。修正する時間もないので、処理を省いた
 
         self.simulation_data_names_1 = helper.return_simulation_data_file_names(exp_name=self.__exp1_name,
                                                                                 exp_index=self.__exp1_index)

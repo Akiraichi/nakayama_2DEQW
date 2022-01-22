@@ -28,6 +28,11 @@ class OptimizePlotter:
                                            exp2_name=self.__exp2_name, analyze_t=self.__analyze_t, file_index=index)
         return helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
 
+    def __load_single_optimize_data_by_analyze_t(self, analyze_t, index):
+        setting = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                           exp2_name=self.__exp2_name, analyze_t=analyze_t, file_index=index)
+        return helper.load_file_by_error_handling(file_path=f"{setting.path_to_file}/{setting.file_name_jb}")
+
     def __get_file_name(self):
         if self.__plot_setting.x_axis == "index":
             return f"{self.__plot_setting.title}_limit={self.__plot_setting.limit}.png"
@@ -119,6 +124,28 @@ class OptimizePlotter:
         self.__plot_setting.title = title
         self.__plot_setting.file_name = self.__get_file_name()
         self.__plot_multi_scatter(legend_list=self.__exp2_indexes, setting=self.__plot_setting)
+
+    def plot_optimize_result_analyze_t_changed(self, analyze_t_list):
+        """KLdivのみをplotすることにする。"""
+        # STEP1：x軸のデータを得る。analyze_t
+        x_list = analyze_t_list
+        # STEP2：y軸のデータを得る。optimizeのKLdivのrank1
+        kl_div_list_list = []
+        for exp2_index in self.__exp2_indexes:
+            # （1）まず、各analyze_tのoptimizeデータを得る
+            optimize_data_list = [
+                self.__load_single_optimize_data_by_analyze_t(analyze_t=analyze_t, index=exp2_index) for
+                analyze_t in analyze_t_list]
+            # （2）次に、今回使うKL_divのみを抽出する。
+            # （3）次に、順位が1位（[0]）でかつ、時間ステップのデータ（[0]）を得る
+            kl_div_list = [optimize_data.KL_divergence[0][0] for optimize_data in optimize_data_list]
+            kl_div_list_list.append(kl_div_list)
+
+        # STEP3：plotする
+        legend_list = ["t_{erase}=" + f"{exp2_index}" for exp2_index in self.__exp2_indexes]  # ラベルを設定する
+        plot_simple_graph(x_axis=x_list, y_axis_list=kl_div_list_list, x_label="t_{c}", y_label="t_{best}",
+                          legend_list=legend_list,
+                          path_to_file=self.__plot_setting.path_to_file, file_name=f"{self.__exp2_indexes}")
 
     def plot_optimize_result_x_axis_is_index(self):
         if self.__plot_setting.enable_KL_divergence:
@@ -359,7 +386,7 @@ class AnalyzePlotter:
             "file_name": f"find_diff_time_{self.__setting.file_name}.png"
         }
 
-        self.__plot_simple_graph(**params1)
+        plot_simple_graph(**params1)
         # self.__plot_simple_graph(**params2)
 
     def find_max_step_max_indicator(self):
@@ -406,7 +433,7 @@ class AnalyzePlotter:
             "path_to_file": self.__setting.path_to_file,
             "file_name": f"indicator is worst_{self.__setting.plot_indexes[:10]}.png"
         }
-        self.__plot_simple_graph(**params1)
+        plot_simple_graph(**params1)
         # self.__plot_simple_graph(**params2)
 
     @staticmethod
@@ -443,26 +470,26 @@ class AnalyzePlotter:
         print(f"時間差:{diff_time}")
         return time_of_min_value, diff_time
 
-    @staticmethod
-    def __plot_simple_graph(x_axis, y_axis_list, x_label, y_label, legend_list, path_to_file,
-                            file_name):
-        data_num = len(y_axis_list)
-        # Figureの初期化
-        fig = plt.figure(figsize=(8, 6))
-        # axオブジェクトの生成
-        ax = fig.add_subplot(111)
-        ax.set_xlabel(f"${x_label}$", size=24, labelpad=5)
-        ax.set_ylabel(f"${y_label}$", size=24)
-        # ax.set_title(title)  # グラフタイトル
-        # 描画
-        for i in range(data_num):
-            # 具体的な値の方を除去し、時間ステップのみのデータに変える
-            y_axis_dates = y_axis_list[i]
-            ax.plot(x_axis, y_axis_dates, label=f"${legend_list[i]}$")
-        plt.legend()
-        plt.savefig(f"{path_to_file}/{file_name}", dpi=400)
-        ax.cla()
-        plt.close()
+
+def plot_simple_graph(x_axis, y_axis_list, x_label, y_label, legend_list, path_to_file,
+                      file_name):
+    data_num = len(y_axis_list)
+    # Figureの初期化
+    fig = plt.figure(figsize=(8, 6))
+    # axオブジェクトの生成
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(f"${x_label}$", size=24, labelpad=5)
+    ax.set_ylabel(f"${y_label}$", size=24)
+    # ax.set_title(title)  # グラフタイトル
+    # 描画
+    for i in range(data_num):
+        # 具体的な値の方を除去し、時間ステップのみのデータに変える
+        y_axis_dates = y_axis_list[i]
+        ax.plot(x_axis, y_axis_dates, label=f"${legend_list[i]}$")
+    plt.legend()
+    plt.savefig(f"{path_to_file}/{file_name}", dpi=400)
+    ax.cla()
+    plt.close()
 
 
 def plot_x_axis_is_index(df, setting: DefaultAnalyzePlotSetting):
