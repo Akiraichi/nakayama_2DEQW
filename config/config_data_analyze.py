@@ -36,6 +36,7 @@ class AnalysisOptimizeSaveName(DefaultNameSetting):
     file_index: InitVar[int] = 0  # ファイル名につけるindex
     folder_name: str = field(init=False)  # 保存する際のフォルダ名
     path_to_file: str = field(init=False)  # 保存する際のファイルまでのパス
+    path_to_plot_file: str = field(init=False)  # プロットを保存する際のファイルまでのパス
     file_name: str = field(init=False)  # 保存する際のファイル名
     file_name_jb: str = field(init=False)  # 拡張子jbをつけたファイル名
     default_parent_folder_name: str = field(init=False, default="optimize")
@@ -45,6 +46,8 @@ class AnalysisOptimizeSaveName(DefaultNameSetting):
         object.__setattr__(self, "folder_name", self.default_folder_name)
         object.__setattr__(self, "path_to_file",
                            f"{self.default_top_folder_name}/{self.default_parent_folder_name}/{self.default_folder_name}/{analyze_t}")
+        object.__setattr__(self, "path_to_plot_file",
+                           f"{self.default_top_folder_name}/{self.default_parent_folder_name}/{self.default_folder_name}")
         object.__setattr__(self, "file_name",
                            f"OptimizeData_{self.default_file_name}_{analyze_t}_{str(file_index).zfill(4)}")
         object.__setattr__(self, "file_name_jb", f"{self.file_name}.jb")
