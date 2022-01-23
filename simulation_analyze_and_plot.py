@@ -117,6 +117,30 @@ class SimulationResultAnalyzer:
                                   setting=_setting)
         plotter.plot_optimize_result_x_axis_is_rank()
 
+    def plot_optimize_changed_x_is_analyze_t(self, analyze_t_list, options=None):
+        """
+        各analyze_tにおいて、最適な時間ステップは何かをプロットする。
+        すなわち、t_erase=600において最適な時間ステップが500であるなら、t_erase=550では最適な時間ステップは450であるだろう。
+        x軸をanalyze_t, y軸を最適な時間ステップとしてプロットする。
+        Args:
+            options:
+
+        Returns:
+
+        """
+        analyze_t = 200
+        save_name = AnalysisOptimizeSaveName(exp1_name=self.__exp1_name, exp1_index=self.__exp1_index,
+                                             exp2_name=self.__exp2_name, analyze_t=analyze_t)
+        _setting = OptimizePlotSetting(x_label="t_{erase}", y_label="t", legend_label="rank",
+                                       x_axis_data_list=self.__analyze_indexes,
+                                       path_to_file=save_name.path_to_file, analyze_t=analyze_t, x_axis="index")
+        # オプション設定があれば適用
+        if options is not None:
+            _setting = dataclasses.replace(_setting, **options)
+        plotter = OptimizePlotter(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
+                                  setting=_setting)
+        plotter.plot_optimize_result_analyze_t_changed(analyze_t_list)
+
     def Find_time_step_max_indicator(self, _plot_indexes, options=None):
         """電場を消してから指標の最大値がくるまでの時間ステップ数を求める"""
         # デフォルト設定
@@ -151,27 +175,34 @@ class SimulationResultAnalyzer:
 
 
 if __name__ == '__main__':
-    # analyze_indexes = list(range(1, 101))
+    # analyze_indexes = list(range(16, 256, 15))
+    # analyze_indexes = list(range(16, 121, 15))
+    # analyze_indexes = list(range(2, 122))
+    # analyze_indexes = list(range(2, 242))
     # analyze_indexes = list(range(10, 110,10))
-    analyze_indexes = list(range(16, 256, 15))
-    # analyze_indexes = [30, 60, 90]
+    analyze_indexes =[16,31]
+    # analyze_indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136] + list(range(151, 482, 30)) + [541]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=analyze_indexes),
                                         _analyze_indexes=analyze_indexes)
     # analyze処理を実行
-    analyzer.analyze()
+    # analyzer.analyze()
     # その結果をプロット
-    plot_indexes = analyze_indexes
-    plot_t_list = [200]
-    analyzer.plot_x_axis_is_index(_plot_t_list=plot_t_list)
-    analyzer.plot_x_axis_is_t(_plot_indexes=plot_indexes)
+    # plot_indexes = analyze_indexes
+    # plot_t_list = [200, 400, 600]
+    # analyzer.plot_x_axis_is_index(_plot_t_list=plot_t_list)
+    # analyzer.plot_x_axis_is_t(_plot_indexes=plot_indexes,start_t=200)
     # 電場を消してから指標の最大値がくるまでの時間ステップ数を求める
     # analyzer.Find_time_step_max_indicator(plot_indexes)
     # analyzer.Find_max_indicator(plot_indexes)
 
     # 最適な時間ステップを求める
-    analyzer.analyze_for_optimization_t(analyze_t=600, options={"t_list": list(range(1, 601))})
+    # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201,2))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=600, options={"limit": 5})
+    # analyzer.plot_optimize_x_axis_is_index(analyze_t=1300, options={"limit": 1})
     # analyzer.plot_optimize_x_axis_is_rank(analyze_t=600)
+    analyze_t_list = list(range(10, 201, 10))
+    for analyze_t in analyze_t_list:
+        analyzer.analyze_for_optimization_t(analyze_t=analyze_t, options={"t_list": list(range(1, 201))})
+    analyzer.plot_optimize_changed_x_is_analyze_t(analyze_t_list)
