@@ -44,7 +44,7 @@ class AnalysisOptimizeSaveName(DefaultNameSetting):
         super().__post_init__(exp1_name=exp1_name, exp1_index=exp1_index, exp2_name=exp2_name)
         object.__setattr__(self, "folder_name", self.default_folder_name)
         object.__setattr__(self, "path_to_file",
-                           f"{self.default_top_folder_name}/{self.default_parent_folder_name}/{self.default_folder_name}")
+                           f"{self.default_top_folder_name}/{self.default_parent_folder_name}/{self.default_folder_name}/{analyze_t}")
         object.__setattr__(self, "file_name",
                            f"OptimizeData_{self.default_file_name}_{analyze_t}_{str(file_index).zfill(4)}")
         object.__setattr__(self, "file_name_jb", f"{self.file_name}.jb")
