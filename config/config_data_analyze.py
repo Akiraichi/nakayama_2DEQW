@@ -72,6 +72,7 @@ class DefaultAnalyzeOptimizeSetting:
     enable_L1_norm: bool = True  # L1ノルムを求めるかどうか（誤差の絶対値の和）
     enable_L2_norm: bool = True  # L2ノルムを求めるかどうか（二乗誤差の和）
     enable_correlation_coefficient: bool = True  # 相関係数を求めるかどうか
+    enable_load_qw1_data: bool = True  # 事前に共通データであるqw1のデータを読み込むかどうか
 
 
 # Analyzeデータのプロットを実行するときのデータクラス

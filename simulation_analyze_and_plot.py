@@ -1,3 +1,4 @@
+import helper.helper
 from config.config_data_analyze import AnalyzeNameSetting, DefaultAnalyzeSetting, DefaultAnalyzeOptimizeSetting, \
     DefaultAnalyzePlotSetting, OptimizePlotSetting, AnalysisOptimizeSaveName
 from data_analysis.data_analyze.analyzer import Analyzer, AnalyzeOptimizer
@@ -58,23 +59,36 @@ class SimulationResultAnalyzer:
                                  _plot_indexes, _setting)
         plotter.plot()
 
-    def analyze_for_optimization_t(self, analyze_t, options=None):
+    def analyze_for_optimization_t(self, _analyze_t, options=None, _qw1_data=None):
         """
         self.__qw1とself.__qw2の確率分布の類似性について、self.__analyze_indexesに指定された実験全てにおいて、analyze_tステップ目の
         qw2の確率分布と最も確率分布の近いqw1の時間ステップtを求める。
         Args:
-            analyze_t: 調べる際の時間ステップ
+            _analyze_t: 調べる際の時間ステップ
             options:オプション設定
+            _qw1_data: 事前にロードしない場合にセットするためのqw1の確率分布のデータ
 
         Returns:
 
         """
-        _setting = DefaultAnalyzeOptimizeSetting(analyze_t=analyze_t)
+        _setting = DefaultAnalyzeOptimizeSetting(analyze_t=_analyze_t)
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
         analyzer_ = AnalyzeOptimizer(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
                                      setting=_setting)
+        if not _setting.enable_load_qw1_data:
+            # 共通データの事前ロードを実行しないのであれば
+            analyzer_.set_qw1_data(qw1_data=_qw1_data)
         analyzer_.optimize_t_all()
+
+    def analyze_for_optimize_t_return_qw1_data(self, _analyze_t):
+        # STEP1 analyze_tまでのqw1データをロードする
+        _setting = DefaultAnalyzeOptimizeSetting(analyze_t=_analyze_t)
+        _setting = dataclasses.replace(_setting, **{"t_list": list(range(1, 1 + _analyze_t)),
+                                                    "enable_load_qw1_data": False})
+        analyzer_ = AnalyzeOptimizer(self.__exp1_name, self.__exp2_name, self.__exp1_index, self.__analyze_indexes,
+                                     setting=_setting)
+        return analyzer_.return_qw1_data()
 
     def print_optimize_t(self, analyze_t):
         _setting = OptimizePlotSetting(x_label="", y_label="", title="", legend_label="",
@@ -180,7 +194,7 @@ if __name__ == '__main__':
     # analyze_indexes = list(range(2, 122))
     # analyze_indexes = list(range(2, 242))
     # analyze_indexes = list(range(10, 110,10))
-    analyze_indexes =[16,31]
+    analyze_indexes = [31,61,91]
     # analyze_indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136] + list(range(151, 482, 30)) + [541]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=analyze_indexes),
@@ -197,12 +211,18 @@ if __name__ == '__main__':
     # analyzer.Find_max_indicator(plot_indexes)
 
     # 最適な時間ステップを求める
-    # analyzer.analyze_for_optimization_t(analyze_t=200, options={"t_list": list(range(1, 201,2))})
+    # analyze_t = 200
+    # analyzer.analyze_for_optimization_t(analyze_t=analyze_t, options={"t_list": list(range(1, analyze_t+1))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=1300, options={"limit": 1})
+    # analyzer.plot_optimize_x_axis_is_index(analyze_t=200, options={"limit": 3})
     # analyzer.plot_optimize_x_axis_is_rank(analyze_t=600)
+
     analyze_t_list = list(range(10, 201, 10))
+    qw1_data = analyzer.analyze_for_optimize_t_return_qw1_data(_analyze_t=max(analyze_t_list))
     for analyze_t in analyze_t_list:
-        analyzer.analyze_for_optimization_t(analyze_t=analyze_t, options={"t_list": list(range(1, 201))})
-    analyzer.plot_optimize_changed_x_is_analyze_t(analyze_t_list)
+        analyzer.analyze_for_optimization_t(_analyze_t=analyze_t, options={"t_list": list(range(1, 1 + analyze_t)),
+                                                                           "enable_load_qw1_data": False},
+                                            _qw1_data=qw1_data)
+        helper.helper.print_green_text(f"analyze_t={analyze_t}：完了")
+    # analyzer.plot_optimize_changed_x_is_analyze_t(analyze_t_list)

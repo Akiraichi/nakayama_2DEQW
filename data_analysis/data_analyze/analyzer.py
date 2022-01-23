@@ -43,12 +43,29 @@ class AnalyzeOptimizer:
         self.simulation_data_names_1 = helper.return_simulation_data_file_names(exp_name=self.__exp1_name,
                                                                                 exp_index=self.__exp1_index)
         self.__p1_list = []  # qw1のシミュレーション結果より求めた確率分布のリスト
-        self.__load_qw1_data()  # 共通データ（qw1のシミュレーション結果データ）をロードする
+        if self.__setting.enable_load_qw1_data:
+            self.__load_qw1_data()  # 共通データ（qw1のシミュレーション結果データ）をロードする
 
     def __load_qw1_data(self):
         self.__p1_list = [helper.get_probability(self.simulation_data_names_1, t_step) for t_step in
                           self.__setting.t_list]
         helper.print_finish("前処理完了")
+
+    def return_qw1_data(self):
+        p1_list = [helper.get_probability(self.simulation_data_names_1, t_step) for t_step in
+                   self.__setting.t_list]
+        return p1_list
+
+    def set_qw1_data(self, qw1_data):
+        """
+        analyze_tを変えながらoptimize_t_allを実行するための関数。
+        load_qw1_dataをFalseに設定した上で実行すること。
+        """
+        if self.__setting.enable_load_qw1_data:
+            helper.print_warning("事前に共通データをロードしているのに、再度共通データをセットしようとしています。")
+            raise OSError
+        else:
+            self.__p1_list = qw1_data  # 毎回qw1_dataをロードするのは無駄だから。引数として処理する。
 
     def optimize_t_all(self):
         for i, exp2_index in enumerate(self.__not_analyzed_indexes):
