@@ -358,15 +358,24 @@ class MainPlotter:
 def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
     fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=dpi)
     ax = fig.add_subplot(1, 1, 1, projection='3d')
-    ax.set_xlabel("$x$", size=24, labelpad=10)
-    ax.set_ylabel("$y$", size=24)
-    ax.set_zlabel("$p$", size=24, labelpad=15)
+    # 論文用のフォーマット
+    ax.set_xticks([-600, 0, 600])
+    ax.set_yticks([-600, 0, 600])
+    ax.set_zticks([])
+
+    # ax.set_xlabel("$x$", size=24, labelpad=10)
+    # ax.set_ylabel("$y$", size=24)
+    # ax.set_zlabel("$p$", size=24, labelpad=15)
     # 軸メモリの調整
-    ax.tick_params(labelsize=12)
+    ax.tick_params(labelsize=14)
+    # ax.tick_params(labelsize=12)
     # タイトルを設定
-    ax.set_title(title, size=24)
+    # ax.set_title(title, size=24)
     # 曲面を描画
-    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer")
+    # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer") # カラーが見える時
+
+    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
+
     helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
@@ -395,13 +404,13 @@ def do_plot_heatmap(prob_list, path, file_name, title, is_enlarge, dpi=800):
     df = pd.DataFrame(prob_list, index=index, columns=columns)
 
     # figureを作成しプロットする
-    fig = plt.figure(figsize=(12, 12), tight_layout=True, dpi=dpi)
+    fig = plt.figure(figsize=(4, 4), tight_layout=True, dpi=dpi)
     ax = fig.add_subplot(1, 1, 1)
-    img = sns.heatmap(df, square=True, cmap="gist_heat_r")
-    # sns.heatmap(df, square=True, cmap="Blues")
+    img = sns.heatmap(df, square=True, cmap="gist_gray_r", xticklabels=600, yticklabels=600, cbar=False)
+    # img = sns.heatmap(df, square=True, cmap="gist_heat_r", xticklabels=False,cbar=False) # いつもはこちらを使う
     img.set_xlabel("$x$", fontsize=20)
     img.set_ylabel("$y$", fontsize=20)
-    ax.set_title(title, size=24)
+    # ax.set_title(title, size=24)
     helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
