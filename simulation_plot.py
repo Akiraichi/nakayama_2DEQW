@@ -67,19 +67,19 @@ class SimulationResultPlotter:
 
 
 if __name__ == '__main__':
-    # indexes = [0]
+    indexes = [0]
     # indexes = list(range(16, 200, 15))
     # indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136]
-    indexes = [121]
+    # indexes = [121]
     plotter = SimulationResultPlotter(
-        conditions=ConditionsEraseTFactory.EraseT_005_EraseElectricGroverWalk2DAlongX(erase_t_list=indexes),
+        conditions=ConditionsEraseTFactory.EraseT_006_EraseElectricGroverWalk2DAlongXY(erase_t_list=indexes),
         save_path_indexes=indexes)
     # plotter = SimulationResultPlotter(
     #     conditions=ConditionsSingleFactory.single_007_GroverWalk2D(),
     #     save_path_indexes=indexes)
-    plotter.plot_surface(plot_gif=True)
-    # plotter.plot_heatmap(options={"plot_t_list": [118]})
-    # plotter.plot_heatmap()
+    plotter.plot_surface(options={"plot_t_list":[200]})
+    # plotter.plot_heatmap(options={"plot_t_list":[200]})
+    # plotter.plot_heatmap(options={"plot_t_list": list(range(5,605,5))},plot_gif=True)
     # t_of_plot_list = [100 + index for index in indexes]
     #
     # plotter.plot_heatmap_group_by(_t_of_plot_list=[200] * len(indexes))

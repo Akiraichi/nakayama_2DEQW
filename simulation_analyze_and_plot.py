@@ -147,7 +147,7 @@ class SimulationResultAnalyzer:
                                              exp2_name=self.__exp2_name, analyze_t=analyze_t)
         _setting = OptimizePlotSetting(x_label="t_{erase}", y_label="t", legend_label="rank",
                                        x_axis_data_list=self.__analyze_indexes,
-                                       path_to_file=save_name.path_to_file, analyze_t=analyze_t, x_axis="index")
+                                       path_to_file=save_name.path_to_plot_file, analyze_t=analyze_t, x_axis="index")
         # オプション設定があれば適用
         if options is not None:
             _setting = dataclasses.replace(_setting, **options)
@@ -190,12 +190,17 @@ class SimulationResultAnalyzer:
 
 if __name__ == '__main__':
     # analyze_indexes = list(range(16, 256, 15))
-    # analyze_indexes = list(range(16, 121, 15))
+    analyze_indexes = list(range(16, 122, 15))
+    # analyze_indexes = list(range(16, 362, 15))
+    # analyze_indexes = list(range(31, 392, 30))
+    # analyze_indexes = list(range(31, 362, 30))
+    # analyze_indexes = list(range(121, 256, 15))
     # analyze_indexes = list(range(2, 122))
     # analyze_indexes = list(range(2, 242))
     # analyze_indexes = list(range(10, 110,10))
-    analyze_indexes = [31,61,91]
+    # analyze_indexes = [31, 61, 91]
     # analyze_indexes = [16, 31, 46, 61, 76, 91, 106, 121, 136] + list(range(151, 482, 30)) + [541]
+    # analyze_indexes = [16, 31, 46, 61, 76, 91, 106, 121]
     analyzer = SimulationResultAnalyzer(qw1=GroverWalk2D(),
                                         qw2=EraseElectricGroverWalk2DAlongX(erase_t_list=analyze_indexes),
                                         _analyze_indexes=analyze_indexes)
@@ -205,24 +210,28 @@ if __name__ == '__main__':
     # plot_indexes = analyze_indexes
     # plot_t_list = [200, 400, 600]
     # analyzer.plot_x_axis_is_index(_plot_t_list=plot_t_list)
-    # analyzer.plot_x_axis_is_t(_plot_indexes=plot_indexes,start_t=200)
+    # analyzer.plot_x_axis_is_t(_plot_indexes=analyze_indexes, start_t=200)
     # 電場を消してから指標の最大値がくるまでの時間ステップ数を求める
     # analyzer.Find_time_step_max_indicator(plot_indexes)
     # analyzer.Find_max_indicator(plot_indexes)
 
     # 最適な時間ステップを求める
-    # analyze_t = 200
-    # analyzer.analyze_for_optimization_t(analyze_t=analyze_t, options={"t_list": list(range(1, analyze_t+1))})
+    # analyze_t = 600
+    # analyzer.analyze_for_optimization_t(_analyze_t=analyze_t, options={"t_list": list(range(1, analyze_t+1))})
     # その結果をプロット
     # analyzer.print_optimize_t(analyze_t=200)
-    # analyzer.plot_optimize_x_axis_is_index(analyze_t=200, options={"limit": 3})
-    # analyzer.plot_optimize_x_axis_is_rank(analyze_t=600)
+    # analyzer.plot_optimize_x_axis_is_index(analyze_t=1300, options={"limit": 1})
+    # analyzer.plot_optimize_x_axis_is_rank(analyze_t=1300)
 
-    analyze_t_list = list(range(10, 201, 10))
-    qw1_data = analyzer.analyze_for_optimize_t_return_qw1_data(_analyze_t=max(analyze_t_list))
-    for analyze_t in analyze_t_list:
-        analyzer.analyze_for_optimization_t(_analyze_t=analyze_t, options={"t_list": list(range(1, 1 + analyze_t)),
-                                                                           "enable_load_qw1_data": False},
-                                            _qw1_data=qw1_data)
-        helper.helper.print_green_text(f"analyze_t={analyze_t}：完了")
+    analyze_t_list = list(range(20, 601, 10))
+    # qw1_data = analyzer.analyze_for_optimize_t_return_qw1_data(_analyze_t=max(analyze_t_list))
+    # for analyze_t in analyze_t_list:
+    #     analyzer.analyze_for_optimization_t(_analyze_t=analyze_t, options={"t_list": list(range(1, 1 + analyze_t)),
+    #                                                                        "enable_load_qw1_data": False},
+    #                                         _qw1_data=qw1_data)
+    #     helper.helper.print_green_text(f"analyze_t={analyze_t}：完了")
     # analyzer.plot_optimize_changed_x_is_analyze_t(analyze_t_list)
+
+    # for analyze_t in analyze_t_list:
+    #     analyzer.analyze_for_optimization_t(_analyze_t=analyze_t, options={"t_list": list(range(1, 201))})
+    analyzer.plot_optimize_changed_x_is_analyze_t(analyze_t_list)
