@@ -226,17 +226,20 @@ class OptimizePlotter:
         fig = plt.figure(figsize=(8, 6))
         # axオブジェクトの生成
         ax = fig.add_subplot(111)
-        ax.set_xlabel(f"${setting.x_label}$", size=24, labelpad=5)
-        ax.set_ylabel(f"${setting.y_label}$", size=24)
-        ax.set_title(setting.title)  # グラフタイトル
+        # ax.set_xlabel(f"${setting.x_label}$", size=24, labelpad=5)
+        # ax.set_ylabel(f"${setting.y_label}$", size=24)
+        # ax.set_title(setting.title)  # グラフタイトル
         # 描画
+        ax.tick_params(labelsize=20)  # 論文用
         for i in range(data_num):
             # 具体的な値の方を除去し、時間ステップのみのデータに変える
             y_axis_dates = setting.y_axis_dates_list[i]
-            ax.scatter(setting.x_axis_data_list, y_axis_dates, s=10, label=f"${setting.legend_label}={legend_list[i]}$")
+            ax.scatter(setting.x_axis_data_list, y_axis_dates, s=10,
+                       label=f"${setting.legend_label}={legend_list[i]}$", c="black")  # 論文用
+            # ax.scatter(setting.x_axis_data_list, y_axis_dates, s=10, label=f"${setting.legend_label}={legend_list[i]}$")
             # ax.plot(setting.x_axis_data_list, y_axis_dates,  label=f"${setting.legend_label}={legend_list[i]}$")
 
-        plt.legend()
+        # plt.legend()
         plt.savefig(f"{setting.path_to_file}/{setting.file_name}", dpi=400)
         ax.cla()
         plt.close()
@@ -478,14 +481,18 @@ def plot_simple_graph(x_axis, y_axis_list, x_label, y_label, legend_list, path_t
     fig = plt.figure(figsize=(8, 6))
     # axオブジェクトの生成
     ax = fig.add_subplot(111)
+    ax.set_xlabel(f"$t$", size=24, labelpad=5)  # 論文用
     ax.set_xlabel(f"${x_label}$", size=24, labelpad=5)
     ax.set_ylabel(f"${y_label}$", size=24)
     # ax.set_title(title)  # グラフタイトル
+    ax.tick_params(labelsize=20)  # 論文用
     # 描画
+    style = ['-', "--", '.-', ':', '-x', '-^', "-|", "-o"]  # 論文用
     for i in range(data_num):
         # 具体的な値の方を除去し、時間ステップのみのデータに変える
         y_axis_dates = y_axis_list[i]
-        ax.plot(x_axis, y_axis_dates, label=f"${legend_list[i]}$")
+        ax.plot(x_axis, y_axis_dates, style[i], label=f"${legend_list[i]}$", color="black", markersize=4)  # 論文用
+        # ax.plot(x_axis, y_axis_dates, label=f"${legend_list[i]}$")
     plt.legend()
     plt.savefig(f"{path_to_file}/{file_name}", dpi=400)
     ax.cla()
@@ -527,7 +534,9 @@ def plot_x_axis_is_t(df, setting: DefaultAnalyzePlotSetting):
     df = df[index:]
 
     """plotする"""
-    ax = df.plot(grid=True, figsize=(8, 6))
+    ax = df.plot.line(grid=True, figsize=(8, 6), style=['k-', 'k--', 'k.-', 'k:', 'k-x', "k-^", "k-|", "k-o"]) # 論文用
+    ax.tick_params(labelsize=20)  # 論文用
+    # ax = df.plot(grid=True, figsize=(8, 6)) # いつもはこっち
     ax.set_xlabel(f"${setting.x_label}$", size=24, labelpad=5)
     ax.set_ylabel(f"${setting.y_label}$", size=24)
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
