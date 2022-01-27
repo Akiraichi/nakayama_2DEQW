@@ -122,6 +122,27 @@ class DefaultGroverProps(DefaultBaseProps):
 
 @dataclass(frozen=True)
 class DefaultHadamardProps(DefaultBaseProps):
+    # P: np.ndarray = np.array([
+    #     [1 / 2, 1 / 2, 1 / 2, 1 / 2],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0]], dtype=np.complex128)
+    # Q: np.ndarray = np.array([
+    #     [0, 0, 0, 0],
+    #     [1 / 2, -1 / 2, 1 / 2, -1 / 2],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0]], dtype=np.complex128)
+    # R: np.ndarray = np.array([
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [1 / 2, -1 / 2, -1 / 2, 1 / 2],
+    #     [0, 0, 0, 0]], dtype=np.complex128)
+    # S: np.ndarray = np.array([
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [0, 0, 0, 0],
+    #     [1 / 2, 1 / 2, -1 / 2, -1 / 2]], dtype=np.complex128)
+    # PSY_init: np.ndarray = 1 / 2 * np.array([1, -1, 1j, 1j])
     P: np.ndarray = np.array([
         [1 / 2, 1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
@@ -135,14 +156,14 @@ class DefaultHadamardProps(DefaultBaseProps):
     R: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [1 / 2, -1 / 2, -1 / 2, 1 / 2],
+        [1 / 2, 1 / 2, -1 / 2, -1 / 2],
         [0, 0, 0, 0]], dtype=np.complex128)
     S: np.ndarray = np.array([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [1 / 2, 1 / 2, -1 / 2, -1 / 2]], dtype=np.complex128)
-    PSY_init: np.ndarray = 1 / 2 * np.array([1, -1, 1j, 1j])
+        [1 / 2, -1 / 2, -1 / 2, 1 / 2]], dtype=np.complex128)
+    PSY_init: np.ndarray = 1 / 2 * np.array([1, 1j, 1j, -1])
 
 
 @dataclass(frozen=True)
