@@ -210,18 +210,18 @@ def select_plot_t_step():
     return t_list
 
 
-def select_plot_t_step_detail():
-    # どのデータ抽出するかを選択する
-    t_list = None
-    if ConfigSimulationSetting.MaxTimeStep == 2000:
-        t_list = list(range(0, 2005, 5))
-    elif ConfigSimulationSetting.MaxTimeStep == 600:
-        t_list = list(range(0, 605, 5))
-    elif ConfigSimulationSetting.MaxTimeStep == 200:
-        t_list = list(range(0, 205, 5))
-    elif ConfigSimulationSetting.MaxTimeStep == 100:
-        t_list = list(range(0, 105, 5))
-    return t_list
+# def select_plot_t_step_detail():
+#     # どのデータ抽出するかを選択する
+#     t_list = None
+#     if ConfigSimulationSetting.MaxTimeStep == 2000:
+#         t_list = list(range(0, 2005, 5))
+#     elif ConfigSimulationSetting.MaxTimeStep == 600:
+#         t_list = list(range(0, 605, 5))
+#     elif ConfigSimulationSetting.MaxTimeStep == 200:
+#         t_list = list(range(0, 205, 5))
+#     elif ConfigSimulationSetting.MaxTimeStep == 100:
+#         t_list = list(range(0, 105, 5))
+#     return t_list
 
 
 def select_plot_t_step_by_100():
