@@ -7,25 +7,25 @@ import sympy
 from dataclasses import dataclass, asdict
 
 
-class Condition:
-    """旧形式"""
-
-    def __init__(self):
-        self.T = None
-        # self.P = None
-        # self.Q = None
-        # self.R = None
-        # self.S = None
-        # self.PSY_init = None
-        # self.algorithm = None
-        # self.phi = None
-        self.phi_latex = None
-        self.exp_name = None
-        self.exp_index = None
-        # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
-        self.erase_t = 0
-        # 電場をどの程度ゆっくり消すか
-        # self.erase_time_step = 0
+# class Condition:
+#     """旧形式"""
+#
+#     def __init__(self):
+#         self.T = None
+#         # self.P = None
+#         # self.Q = None
+#         # self.R = None
+#         # self.S = None
+#         # self.PSY_init = None
+#         # self.algorithm = None
+#         # self.phi = None
+#         self.phi_latex = None
+#         self.exp_name = None
+#         self.exp_index = None
+#         # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
+#         self.erase_t = 0
+#         # 電場をどの程度ゆっくり消すか
+#         # self.erase_time_step = 0
 
 
 @dataclass(frozen=True)
