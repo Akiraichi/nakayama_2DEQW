@@ -360,9 +360,9 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
     fig = plt.figure(figsize=(4, 3), tight_layout=True, dpi=dpi)
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     # 論文用のフォーマット
-    # ax.set_xticks([-600, 0, 600])
-    # ax.set_yticks([-600, 0, 600])
-    # ax.set_zticks([])
+    ax.set_xticks([-600, 0, 600])
+    ax.set_yticks([-600, 0, 600])
+    ax.set_zticks([])
 
     ax.set_xlabel("$x$", size=24, labelpad=10)
     ax.set_ylabel("$y$", size=24)
@@ -373,9 +373,9 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
     # タイトルを設定
     ax.set_title(title, size=24)
     # 曲面を描画
-    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer") # カラーが見える時
+    # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer") # カラーが見える時
 
-    # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
+    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
 
     helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
     # メモリ解放
