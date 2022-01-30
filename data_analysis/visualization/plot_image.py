@@ -364,20 +364,22 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
     ax.set_yticks([-600, 0, 600])
     ax.set_zticks([])
 
-    ax.set_xlabel("$x$", size=24, labelpad=10)
+    ax.set_xlabel("$x$", size=24, labelpad=10) # 論文用
+    # ax.set_xlabel("$x$", size=24, labelpad=10)
     ax.set_ylabel("$y$", size=24)
-    ax.set_zlabel("$p$", size=24, labelpad=15)
+    ax.set_zlabel("$p$", size=24, labelpad=-5) # 論文用
+    # ax.set_zlabel("$p$", size=24, labelpad=15)
     # 軸メモリの調整
     ax.tick_params(labelsize=14)
     # ax.tick_params(labelsize=12)
     # タイトルを設定
     ax.set_title(title, size=24)
     # 曲面を描画
-    # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer") # カラーが見える時
+    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="summer") # カラーが見える時
 
-    ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
+    # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
 
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}", dpi=dpi, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
