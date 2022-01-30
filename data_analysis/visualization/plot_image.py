@@ -379,7 +379,7 @@ def do_plot_surface(mesh_x, mesh_y, mesh_z, path, file_name, title, dpi=800):
 
     # ax.plot_surface(mesh_x, mesh_y, mesh_z, cmap="gist_gray_r")  # 白黒のみ使える場合
 
-    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.pdf", dpi=dpi, bbox_inches='tight')
+    helper.Google_Drive_OS_error_wrapper(plt.savefig, f"{path}/{file_name}.png", dpi=dpi, bbox_inches='tight')
     # メモリ解放
     fig.clf()
     ax.cla()
