@@ -7,27 +7,6 @@ import sympy
 from dataclasses import dataclass, asdict
 
 
-# class Condition:
-#     """旧形式"""
-#
-#     def __init__(self):
-#         self.T = None
-#         # self.P = None
-#         # self.Q = None
-#         # self.R = None
-#         # self.S = None
-#         # self.PSY_init = None
-#         # self.algorithm = None
-#         # self.phi = None
-#         self.phi_latex = None
-#         self.exp_name = None
-#         self.exp_index = None
-#         # numbaでコンパイルする際に、型をi8にしているので、初期値は0とする。
-#         self.erase_t = 0
-#         # 電場をどの程度ゆっくり消すか
-#         # self.erase_time_step = 0
-
-
 @dataclass(frozen=True)
 class ConditionNew:
     T: int
@@ -122,27 +101,6 @@ class DefaultGroverProps(DefaultBaseProps):
 
 @dataclass(frozen=True)
 class DefaultHadamardProps(DefaultBaseProps):
-    # P: np.ndarray = np.array([
-    #     [1 / 2, 1 / 2, 1 / 2, 1 / 2],
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0]], dtype=np.complex128)
-    # Q: np.ndarray = np.array([
-    #     [0, 0, 0, 0],
-    #     [1 / 2, -1 / 2, 1 / 2, -1 / 2],
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0]], dtype=np.complex128)
-    # R: np.ndarray = np.array([
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0],
-    #     [1 / 2, -1 / 2, -1 / 2, 1 / 2],
-    #     [0, 0, 0, 0]], dtype=np.complex128)
-    # S: np.ndarray = np.array([
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0],
-    #     [0, 0, 0, 0],
-    #     [1 / 2, 1 / 2, -1 / 2, -1 / 2]], dtype=np.complex128)
-    # PSY_init: np.ndarray = 1 / 2 * np.array([1, -1, 1j, 1j])
     P: np.ndarray = np.array([
         [1 / 2, 1 / 2, 1 / 2, 1 / 2],
         [0, 0, 0, 0],
